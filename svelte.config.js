@@ -1,5 +1,7 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-node';
 import preprocess from 'svelte-preprocess';
+import autoprefixer from 'autoprefixer';
+import precompileIntl from 'svelte-intl-precompile/sveltekit-plugin';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -9,9 +11,16 @@ const config = {
 		preprocess({
 			scss: {
 				prependData: '@use "src/variables.scss" as *;'
+			},
+			postcss: {
+				plugins: [autoprefixer]
 			}
 		})
 	],
+
+	compilerOptions: {
+		generate: 'dom'
+	},
 
 	kit: {
 		adapter: adapter(),
@@ -23,7 +32,13 @@ const config = {
 						additionalData: '@use "src/variables.scss" as *;'
 					}
 				}
-			}
+			},
+			plugins: [precompileIntl('static/locales')]
+		},
+
+		prerender: {
+			default: true,
+			enabled: true
 		}
 	}
 };
