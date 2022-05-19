@@ -1,3 +1,7 @@
 {
-	"test": "This is a test"
+	"header": {
+		"signin": "Sign In",
+		"collabs": "Collabs",
+		"home": "Home"
+	}
 }

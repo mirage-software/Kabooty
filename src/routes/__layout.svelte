@@ -14,6 +14,24 @@
 	});
 
 	import '../app.scss';
+
+	import Header from '../components/generic/header/header.svelte';
 </script>
 
-<slot />
+<svelte:head>
+	<title>Endless Mirage — Your one stop shop for GFX & Collabs</title>
+</svelte:head>
+
+<div id="header">
+	<Header />
+	<slot />
+</div>
+
+<style lang="scss">
+	#header {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+	}
+</style>

@@ -1,0 +1,12 @@
+[
+	{
+		"route": "/",
+		"string": "home",
+		"icon": "home"
+	},
+	{
+		"route": "/collabs",
+		"string": "collabs",
+		"icon": "users"
+	}
+]

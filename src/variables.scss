@@ -1,1 +1,28 @@
-/* Variables and mixins declared here will be available in all other SCSS files */
+@import './colors.scss';
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+@import url('https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css');
+
+$margin-xs: 8px;
+$margin-s: 16px;
+$margin-m: 32px;
+$margin-l: 64px;
+
+$max-width: 1600px + ($margin-m * 2);
+
+$breakpoint-xs: 576px;
+$breakpoint-s: 768px;
+$breakpoint-m: 992px;
+$breakpoint-l: 1200px;
+
+$font-size-caption: 14px;
+$font-size-body: 18px;
+$font-size-title: 28px;
+$font-size-footer: 16px;
+$icon-size: 18pt;
+
+$border-radius-s: 8px;
+$border-radius-m: 16px;
+$border-radius-l: 32px;
+
+$header-height: 70px;

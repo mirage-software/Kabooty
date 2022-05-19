@@ -1,1 +1,12 @@
 /* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */
+
+body, html {
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+
+    overflow-x: hidden;
+}
+
+p, h1, h2, h3, h4, h5, h6, a {
+    color: $font-color;
+}
