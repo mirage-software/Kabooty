@@ -17,7 +17,6 @@
 		"@playwright/test": "^1.21.0",
 		"@sveltejs/adapter-node": "next",
 		"@sveltejs/kit": "next",
-		"@types/axios": "^0.14.0",
 		"@typescript-eslint/eslint-plugin": "^5.10.1",
 		"@typescript-eslint/parser": "^5.10.1",
 		"autoprefixer": "^10.4.4",
