@@ -24,7 +24,11 @@
 
 <div id="header">
 	<Header />
-	<slot />
+	<div id="background">
+		<div id="content">
+			<slot />
+		</div>
+	</div>
 </div>
 
 <style lang="scss">
@@ -33,5 +37,20 @@
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
+
+		height: 100%;
+	}
+
+	#content {
+		max-width: $max-width;
+		width: 100%;
+	}
+
+	#background {
+		background: $content-background;
+		width: 100%;
+		height: 100%;
+
+		z-index: -1;
 	}
 </style>

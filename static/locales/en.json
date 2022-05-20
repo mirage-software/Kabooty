@@ -3,5 +3,12 @@
 		"signin": "Sign In",
 		"collabs": "Collabs",
 		"home": "Home"
+	},
+	"errors": {
+		"title": "An error has occurred.",
+		"unknown": "An unknown error has occurred.",
+		"discord": {
+			"access_denied": "While signing in you denied access to your Discord account.<br>In order to use the Discord integration, you need to allow access to your Discord account.<br>In case you denied access out of concern for your account, we do not do anything to your account without giving us your explicit permission."
+		}
 	}
 }

@@ -67,7 +67,7 @@
 		justify-content: stretch;
 		align-items: center;
 
-		background-color: rgba(0, 0, 0, 0.1);
+		background-color: rgba(0, 0, 0, 0.05);
 
 		#icon {
 			font-size: $icon-size;

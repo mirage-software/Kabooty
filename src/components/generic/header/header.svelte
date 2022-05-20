@@ -34,7 +34,7 @@
 	#header {
 		background: $decoration-fill;
 		background: linear-gradient(90deg, $gradient-dark 0%, $gradient-light 100%);
-		box-shadow: 0px 0px 50px 15px rgba(0, 0, 0, 0.2);
+		box-shadow: $box-shadow;
 
 		width: 100%;
 		height: $header-height;

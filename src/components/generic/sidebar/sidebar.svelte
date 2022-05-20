@@ -46,8 +46,7 @@
 
 		overflow: hidden;
 
-		background: $decoration-fill;
-		background: linear-gradient(90deg, $gradient-dark 0%, $gradient-light 100%);
+		background: $sidebar-background;
 
 		box-shadow: none;
 

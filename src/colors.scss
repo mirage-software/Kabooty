@@ -4,6 +4,13 @@ $primary-color-dark: #4B7E65;
 $page-color: #291818;
 $font-color: white;
 
+$top-bar-background: #5B3431;
+// $content-background: #412625;
+
+$content-background: rgb(91,46,46);
+$sidebar-background: $content-background;
+$content-background: radial-gradient(at top right, #5B2E2E 30%, #432625 100%); 
+
 $gradient-dark: #603433;
 $gradient-light: #8A3C3C;
 $decoration-fill: #7A3939;

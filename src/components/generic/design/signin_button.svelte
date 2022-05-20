@@ -3,15 +3,16 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
-
-	let active = false;
+	import { Constants } from '../../../constants';
 
 	onMount(async () => {
 		//
 	});
 
+	const constants = Constants.load($page.url.pathname);
+
 	function click() {
-		goto('/register');
+		goto(constants.discordOAuth);
 	}
 </script>
 
