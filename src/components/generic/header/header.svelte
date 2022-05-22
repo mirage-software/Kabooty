@@ -84,7 +84,7 @@
 				display: none;
 
 				@media (min-width: $breakpoint-m) {
-					margin-right: $margin-s + $margin-m;
+					margin-right: $margin-m;
 					display: flex;
 				}
 

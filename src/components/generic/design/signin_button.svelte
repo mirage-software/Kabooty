@@ -1,25 +1,37 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
-	import { Constants } from '../../../constants';
+	import { discord, username } from '../../../stores/discord';
+
+	import axios from 'axios';
+	import type { IDiscordAuthUrl } from '../../../routes/api/discord/authorize';
+
+	let request: Promise<any> | undefined;
+	let url: string | undefined;
 
 	onMount(async () => {
-		//
+		request = axios.get<IDiscordAuthUrl>('/api/discord/authorize');
+		url = (await request).data.url;
 	});
 
-	const constants = Constants.load($page.url.pathname);
+	async function click() {
+		if (!url) {
+			url = (await request).data.url;
+		}
 
-	function click() {
-		goto(constants.discordOAuth);
+		goto(url!);
 	}
 </script>
 
 <button on:click={click}>
-	<p>{$t('header.signin')}</p>
+	<p>
+		{$username ?? $t('header.signin')}
+	</p>
 	<div id="user">
-		<i id="icon" class="las la-user" />
+		{#if !$discord}
+			<i id="icon" class="las la-user" />
+		{/if}
 	</div>
 </button>
 

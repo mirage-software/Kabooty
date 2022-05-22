@@ -30,7 +30,6 @@
 <style lang="scss">
 	button {
 		height: $header-height;
-		margin-left: $margin-xs;
 
 		background: none;
 		color: white;
