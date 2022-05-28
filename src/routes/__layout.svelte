@@ -22,7 +22,7 @@
 	<title>Endless Mirage — Your one stop shop for GFX & Collabs</title>
 </svelte:head>
 
-<div id="header">
+<div id="body">
 	<Header />
 	<div id="background">
 		<div id="content">
@@ -32,11 +32,20 @@
 </div>
 
 <style lang="scss">
-	#header {
+	#body {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
+
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+
+		// helps with dev tools
+		z-index: -2;
 
 		height: 100%;
 	}

@@ -21,7 +21,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		height: 100%;
 		width: calc(100% - $margin-m * 2);
 		margin: $margin-m;
 		margin-top: $margin-l;
@@ -44,6 +43,10 @@
 		margin: 0;
 		margin-top: $margin-xs;
 
-		text-align: center;
+		max-width: 500px;
+
+		text-align: justify;
+		text-justify: auto;
+		text-align-last: center;
 	}
 </style>
