@@ -67,7 +67,8 @@
 		justify-content: stretch;
 		align-items: center;
 
-		background-color: rgba(0, 0, 0, 0.05);
+		// background-color: #542a2a;
+		background-color: rgba(0, 0, 0, 0.08);
 
 		#icon {
 			font-size: $icon-size;
@@ -75,9 +76,8 @@
 		}
 
 		p {
-			text-transform: uppercase;
-			font-weight: 700;
-			font-size: $font-size-caption;
+			font-weight: 400;
+			font-size: $font-size-footer;
 
 			margin: $margin-s;
 		}

@@ -83,9 +83,8 @@
 		}
 
 		p {
-			text-transform: uppercase;
-			font-weight: 700;
-			font-size: $font-size-caption;
+			font-weight: 400;
+			font-size: $font-size-footer;
 
 			display: none;
 

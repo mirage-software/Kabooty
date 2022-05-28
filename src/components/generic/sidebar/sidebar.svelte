@@ -14,6 +14,10 @@
 </script>
 
 <div id="sidebar" class={active ? 'active' : 'inactive'}>
+	<div id="decoration">
+		<img id="dec1" src="/assets/38.png" />
+		<img id="dec2" src="/assets/40.png" />
+	</div>
 	<i id="icon" class="las la-angle-left" on:click={() => functions.toggle()} />
 
 	{#each links as link}
@@ -57,6 +61,37 @@
 
 		@media (min-width: $breakpoint-m) {
 			display: none;
+		}
+
+		#decoration {
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			overflow: hidden;
+
+			display: flex;
+			flex-direction: column;
+
+			pointer-events: none;
+
+			img {
+				position: relative;
+				width: 120px;
+				height: 120px;
+				z-index: -1;
+				opacity: 0.9;
+			}
+
+			#dec1 {
+				top: -15px;
+				left: -10px;
+			}
+
+			#dec2 {
+				top: 40px;
+				right: -10px;
+				align-self: end;
+			}
 		}
 
 		#icon {

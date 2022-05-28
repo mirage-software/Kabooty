@@ -12,6 +12,12 @@
 <div id="header">
 	<Sidebar bind:functions={sidebar} />
 	<div id="navigation">
+		<div id="decoration">
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<img id="dec1" src="/assets/28.png" />
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<img id="dec2" src="/assets/30.png" />
+		</div>
 		<i id="icon" class="las la-bars" on:click={() => sidebar.toggle()} />
 
 		<a href="/"><img src="/logo.png" alt="Home" /></a>
@@ -48,6 +54,38 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+
+			#decoration {
+				position: absolute;
+				height: $header-height;
+				width: 100%;
+				overflow: hidden;
+
+				display: flex;
+				justify-content: space-between;
+
+				pointer-events: none;
+
+				img {
+					margin: 0;
+				}
+
+				img#dec1 {
+					position: relative;
+					top: -30px;
+					left: -10px;
+					width: 120px;
+					height: 120px;
+				}
+
+				img#dec2 {
+					position: relative;
+					top: -30px;
+					right: 30px;
+					width: 120px;
+					height: 120px;
+				}
+			}
 
 			#icon {
 				width: $header-height;
