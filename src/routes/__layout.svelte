@@ -13,9 +13,25 @@
 		initialLocale: getLocaleFromNavigator('en')
 	});
 
+	import axios from 'axios';
+	import { discord } from '../stores/discord';
+
+	onMount(async () => {
+		axios.get('/api/discord/authenticated').then(async (response) => {
+			const authenticated = response.data.authenticated;
+
+			if (authenticated) {
+				const user = await axios.get('/api/discord/user');
+
+				discord.update(user.data);
+			}
+		});
+	});
+
 	import '../app.scss';
 
 	import Header from '../components/generic/header/header.svelte';
+	import { onMount } from 'svelte';
 </script>
 
 <svelte:head>

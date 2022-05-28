@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
-	import { discord, username } from '../../../stores/discord';
+	import { discord, getDiscordProfilePicture } from '../../../stores/discord';
 
 	import axios from 'axios';
 	import type { IDiscordAuthUrl } from '../../../routes/api/discord/authorize';
@@ -26,11 +26,14 @@
 
 <button on:click={click}>
 	<p>
-		{$username ?? $t('header.signin')}
+		{$discord ? $discord.username + '#' + $discord.discriminator : $t('header.signin')}
 	</p>
 	<div id="user">
 		{#if !$discord}
 			<i id="icon" class="las la-user" />
+		{:else}
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<img id="avatar" src={getDiscordProfilePicture($discord)} />
 		{/if}
 	</div>
 </button>
@@ -70,6 +73,12 @@
 			#icon {
 				font-size: $icon-size;
 				margin-bottom: 3px;
+			}
+
+			#avatar {
+				height: 100%;
+				width: 100%;
+				border-radius: 50%;
 			}
 		}
 

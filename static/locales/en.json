@@ -5,10 +5,11 @@
 		"home": "Home"
 	},
 	"errors": {
-		"title": "An error has occurred.",
+		"title": "Oopsie woopsie!",
 		"unknown": "An unknown error has occurred.",
 		"discord": {
-			"access_denied": "While signing in you denied access to your Discord account.<br>In order to use the Discord integration, you need to allow access to your Discord account.<br>In case you denied access out of concern for your account, we do not do anything to your account without giving us your explicit permission."
+			"access_denied": "While signing in you denied access to your Discord account.<br>In order to sign in, you need to allow access to your Discord account.<br>In case you denied access out of concern for your account, we do not do anything to your account without giving us your explicit permission.",
+			"invalid_code": "Something went wrong while signing in. The code provided by Discord is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us."
 		}
 	}
 }

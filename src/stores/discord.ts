@@ -1,95 +1,27 @@
-import { get, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 
-interface IDiscordUser {
+export interface IDiscordUser {
+	id: string;
 	username: string;
 	discriminator: string;
 	avatar: string;
 }
 
-function createDiscordTokenStore() {
-	const tokenStore = writable<string>(undefined);
+export function getDiscordProfilePicture(user: IDiscordUser) {
+	return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+}
+
+function createDiscordUserStore() {
 	const userStore = writable<IDiscordUser | undefined>(undefined);
 
 	return {
-		subscribe: tokenStore.subscribe,
-		update: (token: string) => {
-			tokenStore.set(token);
-			discord.getUsername();
-			// discord.getProfilePicture();
-		},
-		getProfilePicture: async () => {
-			const token = get(tokenStore);
-
-			if (!token) {
-				return undefined;
-			}
-
-			// let user = get(userStore);
-
-			// if (!user) {
-			// 	try {
-			// 		// user = await client.getUser(token);
-			// 	} catch (error) {
-			// 		console.error(error);
-			// 	}
-			// 	userStore.set(user);
-			// }
-
-			// console.log(user?.avatar);
-		},
-		getUsername: async () => {
-			const token = get(tokenStore);
-
-			console.log(token);
-
-			if (!token) {
-				username.update(undefined);
-				return;
-			}
-
-			// let user = get(userStore);
-
-			// const user = await fetch(`https://discord.com/api/users/@me`, {
-			// 	headers: {
-			// 		Authorization: `Bearer ${token}`
-			// 	}
-			// });
-
+		subscribe: userStore.subscribe,
+		update: (user: IDiscordUser) => {
 			console.log(user);
 
-			// if (!user) {
-			// try {
-			// 	client
-			// 		.getUser(token)
-			// 		.then((user) => {
-			// 			userStore.set(user);
-			// 			console.log(user);
-			// 			username.update(user.username + '#' + user.discriminator);
-			// 		})
-			// 		.catch((error) => {
-			// 			console.error(error);
-			// 		});
-			// } catch (error) {
-			// 	console.error(error);
-			// }
-			// userStore.set(user);
-			// }
-
-			// console.log(user);
-
-			// username.update(user.username + '#' + user.discriminator);
+			userStore.set(user);
 		}
 	};
 }
 
-function createDiscordUsernameStore() {
-	const { subscribe, set } = writable<string | undefined>(undefined);
-
-	return {
-		subscribe,
-		update: set
-	};
-}
-
-export const discord = createDiscordTokenStore();
-export const username = createDiscordUsernameStore();
+export const discord = createDiscordUserStore();
