@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 export abstract class Env {
 	private static stored: dotenv.DotenvParseOutput | undefined;
 
-	static async load() {
+	static load() {
 		if (Env.stored) {
 			return Env.stored;
 		}
@@ -25,12 +25,12 @@ export abstract class Env {
 		return Env.stored!;
 	}
 
-	static async extract(env: dotenv.DotenvParseOutput) {
+	static extract(env: dotenv.DotenvParseOutput) {
 		return Object.fromEntries(Object.entries(env).filter((e) => e[0].startsWith('PUBLIC_')));
 	}
 
-	static async public() {
-		const env = await Env.load();
+	static public() {
+		const env = Env.load();
 		return Env.extract(env);
 	}
 }

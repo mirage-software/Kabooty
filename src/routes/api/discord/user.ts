@@ -2,6 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import OAuth from 'discord-oauth2';
 import { Env } from '../../../env';
 import cookie from 'cookie';
+import { Prisma } from '../../../database/prisma';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -29,7 +30,7 @@ export const get: RequestHandler = async ({ request }) => {
 		};
 	}
 
-	const env = await Env.load();
+	const env = Env.load();
 
 	const client = new OAuth({
 		clientId: env['DISCORD_CLIENT_ID'],
@@ -39,7 +40,21 @@ export const get: RequestHandler = async ({ request }) => {
 	try {
 		const user = await client.getUser(token);
 
-		// TODO: store user in database
+		await Prisma.client.user.upsert({
+			where: {
+				discordId: user.id
+			},
+			update: {
+				discordId: user.id,
+				username: user.username,
+				discriminator: user.discriminator
+			},
+			create: {
+				discordId: user.id,
+				discriminator: user.discriminator,
+				username: user.username
+			}
+		});
 
 		return {
 			status: 200,

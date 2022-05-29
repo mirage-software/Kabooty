@@ -2,6 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import OAuth from 'discord-oauth2';
 import { Env } from '../../../env';
 import cookie from 'cookie';
+import { dev } from '$app/env';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -58,7 +59,7 @@ export const get: RequestHandler = async ({ request }) => {
 			expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
 			httpOnly: true,
 			sameSite: 'strict',
-			secure: parseInt(env['PRODUCTION'] ?? '0') === 1
+			secure: !dev
 		});
 
 		return {

@@ -11,38 +11,71 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  role    Role     @default(USER)
-  posts   Post[]
-  profile Profile?
+  discordId     String        @id
+  username      String
+  discriminator String
+  roles         String[]
+  Osu           Osu?
+  Collab        Collab[]
+  Pick          Pick[]
+  Participant   Participant[]
 }
 
-model Profile {
-  id     Int    @id @default(autoincrement())
-  bio    String
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int    @unique
+model Osu {
+  id     String @id
+  user   User   @relation(fields: [userId], references: [discordId], onDelete: Cascade)
+  userId String @unique
 }
 
-model Post {
-  id         Int        @id @default(autoincrement())
-  createdAt  DateTime   @default(now())
-  title      String
-  published  Boolean    @default(false)
-  author     User       @relation(fields: [authorId], references: [id])
-  authorId   Int
-  categories Category[] @relation(references: [id])
+model Collab {
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  title       String
+  topic       String
+  logo        String?
+  creator     User          @relation(fields: [creatorId], references: [discordId], onDelete: Cascade)
+  creatorId   String
+  type        CollabType
+  status      CollabStatus
+  Pick        Pick[]
+  Participant Participant[]
 }
 
-model Category {
-  id    Int    @id @default(autoincrement())
-  name  String
-  posts Post[] @relation(references: [id])
+enum CollabType {
+  OPEN
+  LIMITED
+  PRIVATE
 }
 
-enum Role {
-  USER
-  ADMIN
+enum CollabStatus {
+  DESIGN
+  EARLY_ACCESS
+  OPEN
+  BUMP
+  RELEASE
+  CLOSED
+}
+
+model Pick {
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  name        String
+  image       String
+  characterId String?
+  collab      Collab        @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  collabId    String
+  User        User?         @relation(fields: [userId], references: [discordId])
+  userId      String
+  Participant Participant[]
+}
+
+model Participant {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [discordId])
+  userId    String
+  collab    Collab   @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  collabId  String
+  pick      Pick     @relation(fields: [pickId], references: [id], onDelete: Cascade)
+  pickId    String
 }
