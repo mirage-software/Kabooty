@@ -60,6 +60,7 @@
 				height: $header-height;
 				width: 100%;
 				overflow: hidden;
+				max-width: $max-width;
 
 				display: flex;
 				justify-content: space-between;

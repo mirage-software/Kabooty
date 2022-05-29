@@ -22,6 +22,8 @@
 						Authorization: code
 					}
 				});
+
+				goto(localStorage.getItem('discord_page_redirect') ?? '/profile');
 			} catch (_) {
 				discordError = 'invalid_code';
 			}

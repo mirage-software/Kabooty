@@ -17,8 +17,6 @@ function createDiscordUserStore() {
 	return {
 		subscribe: userStore.subscribe,
 		update: (user: IDiscordUser) => {
-			console.log(user);
-
 			userStore.set(user);
 		}
 	};

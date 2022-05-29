@@ -7,11 +7,10 @@
 	import axios from 'axios';
 	import type { IDiscordAuthUrl } from '../../../routes/api/discord/authorize';
 
-	let request: Promise<any> | undefined;
+	let request: Promise<any> = axios.get<IDiscordAuthUrl>('/api/discord/authorize');
 	let url: string | undefined;
 
 	onMount(async () => {
-		request = axios.get<IDiscordAuthUrl>('/api/discord/authorize');
 		url = (await request).data.url;
 	});
 
@@ -20,7 +19,11 @@
 			url = (await request).data.url;
 		}
 
-		goto(url!);
+		if ($discord) {
+			goto('/profile');
+		} else {
+			goto(url!);
+		}
 	}
 </script>
 

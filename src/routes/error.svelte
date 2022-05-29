@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
 
+	// @ts-ignore
 	export let status: number = 200;
 	// export let error: any;
 	export let type = 'unknown';
@@ -22,6 +23,7 @@
 		align-items: center;
 		justify-content: center;
 		width: calc(100% - $margin-m * 2);
+		max-width: $max-width;
 		margin: $margin-m;
 		margin-top: $margin-l;
 	}

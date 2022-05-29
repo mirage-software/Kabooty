@@ -14,7 +14,13 @@
 	});
 
 	import axios from 'axios';
+	import { Env } from '../env';
 	import { discord } from '../stores/discord';
+
+	if (!browser) {
+		const baseUrl = Env.public()['PUBLIC_BASE_URL'];
+		axios.defaults.baseURL = baseUrl;
+	}
 
 	onMount(async () => {
 		axios.get('/api/discord/authenticated').then(async (response) => {
@@ -32,6 +38,7 @@
 
 	import Header from '../components/generic/header/header.svelte';
 	import { onMount } from 'svelte';
+	import { browser } from '$app/env';
 </script>
 
 <svelte:head>
@@ -67,8 +74,11 @@
 	}
 
 	#content {
-		max-width: $max-width;
 		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: flex-start;
 	}
 
 	#background {

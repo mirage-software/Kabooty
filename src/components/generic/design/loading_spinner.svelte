@@ -23,6 +23,8 @@
 		display: flex;
 		justify-content: center;
 		padding: $margin-l;
+
+		max-width: $max-width;
 	}
 
 	$offset: 187;
@@ -54,7 +56,7 @@
 			stroke-dashoffset: $offset;
 		}
 		50% {
-			stroke-dashoffset: $offset/4;
+			stroke-dashoffset: calc($offset/4);
 			transform: rotate(135deg);
 		}
 		100% {

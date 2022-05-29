@@ -15,7 +15,9 @@
 
 <div id="sidebar" class={active ? 'active' : 'inactive'}>
 	<div id="decoration">
+		<!-- svelte-ignore a11y-missing-attribute -->
 		<img id="dec1" src="/assets/38.png" />
+		<!-- svelte-ignore a11y-missing-attribute -->
 		<img id="dec2" src="/assets/40.png" />
 	</div>
 	<i id="icon" class="las la-angle-left" on:click={() => functions.toggle()} />
