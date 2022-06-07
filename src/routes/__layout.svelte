@@ -27,6 +27,7 @@
 			const authenticated = response.data.authenticated;
 
 			if (authenticated) {
+				// Returns an encrypted session cookie to identify the user
 				const user = await axios.get('/api/discord/user');
 
 				discord.update(user.data);

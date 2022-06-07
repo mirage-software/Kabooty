@@ -23,6 +23,13 @@
 					}
 				});
 
+				if (!$discord) {
+					// Returns an encrypted session cookie to identify the user
+					const user = await axios.get('/api/discord/user');
+
+					discord.update(user.data);
+				}
+
 				goto(localStorage.getItem('discord_page_redirect') ?? '/profile');
 			} catch (_) {
 				discordError = 'invalid_code';

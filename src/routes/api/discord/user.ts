@@ -3,6 +3,8 @@ import OAuth from 'discord-oauth2';
 import { Env } from '../../../env';
 import cookie from 'cookie';
 import { Prisma } from '../../../database/prisma';
+import { dev } from '$app/env';
+import { Jwt } from '../../../jwt';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -50,10 +52,10 @@ export const get: RequestHandler = async ({ request }) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const cookies = cookie.parse(cookieHeader!);
 
-		token = cookies['discord_token'];
+		token = Jwt.decode(cookies['discord_token'])?.access_token;
 	}
 
-	if (!token) {
+	if (!token || typeof token !== "string") {
 		return {
 			status: 401
 		};
