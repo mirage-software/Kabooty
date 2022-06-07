@@ -3,6 +3,7 @@ import OAuth from 'discord-oauth2';
 import { Env } from '../../../env';
 import cookie from 'cookie';
 import { dev } from '$app/env';
+import { Jwt } from '../../../jwt';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -26,7 +27,7 @@ export const get: RequestHandler = async ({ request }) => {
 		}
 	}
 
-	const env = await Env.load();
+	const env = Env.load();
 
 	const client = new OAuth({
 		clientId: env['DISCORD_CLIENT_ID'],
@@ -55,18 +56,32 @@ export const get: RequestHandler = async ({ request }) => {
 			scope: ['identify', 'guilds', 'guilds.join']
 		});
 
-		const setCookie = cookie.serialize('discord_token', token.access_token, {
+		const user = await client.getUser(token.access_token);
+
+		const setCookie = cookie.serialize(
+			'discord_token',
+			Jwt.encode({ access_token: token.access_token }),
+			{
+				expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
+				httpOnly: true,
+				sameSite: 'strict',
+				secure: !dev
+			}
+		);
+
+		const userCookie = cookie.serialize('user_id', Jwt.encode({ user_id: user.id }), {
 			expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
 			httpOnly: true,
-			sameSite: 'strict',
+			sameSite: 'none',
 			secure: !dev
 		});
 
-		return {
-			headers: {
-				'Set-Cookie': setCookie
-			}
-		};
+		const response = new Response();
+
+		response.headers.append('Set-Cookie', setCookie);
+		response.headers.append('Set-Cookie', userCookie);
+
+		return response;
 	} catch (error) {
 		return {
 			status: 400,
