@@ -4,17 +4,22 @@
 	import { t } from 'svelte-intl-precompile';
 	import { discord, getDiscordProfilePicture } from '../../../stores/discord';
 
-	import axios from 'axios';
+	import axios, { type AxiosResponse } from 'axios';
 	import type { IDiscordAuthUrl } from '../../../routes/api/discord/authorize';
 
-	let request: Promise<any> = axios.get<IDiscordAuthUrl>('/api/discord/authorize');
+	let request: Promise<AxiosResponse<IDiscordAuthUrl>>;
 	let url: string | undefined;
 
 	onMount(async () => {
+		request = axios.get<IDiscordAuthUrl>('/api/discord/authorize');
 		url = (await request).data.url;
 	});
 
 	async function click() {
+		if (!url && !request) {
+			return;
+		}
+
 		if (!url) {
 			url = (await request).data.url;
 		}
