@@ -26,7 +26,7 @@ export const get: RequestHandler = async ({ request }) => {
 		}
 	}
 
-	const env = await Env.load();
+	const env = Env.load();
 
 	const client = new OAuth({
 		clientId: env['DISCORD_CLIENT_ID'],

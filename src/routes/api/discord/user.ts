@@ -12,6 +12,35 @@ export interface IDiscordAccessToken extends Record<string, string | number> {
 	scope: string;
 }
 
+export async function getUser(token: string) {
+	const env = Env.load();
+
+	const client = new OAuth({
+		clientId: env['DISCORD_CLIENT_ID'],
+		clientSecret: env['DISCORD_CLIENT_SECRET']
+	});
+
+	const user = await client.getUser(token);
+
+	await Prisma.client.user.upsert({
+		where: {
+			discordId: user.id
+		},
+		update: {
+			discordId: user.id,
+			username: user.username,
+			discriminator: user.discriminator
+		},
+		create: {
+			discordId: user.id,
+			discriminator: user.discriminator,
+			username: user.username
+		}
+	});
+
+	return user;
+}
+
 export const get: RequestHandler = async ({ request }) => {
 	let token;
 
@@ -30,31 +59,8 @@ export const get: RequestHandler = async ({ request }) => {
 		};
 	}
 
-	const env = Env.load();
-
-	const client = new OAuth({
-		clientId: env['DISCORD_CLIENT_ID'],
-		clientSecret: env['DISCORD_CLIENT_SECRET']
-	});
-
 	try {
-		const user = await client.getUser(token);
-
-		await Prisma.client.user.upsert({
-			where: {
-				discordId: user.id
-			},
-			update: {
-				discordId: user.id,
-				username: user.username,
-				discriminator: user.discriminator
-			},
-			create: {
-				discordId: user.id,
-				discriminator: user.discriminator,
-				username: user.username
-			}
-		});
+		const user = await getUser(token);
 
 		return {
 			status: 200,

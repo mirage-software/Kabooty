@@ -22,9 +22,9 @@ model User {
 }
 
 model Osu {
-  id     String @id
-  user   User   @relation(fields: [userId], references: [discordId], onDelete: Cascade)
-  userId String @unique
+  id          String @id
+  user        User   @relation(fields: [discordId], references: [discordId], onDelete: Cascade)
+  discordId   String @unique
 }
 
 model Collab {

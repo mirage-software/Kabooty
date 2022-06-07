@@ -39,7 +39,10 @@
 					</div>
 				</div>
 				<div id="buttons">
-					<SolidButton click={() => goto('/')} color="green" string="osu.connect" />
+					<SolidButton click={async () => {
+						const state = await axios.get('/api/osu/authorize');
+						goto(state.data.url);
+					}} color="green" string="osu.connect" />
 					<!-- TODO: move delete to bottom of page -->
 					<SolidButton click={() => goto('/')} color="red" string="account.delete" />
 				</div>
