@@ -20,7 +20,7 @@ export const get: RequestHandler = async ({ request }) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const cookies = cookie.parse(cookieHeader!);
 
-		if (cookies['discord_token']) {
+		if (cookies["discord_token"]) {
 			return {
 				status: 200
 			};
@@ -69,12 +69,16 @@ export const get: RequestHandler = async ({ request }) => {
 			}
 		);
 
-		const userCookie = cookie.serialize('user_id', Jwt.encode({ user_id: user.id }), {
-			expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
-			httpOnly: true,
-			sameSite: 'none',
-			secure: !dev
-		});
+		const userCookie = cookie.serialize(
+			'user_id',
+			Jwt.encode({ user_id: user.id }),
+			{
+				expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
+				httpOnly: true,
+				sameSite: 'none',
+				secure: !dev
+			}
+		);
 
 		const response = new Response();
 

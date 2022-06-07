@@ -2,10 +2,9 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { Env } from '../../../env';
 import cookie from 'cookie';
 import axios from 'axios';
-import jsonwebtoken from "jsonwebtoken";
 import { getMe, type IOsuUser } from "./user";
 import { Prisma } from '../../../database/prisma';
-import { getUser } from '../discord/user';
+import { Jwt } from '../../../jwt';
 
 export interface IOsuAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -15,7 +14,7 @@ export interface IOsuAccessToken extends Record<string, string | number> {
 }
 
 export const get: RequestHandler = async ({ request }) => {
-    let discord_token: string;
+    let user_id;
     //TODO: no Cookie header here
 	if (request.headers.has('cookie')) {
 		const cookieHeader = request.headers.get('cookie');
@@ -23,12 +22,21 @@ export const get: RequestHandler = async ({ request }) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const cookies = cookie.parse(cookieHeader!);
 
-        if(!cookies['discord_token']) {
+        if(cookies['user_id']) {
             return {
 				status: 400
 			};
         }
-        discord_token = cookies['discord_token'];
+
+        const decoded = Jwt.decode(cookies['user_id'])
+
+        if(decoded && typeof decoded === "string" && !Buffer.isBuffer(decoded)) {
+			user_id = decoded;
+		} else {
+            return {
+                status: 400
+            };
+        }
 	} else {
         return {
             status: 400
@@ -51,27 +59,8 @@ export const get: RequestHandler = async ({ request }) => {
         
         const [code, jwtoken] = auth.split("|");
 
-        try {
-            const t = jsonwebtoken.verify(jwtoken, env["JWT_SECRET"], {
-                "issuer": "Endless Mirage",
-            }) as Object;
-            if(!t.hasOwnProperty("sd")) {
-                return {
-                    status: 400,
-                    body: {
-                        error: 'Failed to verify osu! code'
-                    }
-                };
-            };
-            if(Date.now() - Number(((t as {sd: string}).sd)+59148)/3 > 3600000) {
-                return {
-                    status: 400,
-                    body: {
-                        error: 'Failed to verify osu! code'
-                    }
-                };
-            }
-        } catch(e) {
+        const t = Jwt.decode(jwtoken);
+        if(!t || typeof t !== "object" || Buffer.isBuffer(t) || !t.hasOwnProperty("sd") || typeof t.sd !== "string" || Date.now() - (Number(t.sd)+59148)/3 > 3600000) {
             return {
                 status: 400,
                 body: {
@@ -94,7 +83,7 @@ export const get: RequestHandler = async ({ request }) => {
 
         const data = JSON.parse(response.data) as IOsuAccessToken;
 
-        const [discordUser, user] = await Promise.all([getUser(discord_token), getMe(data.access_token, "osu") as Promise<IOsuUser>]);
+        const user = (await getMe(data.access_token, "osu")) as IOsuUser;
 
         await Prisma.client.osu.upsert({
             where: {
@@ -104,7 +93,7 @@ export const get: RequestHandler = async ({ request }) => {
                 id: user.id.toString(),
                 user: {
                     connect: {
-                        discordId: discordUser.id
+                        discordId: user_id
                     }
                 },
             },
@@ -112,7 +101,7 @@ export const get: RequestHandler = async ({ request }) => {
                 id: user.id.toString(),
                 user: {
                     connect: {
-                        discordId: discordUser.id
+                        discordId: user_id
                     }
                 },
             }

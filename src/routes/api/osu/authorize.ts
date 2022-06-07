@@ -1,8 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import jsonwebtoken from "jsonwebtoken";
-import cookie from 'cookie';
+import { Jwt } from '../../../jwt';
 import { Env } from '../../../env';
-import { getUser } from "../discord/user";
 
 export interface IOsuAuthUrl extends Record<string, string> {
 	url: string;
@@ -11,12 +9,9 @@ export interface IOsuAuthUrl extends Record<string, string> {
 export const get: RequestHandler = async () => {
     const env = Env.load();
 
-    const token = jsonwebtoken.sign({
+    const token = Jwt.encode({
         sd: (Date.now()*3-59148).toString()
-    }, env["JWT_SECRET"], {
-        "issuer": "Endless Mirage",
-        "expiresIn": 3600
-    })
+    });
 
 	return {
 		body: <IOsuAuthUrl>{

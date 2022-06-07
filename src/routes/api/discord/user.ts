@@ -52,7 +52,11 @@ export const get: RequestHandler = async ({ request }) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const cookies = cookie.parse(cookieHeader!);
 
-		token = Jwt.decode(cookies['discord_token'])?.access_token;
+		const decoded = Jwt.decode(cookies['discord_token'])
+
+		if(decoded && typeof decoded === "object" && !Buffer.isBuffer(decoded) && decoded.hasOwnProperty("access_token")) {
+			token = decoded.access_token;
+		}
 	}
 
 	if (!token || typeof token !== "string") {
