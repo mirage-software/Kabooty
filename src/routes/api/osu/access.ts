@@ -14,38 +14,26 @@ export interface IOsuAccessToken extends Record<string, string | number> {
 }
 
 export const get: RequestHandler = async ({ request }) => {
-    let user_id;
-    //TODO: no Cookie header here
-	if (request.headers.has('cookie')) {
-		const cookieHeader = request.headers.get('cookie');
-
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const cookies = cookie.parse(cookieHeader!);
-
-        if(cookies['user_id']) {
-            return {
-				status: 400
-			};
-        }
-
-        const decoded = Jwt.decode(cookies['user_id'])
-
-        if(decoded && typeof decoded === "string" && !Buffer.isBuffer(decoded)) {
-			user_id = decoded;
-		} else {
-            return {
-                status: 400
-            };
-        }
-	} else {
-        return {
-            status: 400
-        };
-    }
-
 	const env = Env.load();
 
     try {
+        let user_id;
+        if (request.headers.has('cookie')) {
+            const cookieHeader = request.headers.get('cookie');
+    
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const cookies = cookie.parse(cookieHeader!);
+    
+            const decoded = Jwt.decode(cookies['user_id'])
+        
+            if(!decoded || typeof decoded !== "object" || Buffer.isBuffer(decoded) || !decoded.hasOwnProperty("user_id") || typeof decoded["user_id"] !== "string") {
+                return {
+                    status: 401
+                };
+            }
+            user_id = decoded["user_id"];
+        }
+
         const auth = request.headers.get('Authorization');
 
         if (!auth || auth.length === 0 || !auth.includes("|")) {
@@ -70,18 +58,19 @@ export const get: RequestHandler = async ({ request }) => {
         }
 
         const response = await axios.post("https://osu.ppy.sh/oauth/token", {
-            grant_type: "authorization_code",
-            code: code,
             client_id: Number(env['OSU_CLIENT_ID']),
             client_secret: env['OSU_CLIENT_SECRET'],
+            code: code,
+            grant_type: "authorization_code",
             redirect_uri: env['OSU_REDIRECT_URI'],
+        }, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
             }
         });
 
-        const data = JSON.parse(response.data) as IOsuAccessToken;
+        const data = response.data as IOsuAccessToken;
 
         const user = (await getMe(data.access_token, "osu")) as IOsuUser;
 

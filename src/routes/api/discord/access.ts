@@ -20,7 +20,9 @@ export const get: RequestHandler = async ({ request }) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const cookies = cookie.parse(cookieHeader!);
 
-		if (cookies["discord_token"]) {
+		const decoded = Jwt.decode(cookies['discord_token'])
+	
+		if(decoded && typeof decoded === "object" && !Buffer.isBuffer(decoded) && decoded.hasOwnProperty("access_token")) {
 			return {
 				status: 200
 			};
@@ -58,34 +60,38 @@ export const get: RequestHandler = async ({ request }) => {
 
 		const user = await client.getUser(token.access_token);
 
-		const setCookie = cookie.serialize(
+		const discordTokenCookie = cookie.serialize(
 			'discord_token',
 			Jwt.encode({ access_token: token.access_token }),
 			{
 				expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
 				httpOnly: true,
 				sameSite: 'strict',
-				secure: !dev
+				secure: !dev,
+				path: "/api/"
 			}
 		);
 
-		const userCookie = cookie.serialize(
+		const userIdCookie = cookie.serialize(
 			'user_id',
 			Jwt.encode({ user_id: user.id }),
 			{
 				expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
 				httpOnly: true,
-				sameSite: 'none',
-				secure: !dev
+				sameSite: 'lax',
+				secure: !dev,
+				path: "/api/"
 			}
 		);
 
-		const response = new Response();
+		const headers = new Headers();
 
-		response.headers.append('Set-Cookie', setCookie);
-		response.headers.append('Set-Cookie', userCookie);
+		headers.append('Set-Cookie', discordTokenCookie);
+		headers.append('Set-Cookie', userIdCookie);
 
-		return response;
+		return {
+			headers: headers
+		};
 	} catch (error) {
 		return {
 			status: 400,

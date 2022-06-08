@@ -22,7 +22,13 @@ export type IOsuUserCompact = {
 export type IOsuUser = IOsuUserCompact & {}
 
 export async function getMe(access_token: string, mode: OsuGameMode) {
-    const request = await axios.get(`https://osu.ppy.sh/api/v2/me?mode=${mode}`);
+    const request = await axios.get(`https://osu.ppy.sh/api/v2/me/${mode}`, {
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${access_token}`
+        },
+    });
     return request.data;
 }
 

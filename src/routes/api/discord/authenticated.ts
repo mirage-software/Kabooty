@@ -19,11 +19,14 @@ export const get: RequestHandler = async ({ request }) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const cookies = cookie.parse(cookieHeader!);
 
-		const encoded = cookies['discord_token'];
-		token = Jwt.decode(encoded)?.access_token;
+		const decoded = Jwt.decode(cookies['discord_token'])
+
+		if(decoded && typeof decoded === "object" && !Buffer.isBuffer(decoded) && decoded.hasOwnProperty("access_token")) {
+			token = decoded.access_token;
+		}
 	}
 
-	if (!token) {
+	if (!token || typeof token !== "string") {
 		return {
 			body: {
 				authenticated: false
