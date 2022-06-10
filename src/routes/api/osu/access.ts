@@ -6,7 +6,6 @@ import { getApiUser } from "./user";
 import { Prisma } from '../../../database/prisma';
 import { Jwt } from '../../../jwt';
 import type { IOsuUser } from './types';
-import type { Gamemode } from '@prisma/client';
 
 export interface IOsuAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -42,7 +41,7 @@ export const get: RequestHandler = async ({ request }) => {
             return {
                 status: 400,
                 body: {
-                    error: 'Missing osu! code'
+                    error: 'no_code'
                 }
             };
         }
@@ -54,7 +53,7 @@ export const get: RequestHandler = async ({ request }) => {
             return {
                 status: 400,
                 body: {
-                    error: 'Failed to verify osu! code'
+                    error: "invalid_code"
                 }
             };
         }
@@ -85,6 +84,7 @@ export const get: RequestHandler = async ({ request }) => {
                 country: user.country_code,
                 rank: user.statistics?.global_rank,
                 countryRank: user.statistics?.rank.country,
+                //@ts-ignore
                 gamemode: user.playmode,
                 username: user.username,
                 user: {
@@ -98,6 +98,7 @@ export const get: RequestHandler = async ({ request }) => {
                 country: user.country_code,
                 rank: user.statistics?.global_rank || 0,
                 countryRank: user.statistics?.rank.country || 0,
+                //@ts-ignore
                 gamemode: user.playmode,
                 username: user.username,
                 user: {
@@ -115,7 +116,7 @@ export const get: RequestHandler = async ({ request }) => {
         return {
             status: 400,
 			body: {
-				error: 'Failed to authenticate with osu!'
+				error: "authentication_failed"
 			}
         }
     }

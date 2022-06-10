@@ -6,7 +6,7 @@
 	import { onMount } from 'svelte';
 	import Error from '../error.svelte';
 	import Loading from '../../components/generic/design/loading_spinner.svelte';
-	import axios from 'axios';
+	import axios, { AxiosError } from 'axios';
 
 	let error: string | undefined | null;
 
@@ -23,8 +23,8 @@
 					});
 
 					goto('/profile');
-				} catch (_) {
-					error = 'invalid_code';
+				} catch (e) {
+					error = (e as AxiosError).message;
 				}
 			} else {
 				error = 'invalid_code';
