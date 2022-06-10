@@ -1,27 +1,13 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import axios from 'axios';
+import { Prisma } from '../../../database/prisma';
+import cookie from 'cookie';
+import { Jwt } from '../../../jwt';
+import type { OsuGameMode } from './types';
 
-export type OsuGameMode = 'osu' | 'taiko' | 'fruits' | 'mania';
 
-export type IOsuUserCompact = {
-    avatar_url: string;
-    country_code: string;
-    default_group: string;
-    id: number;
-    is_active: boolean;
-    is_bot: boolean;
-    is_deleted: boolean;
-    is_online: boolean;
-    is_supporter: boolean;
-    last_visit: Date | null;
-    pm_friends_only: boolean;
-    profile_colour?: string
-    username: string;
-}
 
-export type IOsuUser = IOsuUserCompact & {}
-
-export async function getMe(access_token: string, mode: OsuGameMode) {
+export async function getApiUser(access_token: string, mode: OsuGameMode) {
     const request = await axios.get(`https://osu.ppy.sh/api/v2/me/${mode}`, {
         headers: {
             "Content-Type": "application/json",
@@ -33,7 +19,37 @@ export async function getMe(access_token: string, mode: OsuGameMode) {
 }
 
 export const get: RequestHandler = async ({ request }) => {
-    return {
-        status: 500
+    try {
+        let user_id;
+        if (request.headers.has('cookie')) {
+            const cookieHeader = request.headers.get('cookie');
+    
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const cookies = cookie.parse(cookieHeader!);
+    
+            const decoded = Jwt.decode(cookies['user_id'])
+        
+            if(!decoded || typeof decoded !== "object" || Buffer.isBuffer(decoded) || !decoded.hasOwnProperty("user_id") || typeof decoded["user_id"] !== "string") {
+                return {
+                    status: 401
+                };
+            }
+            user_id = decoded["user_id"];
+        }
+
+        const user = await Prisma.client.osuUser.findFirst({
+            where: {
+                discordId: user_id
+            }
+        });
+
+        return {
+            body: JSON.stringify(user),
+            status: 200
+        }
+    } catch(_) {
+        return {
+            status: 500
+        }
     }
 }

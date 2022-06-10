@@ -2,9 +2,11 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { Env } from '../../../env';
 import cookie from 'cookie';
 import axios from 'axios';
-import { getMe, type IOsuUser } from "./user";
+import { getApiUser } from "./user";
 import { Prisma } from '../../../database/prisma';
 import { Jwt } from '../../../jwt';
+import type { IOsuUser } from './types';
+import type { Gamemode } from '@prisma/client';
 
 export interface IOsuAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -72,14 +74,19 @@ export const get: RequestHandler = async ({ request }) => {
 
         const data = response.data as IOsuAccessToken;
 
-        const user = (await getMe(data.access_token, "osu")) as IOsuUser;
+        const user = (await getApiUser(data.access_token, "osu")) as IOsuUser;
 
-        await Prisma.client.osu.upsert({
+        await Prisma.client.osuUser.upsert({
             where: {
                 id: user.id.toString()
             },
             update: {
                 id: user.id.toString(),
+                country: user.country_code,
+                rank: user.statistics?.global_rank,
+                countryRank: user.statistics?.rank.country,
+                gamemode: user.playmode,
+                username: user.username,
                 user: {
                     connect: {
                         discordId: user_id
@@ -88,6 +95,11 @@ export const get: RequestHandler = async ({ request }) => {
             },
             create: {
                 id: user.id.toString(),
+                country: user.country_code,
+                rank: user.statistics?.global_rank || 0,
+                countryRank: user.statistics?.rank.country || 0,
+                gamemode: user.playmode,
+                username: user.username,
                 user: {
                     connect: {
                         discordId: user_id

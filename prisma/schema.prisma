@@ -15,16 +15,28 @@ model User {
   username      String
   discriminator String
   roles         String[]
-  Osu           Osu?
-  Collab        Collab[]
-  Pick          Pick[]
-  Participant   Participant[]
+  osu           OsuUser?
+  collab        Collab[]
+  pick          Pick[]
+  participant   Participant[]
 }
 
-model Osu {
+model OsuUser {
   id          String @id
   user        User   @relation(fields: [discordId], references: [discordId], onDelete: Cascade)
   discordId   String @unique
+  username    String
+  country     String
+  rank        Int?
+  countryRank Int?
+  gamemode    Gamemode?
+}
+
+enum Gamemode {
+  fruits
+  mania
+  osu
+  taiko
 }
 
 model Collab {

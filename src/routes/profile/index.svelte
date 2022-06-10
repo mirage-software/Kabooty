@@ -3,12 +3,14 @@
 
 	import { onMount } from 'svelte';
 
+	import { osu } from '../../stores/osu';
 	import { discord, getDiscordProfilePicture } from '../../stores/discord';
 
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import axios from 'axios';
 
 	onMount(async () => {
+		await osu.fetch();
 		const result = await axios.get('/api/discord/authenticated');
 
 		if (!result.data.authenticated) {
@@ -39,10 +41,21 @@
 					</div>
 				</div>
 				<div id="buttons">
-					<SolidButton click={async () => {
-						const state = await axios.get('/api/osu/authorize');
-						goto(state.data.url);
-					}} color="green" string="osu.connect" />
+					{#if $osu}
+						<div id="stats">
+							<p>username: {$osu.username}</p>
+							<p>gamemode: {$osu.gamemode}</p>
+							<p>country: {$osu.country}</p>
+							<p>global rank: {$osu.rank}</p>
+							<p>country rank: {$osu.countryRank}</p>
+							<p>your id: {$osu.id}</p>
+						</div>
+					{:else}
+						<SolidButton click={async () => {
+							const state = await axios.get('/api/osu/authorize');
+							goto(state.data.url);
+						}} color="green" string="osu.connect" />
+					{/if}
 					<!-- TODO: move delete to bottom of page -->
 					<SolidButton click={() => goto('/')} color="red" string="account.delete" />
 				</div>
