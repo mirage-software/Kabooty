@@ -8,21 +8,12 @@
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
 
-	let active = false;
-
-	onMount(async () => {
-		if ($page.url.pathname === route) {
-			active = true;
-		}
-	});
-
 	function click() {
 		goto(route);
 	}
 </script>
 
-<button on:click={click} class={active ? 'active' : 'inactive'}>
-	<!-- <i id="icon" class="las la-{icon}" /> -->
+<button on:click={click} class={$page.url.pathname === route ? 'active' : 'inactive'}>
 	<p>{$t('header.' + string)}</p>
 	<div id="active" />
 </button>
@@ -46,12 +37,6 @@
 		justify-content: center;
 
 		position: relative;
-
-		#icon {
-			font-size: $icon-size;
-			line-height: $margin-xs;
-			margin-bottom: $margin-xs * 1.5;
-		}
 
 		p {
 			font-weight: 400;

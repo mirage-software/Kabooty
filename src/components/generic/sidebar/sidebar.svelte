@@ -41,11 +41,12 @@
 	}
 
 	#sidebar {
-		position: absolute;
+		position: fixed;
 		width: 100%;
 		max-width: 0px;
 		left: 0;
-		height: 100%;
+		bottom: 0;
+		top: 0;
 
 		transition: max-width 0.6s, box-shadow 1s;
 		transition-timing-function: ease;
@@ -112,9 +113,12 @@
 	}
 
 	#scrim {
-		position: absolute;
-		width: 100%;
-		height: 100%;
+		position: fixed;
+
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 
 		opacity: 0;
 		transition-property: opacity;

@@ -20,9 +20,13 @@
 		"404": "This page does not exist, uwu."
 	},
 	"osu": {
-		"connect": "Connect osu!"
+		"connect": "Connect osu!",
+		"update": "Update",
+		"unranked": "Unranked",
+		"no_time": "No time set"
 	},
 	"account": {
-		"delete": "Delete account"
+		"delete": "Delete account",
+		"connections": "Connections"
 	}
 }

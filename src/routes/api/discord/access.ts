@@ -14,19 +14,15 @@ export interface IDiscordAccessToken extends Record<string, string | number> {
 }
 
 export const get: RequestHandler = async ({ request }) => {
-	if (request.headers.has('cookie')) {
-		const cookieHeader = request.headers.get('cookie');
+	const cookieHeader = request.headers.get('cookie');
+	const cookies = cookie.parse(cookieHeader ?? '');
+	const decoded = Jwt.decode(cookies['discord_token']);
+	const token = decoded['access_token'] as string;
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const cookies = cookie.parse(cookieHeader!);
-
-		const decoded = Jwt.decode(cookies['discord_token'])
-	
-		if(decoded && typeof decoded === "object" && !Buffer.isBuffer(decoded) && decoded.hasOwnProperty("access_token")) {
-			return {
-				status: 200
-			};
-		}
+	if (token) {
+		return {
+			status: 200
+		};
 	}
 
 	const env = Env.load();
@@ -49,8 +45,7 @@ export const get: RequestHandler = async ({ request }) => {
 
 	try {
 		const token = await client.tokenRequest({
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			code: code!,
+			code: code ?? '',
 			grantType: 'authorization_code',
 			redirectUri: env['DISCORD_REDIRECT_URI'],
 			clientId: env['DISCORD_CLIENT_ID'],
@@ -68,21 +63,17 @@ export const get: RequestHandler = async ({ request }) => {
 				httpOnly: true,
 				sameSite: 'strict',
 				secure: !dev,
-				path: "/api/"
+				path: '/api/'
 			}
 		);
 
-		const userIdCookie = cookie.serialize(
-			'user_id',
-			Jwt.encode({ user_id: user.id }),
-			{
-				expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
-				httpOnly: true,
-				sameSite: 'lax',
-				secure: !dev,
-				path: "/api/"
-			}
-		);
+		const userIdCookie = cookie.serialize('user_id', Jwt.encode({ user_id: user.id }), {
+			expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
+			httpOnly: true,
+			sameSite: 'none', // !! same-site 'lax' has poor standards, and varies per browser
+			secure: !dev,
+			path: '/api/'
+		});
 
 		const headers = new Headers();
 

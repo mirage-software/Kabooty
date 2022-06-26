@@ -3,7 +3,6 @@ import OAuth from 'discord-oauth2';
 import { Env } from '../../../env';
 import cookie from 'cookie';
 import { Prisma } from '../../../database/prisma';
-import { dev } from '$app/env';
 import { Jwt } from '../../../jwt';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
@@ -44,22 +43,12 @@ export async function getUser(token: string) {
 }
 
 export const get: RequestHandler = async ({ request }) => {
-	let token;
+	const cookieHeader = request.headers.get('cookie');
+	const cookies = cookie.parse(cookieHeader ?? '');
+	const decoded = Jwt.decode(cookies['discord_token']);
+	const token = decoded['access_token'] as string;
 
-	if (request.headers.has('cookie')) {
-		const cookieHeader = request.headers.get('cookie');
-
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const cookies = cookie.parse(cookieHeader!);
-
-		const decoded = Jwt.decode(cookies['discord_token'])
-
-		if(decoded && typeof decoded === "object" && !Buffer.isBuffer(decoded) && decoded.hasOwnProperty("access_token")) {
-			token = decoded.access_token;
-		}
-	}
-
-	if (!token || typeof token !== "string") {
+	if (!token) {
 		return {
 			status: 401
 		};

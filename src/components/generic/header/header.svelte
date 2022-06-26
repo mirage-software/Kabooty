@@ -55,12 +55,16 @@
 			align-items: center;
 			justify-content: space-between;
 
+			position: relative;
+
 			#decoration {
 				position: absolute;
 				height: $header-height;
 				width: 100%;
 				overflow: hidden;
 				max-width: $max-width;
+
+				top: 0;
 
 				display: flex;
 				justify-content: space-between;

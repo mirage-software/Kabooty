@@ -46,50 +46,52 @@
 	<title>Endless Mirage — Your one stop shop for GFX & Collabs</title>
 </svelte:head>
 
-<div id="body">
-	<Header />
-	<div id="background">
-		<div id="content">
-			<slot />
-		</div>
-	</div>
+<Header />
+<div id="background" />
+
+<div id="content">
+	<slot />
 </div>
 
 <style lang="scss">
 	#body {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-
 		position: absolute;
-		top: 0;
+
 		left: 0;
 		right: 0;
+		top: 0;
 		bottom: 0;
+
+		display: flex;
+		flex-direction: column;
+
+		min-height: 100%;
 
 		// helps with dev tools
 		z-index: -2;
-
-		height: 100%;
 	}
 
 	#content {
+		// position: absolute;
+
+		left: 0;
+		right: 0;
+
+		bottom: 0;
+
 		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: flex-start;
+		min-height: 100%;
 	}
 
 	#background {
+		position: fixed;
 		background: $content-background;
+
+		top: 0;
+
 		width: 100%;
 		height: 100%;
 
 		z-index: -1;
-
-		display: flex;
-		justify-content: center;
 	}
 </style>

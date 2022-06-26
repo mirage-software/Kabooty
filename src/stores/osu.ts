@@ -1,14 +1,8 @@
+import type { Osu, OsuMode } from '@prisma/client';
 import axios from 'axios';
 import { writable } from 'svelte/store';
 
-export interface IOsuUser {
-	id: string;
-	username: string;
-	country: string;
-	rank: number;
-	countryRank: number;
-	gamemode: "osu" | "mania" | "taiko" | "fruits"
-}
+export type IOsuUser = Osu & { modes: OsuMode[] };
 
 function createOsuUserStore() {
 	const userStore = writable<IOsuUser | undefined>(undefined);
@@ -19,9 +13,8 @@ function createOsuUserStore() {
 			userStore.set(user);
 		},
 		fetch: async () => {
-			const data = (await axios.get("/api/osu/user")).data as IOsuUser;
+			const data = (await axios.get('/api/osu/user')).data as IOsuUser;
 			osu.update(data);
-			return data;
 		}
 	};
 }

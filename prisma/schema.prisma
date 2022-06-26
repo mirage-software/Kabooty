@@ -15,28 +15,40 @@ model User {
   username      String
   discriminator String
   roles         String[]
-  osu           OsuUser?
+  osu           Osu?
   collab        Collab[]
   pick          Pick[]
   participant   Participant[]
 }
 
-model OsuUser {
-  id          String @id
-  user        User   @relation(fields: [discordId], references: [discordId], onDelete: Cascade)
-  discordId   String @unique
-  username    String
-  country     String
-  rank        Int?
-  countryRank Int?
-  gamemode    Gamemode?
+model Osu {
+  id         String    @id @unique
+  user       User      @relation(fields: [discordId], references: [discordId], onDelete: Cascade)
+  discordId  String    @unique
+  username   String
+  country    String
+  avatar     String
+  restricted Boolean   @default(false)
+  modes      OsuMode[]
 }
 
-enum Gamemode {
-  fruits
-  mania
-  osu
-  taiko
+model OsuMode {
+  id            String    @id @default(cuid())
+  user          Osu       @relation(fields: [osuId], references: [id], onDelete: Cascade)
+  osuId         String
+  gamemode      String
+  rank          Int?
+  countryRank   Int?
+  level         Int?
+  pp            Int?
+  rankedScore   Int?
+  hitAccuracy   Decimal?
+  playCount     Int?
+  playTime      Int?
+  lastRefreshed DateTime?
+  selected      Boolean
+
+  @@unique([osuId, gamemode])
 }
 
 model Collab {

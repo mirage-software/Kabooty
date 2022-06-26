@@ -11,22 +11,21 @@ export interface IDiscordAccessToken extends Record<string, string | number> {
 }
 
 export const get: RequestHandler = async ({ request }) => {
-	let token;
+	const cookieHeader = request.headers.get('cookie');
+	const cookies = cookie.parse(cookieHeader ?? '');
 
-	if (request.headers.has('cookie')) {
-		const cookieHeader = request.headers.get('cookie');
+	let token: string;
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const cookies = cookie.parse(cookieHeader!);
-
-		const decoded = Jwt.decode(cookies['discord_token'])
-
-		if(decoded && typeof decoded === "object" && !Buffer.isBuffer(decoded) && decoded.hasOwnProperty("access_token")) {
-			token = decoded.access_token;
-		}
+	try {
+		const decoded = Jwt.decode(cookies['discord_token']);
+		token = decoded['access_token'] as string;
+	} catch (error) {
+		return {
+			status: 401
+		};
 	}
 
-	if (!token || typeof token !== "string") {
+	if (!token) {
 		return {
 			body: {
 				authenticated: false

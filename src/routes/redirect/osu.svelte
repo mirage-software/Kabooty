@@ -6,33 +6,24 @@
 	import { onMount } from 'svelte';
 	import Error from '../error.svelte';
 	import Loading from '../../components/generic/design/loading_spinner.svelte';
-	import axios, { AxiosError } from 'axios';
+	import axios from 'axios';
 
 	let error: string | undefined | null;
 
 	onMount(async () => {
-        const jwtoken = $page.url.searchParams.get('state');
-		if (jwtoken) {
+		try {
 			const code = $page.url.searchParams.get('code');
-			if(code) {
-				try {
-					await axios.get('/api/osu/access', {
-						headers: {
-							Authorization: code+"|"+jwtoken
-						}
-					});
 
-					goto('/profile');
-				} catch (e) {
-					error = (e as AxiosError).message;
+			await axios.get('/api/osu/access', {
+				headers: {
+					Authorization: code ?? ''
 				}
-			} else {
-				error = 'invalid_code';
-			}
-			
-		} else {
-            error = "no_state";
-        }
+			});
+
+			goto('/profile');
+		} catch (_) {
+			error = 'invalid_code';
+		}
 	});
 </script>
 

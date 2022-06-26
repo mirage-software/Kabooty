@@ -8,9 +8,9 @@
 
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import axios from 'axios';
+	import Connections from '../../components/profile/connections.svelte';
 
 	onMount(async () => {
-		await osu.fetch();
 		const result = await axios.get('/api/discord/authenticated');
 
 		if (!result.data.authenticated) {
@@ -19,9 +19,9 @@
 	});
 </script>
 
-<div id="column">
-	<div id="discord">
-		{#if $discord}
+{#if $discord}
+	<div id="column">
+		<div id="discord">
 			<div id="user">
 				<div id="discord-stats">
 					<img id="avatar" src={getDiscordProfilePicture($discord)} alt="Discord avatar" />
@@ -40,32 +40,17 @@
 						</div>
 					</div>
 				</div>
-				<div id="buttons">
-					{#if $osu}
-						<div id="stats">
-							<p>username: {$osu.username}</p>
-							<p>gamemode: {$osu.gamemode}</p>
-							<p>country: {$osu.country}</p>
-							<p>global rank: {$osu.rank}</p>
-							<p>country rank: {$osu.countryRank}</p>
-							<p>your id: {$osu.id}</p>
-						</div>
-					{:else}
-						<SolidButton click={async () => {
-							const state = await axios.get('/api/osu/authorize');
-							goto(state.data.url);
-						}} color="green" string="osu.connect" />
-					{/if}
-					<!-- TODO: move delete to bottom of page -->
-					<SolidButton click={() => goto('/')} color="red" string="account.delete" />
-				</div>
 			</div>
-		{/if}
+		</div>
+		<div id="content">
+			<Connections />
+			<div id="buttons">
+				<!-- TODO: move delete to bottom of page -->
+				<SolidButton click={() => goto('/')} color="red" string="account.delete" />
+			</div>
+		</div>
 	</div>
-	<div id="stats">
-		<!--  -->
-	</div>
-</div>
+{/if}
 
 <style lang="scss">
 	#column {
@@ -78,8 +63,8 @@
 		#discord {
 			width: 100%;
 
-			background-color: #5d3432;
-			box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.08);
+			background-color: $card-color;
+			box-shadow: $box-shadow;
 
 			display: flex;
 			flex-direction: row;
@@ -91,12 +76,21 @@
 
 				display: flex;
 				flex-direction: row;
-				justify-content: space-between;
+				justify-content: center;
 				align-items: flex-end;
+
+				@media (min-width: $breakpoint-xs) {
+					justify-content: space-between;
+				}
 
 				#discord-stats {
 					display: flex;
 					align-items: flex-end;
+					flex-direction: column;
+
+					@media (min-width: $breakpoint-xs) {
+						flex-direction: row;
+					}
 
 					#avatar {
 						height: 160px;
@@ -114,7 +108,14 @@
 						gap: calc($margin-xs / 2);
 
 						margin: $margin-m;
+						margin-top: 0;
 						margin-left: $margin-s;
+						align-items: center;
+
+						@media (min-width: $breakpoint-xs) {
+							margin-top: unset;
+							align-items: flex-start;
+						}
 
 						.stat {
 							display: flex;
@@ -135,16 +136,27 @@
 						}
 					}
 				}
+			}
+		}
 
-				#buttons {
-					display: flex;
-					flex-direction: row;
-					justify-content: space-between;
-					align-items: flex-end;
-					gap: $margin-s;
+		#content {
+			width: 100%;
+			max-width: $max-width + $margin-s * 2;
 
-					margin: $margin-m;
-				}
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: flex-start;
+
+			#buttons {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: flex-end;
+				gap: $margin-s;
+
+				margin: $margin-m;
+				margin-top: $margin-l;
 			}
 		}
 	}

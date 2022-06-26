@@ -4,10 +4,30 @@
 	export let string: string;
 	export let decoration: string | undefined = undefined;
 	export let color: 'green' | 'blue' | 'red' = 'green';
-	export let click: () => void;
+	export let disabled = false;
+	export let click: () => Promise<void>;
+
+	let loading = false;
 </script>
 
-<button on:click={click} class={color}>
+<button
+	on:click={async () => {
+		if (disabled || loading) {
+			return;
+		}
+
+		loading = true;
+
+		try {
+			await click();
+		} catch (error) {
+			console.error(error);
+		}
+
+		loading = false;
+	}}
+	class="{color} {disabled || loading ? 'disabled' : ''}"
+>
 	<p>{$t(string)}</p>
 	{#if decoration}
 		<!-- svelte-ignore a11y-missing-attribute -->
@@ -38,6 +58,22 @@
 
 	button:hover.blue {
 		background-color: darken($blue, 5%);
+	}
+
+	button.disabled.green {
+		background-color: darken($green, 10%);
+	}
+
+	button.disabled.red {
+		background-color: darken($red, 15%);
+	}
+
+	button.disabled.blue {
+		background-color: darken($blue, 10%);
+	}
+
+	.disabled {
+		cursor: default !important;
 	}
 
 	button {

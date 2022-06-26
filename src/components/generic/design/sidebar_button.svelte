@@ -8,20 +8,12 @@
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
 
-	let active = false;
-
-	onMount(async () => {
-		if ($page.url.pathname === route) {
-			active = true;
-		}
-	});
-
 	function click() {
 		goto(route);
 	}
 </script>
 
-<button on:click={click} class={active ? 'active' : 'inactive'}>
+<button on:click={click} class={$page.url.pathname === route ? 'active' : 'inactive'}>
 	<div id="active" />
 	<i id="icon" class="las la-{icon}" />
 	<p>{$t('header.' + string)}</p>
