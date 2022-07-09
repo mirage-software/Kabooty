@@ -72,7 +72,8 @@
 	}
 
 	#content {
-		// position: absolute;
+		display: flex;
+		justify-content: center;
 
 		left: 0;
 		right: 0;
