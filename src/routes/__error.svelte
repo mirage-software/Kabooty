@@ -2,6 +2,8 @@
 	/** @type {import('@sveltejs/kit').Load} */
 	// @ts-ignore
 	export function load({ error, status }) {
+		console.error(error);
+
 		return {
 			props: {
 				status: status,

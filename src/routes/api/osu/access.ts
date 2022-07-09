@@ -12,8 +12,8 @@ export interface IOsuAccessToken extends Record<string, string | number> {
 	refresh_token: string;
 }
 
-async function getOsuUser(access_token: string) {
-	const request = await axios.get(`https://osu.ppy.sh/api/v2/me/osu`, {
+export async function getOsuUser(access_token: string, gamemode: string) {
+	const request = await axios.get(`https://osu.ppy.sh/api/v2/me/${gamemode}`, {
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
@@ -59,7 +59,9 @@ export const get: RequestHandler = async ({ request }) => {
 
 		const data = response.data as IOsuAccessToken;
 
-		const user = await getOsuUser(data.access_token);
+		const expiresAt = new Date(Date.now() + data.expires_in * 1000);
+
+		const user = await getOsuUser(data.access_token, 'osu');
 
 		await Prisma.client.osu.upsert({
 			where: {
@@ -71,7 +73,10 @@ export const get: RequestHandler = async ({ request }) => {
 				avatar: user.avatar_url,
 				username: user.username,
 				discordId: userId,
-				restricted: user.is_restricted
+				restricted: user.is_restricted,
+				expires_at: expiresAt,
+				access_token: data.access_token,
+				refresh_token: data.refresh_token
 			},
 			create: {
 				id: user.id.toString(),
@@ -79,7 +84,10 @@ export const get: RequestHandler = async ({ request }) => {
 				avatar: user.avatar_url,
 				username: user.username,
 				discordId: userId,
-				restricted: user.is_restricted
+				restricted: user.is_restricted,
+				expires_at: expiresAt,
+				access_token: data.access_token,
+				refresh_token: data.refresh_token
 			}
 		});
 

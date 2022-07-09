@@ -22,14 +22,17 @@ model User {
 }
 
 model Osu {
-  id         String    @id @unique
-  user       User      @relation(fields: [discordId], references: [discordId], onDelete: Cascade)
-  discordId  String    @unique
-  username   String
-  country    String
-  avatar     String
-  restricted Boolean   @default(false)
-  modes      OsuMode[]
+  id            String    @id @unique
+  user          User      @relation(fields: [discordId], references: [discordId], onDelete: Cascade)
+  discordId     String    @unique
+  username      String
+  country       String
+  avatar        String
+  restricted    Boolean   @default(false)
+  access_token  String?
+  refresh_token String?
+  expires_at    DateTime?
+  modes         OsuMode[]
 }
 
 model OsuMode {
