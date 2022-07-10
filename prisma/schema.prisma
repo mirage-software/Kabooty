@@ -14,11 +14,30 @@ model User {
   discordId     String        @id
   username      String
   discriminator String
-  roles         String[]
+  avatar        String?
+  joinedAt      DateTime?
+  lastUpdated   DateTime?
+  roles         UserRole[]
   osu           Osu?
   collab        Collab[]
   pick          Pick[]
   participant   Participant[]
+}
+
+model UserRole {
+  user          User        @relation(fields: [userDiscordId], references: [discordId])
+  role          DiscordRole @relation(fields: [discordRoleId], references: [id])
+  userDiscordId String
+  discordRoleId String
+
+  @@unique([userDiscordId, discordRoleId])
+}
+
+model DiscordRole {
+  id       String     @id
+  name     String
+  display  Boolean    @default(false)
+  UserRole UserRole[]
 }
 
 model Osu {

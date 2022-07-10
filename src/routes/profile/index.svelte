@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	import { osu } from '../../stores/osu';
-	import { discord, getDiscordProfilePicture } from '../../stores/discord';
+	import { discord, getDiscordProfilePicture, getFormattedDate } from '../../stores/discord';
 
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import axios from 'axios';
@@ -30,14 +30,24 @@
 							<i class="las la-user" />
 							<p>{$discord.username + '#' + $discord.discriminator}</p>
 						</div>
-						<div class="stat">
-							<i class="las la-calendar" />
-							<p>Joined 06-04-2000</p>
-						</div>
-						<div class="stat">
-							<i class="las la-tags" />
-							<p>Roles</p>
-						</div>
+						{#if $discord.joinedAt}
+							<div class="stat">
+								<i class="las la-calendar" />
+								<p>Joined {getFormattedDate($discord.joinedAt.toString())}</p>
+							</div>
+						{/if}
+						{#if $discord.roles && $discord.roles.length > 0}
+							<div class="stat">
+								<i class="las la-tags roleicon" />
+								<div id="roles">
+									{#each $discord.roles as role}
+										<div id="role">
+											<p>{role.name}</p>
+										</div>
+									{/each}
+								</div>
+							</div>
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -85,11 +95,12 @@
 
 				#discord-stats {
 					display: flex;
-					align-items: flex-end;
+					align-items: center;
 					flex-direction: column;
 
 					@media (min-width: $breakpoint-xs) {
 						flex-direction: row;
+						align-items: flex-end;
 					}
 
 					#avatar {
@@ -105,7 +116,7 @@
 						flex-direction: column;
 						justify-content: flex-end;
 
-						gap: calc($margin-xs / 2);
+						gap: $margin-xs;
 
 						margin: $margin-m;
 						margin-top: 0;
@@ -115,13 +126,14 @@
 						@media (min-width: $breakpoint-xs) {
 							margin-top: unset;
 							align-items: flex-start;
+							margin-top: $margin-m;
 						}
 
 						.stat {
 							display: flex;
 							flex-direction: row;
 
-							align-items: center;
+							align-items: flex-start;
 
 							p {
 								padding: 0;
@@ -129,9 +141,57 @@
 								margin-left: $margin-s;
 							}
 
+							#roles {
+								display: flex;
+								flex-wrap: wrap;
+
+								max-width: 200px;
+
+								justify-content: center;
+
+								margin-top: $margin-s;
+
+								@media (min-width: $breakpoint-xs) {
+									margin-top: unset;
+									max-width: unset;
+									justify-content: start;
+								}
+
+								gap: $margin-xs;
+
+								margin-left: $margin-s;
+
+								#role {
+									background-color: $dark-overlay;
+
+									border-radius: 50px;
+									border: solid 1px $dark-overlay;
+
+									p {
+										margin: 0;
+
+										font-size: 12px;
+										font-weight: 700;
+										color: white;
+
+										padding: $margin-xs / 4;
+										padding-left: $margin-xs;
+										padding-right: $margin-xs;
+									}
+								}
+							}
+
 							i {
 								font-size: 16pt;
 								color: white;
+							}
+
+							i.roleicon {
+								display: none;
+
+								@media (min-width: $breakpoint-xs) {
+									display: inline;
+								}
 							}
 						}
 					}

@@ -1,14 +1,23 @@
 import { writable } from 'svelte/store';
-
-export interface IDiscordUser {
-	id: string;
-	username: string;
-	discriminator: string;
-	avatar: string;
-}
+import type { IDiscordUser } from '../database/discord_user';
 
 export function getDiscordProfilePicture(user: IDiscordUser) {
-	return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+	if (user.avatar) {
+		return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+	} else {
+		const lastDigit = user.discriminator.slice(-1);
+		const image = parseInt(lastDigit, 10) % 5;
+
+		return `https://cdn.discordapp.com/embed/avatars/${image}.png`;
+	}
+}
+
+export function getFormattedDate(date: string) {
+	const options = {
+		timeZone: 'UTC'
+	};
+
+	return new Date(date).toLocaleDateString(navigator.language, options);
 }
 
 function createDiscordUserStore() {
