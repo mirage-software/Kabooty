@@ -3,10 +3,23 @@ services:
   kabooty:
     build: .
     ports:
-      - "80:3000"
+      - "3000:3000"
     volumes:
       - data:/kabooty
     env_file:
       - stack.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kabooty.entrypoints=http"
+      - "traefik.http.routers.kabooty.rule=Host(`endlessmirage.net`)"
+      - "traefik.http.middlewares.kabooty-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.kabooty.middlewares=kabooty-https-redirect"
+      - "traefik.http.routers.kabooty-secure.entrypoints=https"
+      - "traefik.http.routers.kabooty-secure.rule=Host(`endlessmirage.net`)"
+      - "traefik.http.routers.kabooty-secure.tls=true"
+      - "traefik.http.routers.kabooty-secure.tls.certresolver=http"
+      - "traefik.http.routers.kabooty-secure.service=kabooty"
+      - "traefik.http.services.kabooty.loadbalancer.server.port=3000"
+      - "traefik.docker.network=proxy"
 volumes:
   data: {}
