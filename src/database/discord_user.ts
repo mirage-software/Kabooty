@@ -9,6 +9,7 @@ export interface IDiscordUser {
 	username: string;
 	discriminator: string;
 	avatar: string | null | undefined;
+	admin: boolean;
 	joinedAt: Date | string | null | undefined;
 	roles: IDiscordRole[];
 }

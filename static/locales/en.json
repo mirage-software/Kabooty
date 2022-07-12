@@ -7,6 +7,10 @@
 	"errors": {
 		"title": "Oopsie woopsie!",
 		"unknown": "An unknown error has occurred.",
+		"construction": {
+			"title": "This page is still under construction.",
+			"body": "Please check back soon."
+		},
 		"discord": {
 			"access_denied": "While signing in you denied access to your Discord account.<br>In order to sign in, you need to allow access to your Discord account.<br>In case you denied access out of concern for your account, we do not do anything to your account without giving us your explicit permission.",
 			"invalid_code": "Something went wrong while signing in. The code provided by Discord is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us."
@@ -25,8 +29,34 @@
 		"unranked": "Unranked",
 		"no_time": "No time set"
 	},
+	"file": {
+		"upload": "Upload file"
+	},
 	"account": {
 		"delete": "Delete account",
 		"connections": "Connections"
+	},
+	"collabs": {
+		"title": "Collabs",
+		"create": "Create collab",
+		"update": "Update collab",
+		"ongoing": "Ongoing",
+		"upload_logo": "Upload logo",
+		"register": "Register",
+		"manage": {
+			"name": "Name",
+			"topic": "Topic",
+			"logo": "Upload logo",
+			"filereqs": "Note, a maximum file size of 1MB is allowed. Minimum dimensions are 300x100 pixels.",
+			"delete": "Delete"
+		},
+		"status": {
+			"EARLY_ACCESS": "Early Access",
+			"DESIGN": "Design in Progress",
+			"OPEN": "Registration Open",
+			"BUMP": "Bump Period",
+			"RELEASE": "Released",
+			"CLOSED": "Closed"
+		}
 	}
 }

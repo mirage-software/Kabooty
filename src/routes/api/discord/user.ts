@@ -6,6 +6,7 @@ import { Prisma } from '../../../database/prisma';
 import { Jwt } from '../../../jwt';
 import type { IDiscordUser } from '../../../database/discord_user';
 import { DiscordBot } from '../../../bot/discord';
+import { isAdmin } from '../../../database/is_admin';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -63,6 +64,7 @@ export async function getUser(token: string, userId: string) {
 				discriminator: guildUser.user.discriminator,
 				avatar: guildUser.user.avatar,
 				joinedAt: guildUser.joinedAt,
+				admin: false,
 				roles: roles
 			};
 		} catch (error) {
@@ -79,6 +81,7 @@ export async function getUser(token: string, userId: string) {
 			discriminator: discord.discriminator,
 			avatar: discord.avatar,
 			joinedAt: undefined,
+			admin: false,
 			roles: []
 		};
 	}
@@ -169,14 +172,13 @@ export async function getUser(token: string, userId: string) {
 		discriminator: response.discriminator,
 		avatar: response.avatar,
 		joinedAt: response.joinedAt,
+		admin: await isAdmin(userId),
 		roles: response.roles.map((role) => ({
 			id: role.role.id,
 			name: role.role.name,
 			display: role.role.display
 		}))
 	};
-
-	console.log(transformed);
 
 	return transformed;
 }

@@ -1,0 +1,147 @@
+import type { RequestHandler } from '@sveltejs/kit';
+import cookie from 'cookie';
+import { getUser } from '../../discord/user';
+import { Jwt } from '../../../../jwt';
+import { Prisma } from '../../../../database/prisma';
+import type { Collab } from '@prisma/client';
+
+export const get: RequestHandler = async ({ params }) => {
+	const collab = await Prisma.client.collab.findUnique({
+		where: {
+			id: params.id
+		}
+	});
+
+	if (!collab) {
+		return {
+			status: 404,
+			body: {
+				message: 'Collab not found'
+			}
+		};
+	}
+
+	return {
+		status: 200,
+		body: collab
+	};
+};
+
+export const put: RequestHandler = async ({ request, params }) => {
+	const cookieHeader = request.headers.get('cookie');
+	const cookies = cookie.parse(cookieHeader ?? '');
+	const decoded = Jwt.decode(cookies['discord_token']);
+	const token = decoded['access_token'] as string;
+
+	const decodedUser = Jwt.decode(cookies['user_id']);
+	const userId = decodedUser['user_id'] as string;
+
+	if (!token) {
+		return {
+			status: 401
+		};
+	}
+
+	const user = await getUser(token, userId);
+
+	if (!user || !user.admin) {
+		return {
+			status: 403
+		};
+	}
+
+	const collab = await Prisma.client.collab.findUnique({
+		where: {
+			id: params.id
+		}
+	});
+
+	if (!collab) {
+		return {
+			status: 404,
+			body: {
+				message: 'Collab not found'
+			}
+		};
+	}
+
+	const body: Collab = await request.json();
+
+	try {
+		const updated = await Prisma.client.collab.update({
+			where: {
+				id: params.id
+			},
+			data: {
+				topic: body.topic,
+				title: body.title
+			}
+		});
+
+		return {
+			status: 200,
+			body: updated
+		};
+	} catch (error) {
+		return {
+			status: 400
+		};
+	}
+};
+
+export const del: RequestHandler = async ({ request, params }) => {
+	// TODO: delete images
+
+	const cookieHeader = request.headers.get('cookie');
+	const cookies = cookie.parse(cookieHeader ?? '');
+	const decoded = Jwt.decode(cookies['discord_token']);
+	const token = decoded['access_token'] as string;
+
+	const decodedUser = Jwt.decode(cookies['user_id']);
+	const userId = decodedUser['user_id'] as string;
+
+	if (!token) {
+		return {
+			status: 401
+		};
+	}
+
+	const user = await getUser(token, userId);
+
+	if (!user || !user.admin) {
+		return {
+			status: 403
+		};
+	}
+
+	const collab = await Prisma.client.collab.findUnique({
+		where: {
+			id: params.id
+		}
+	});
+
+	if (!collab) {
+		return {
+			status: 404,
+			body: {
+				message: 'Collab not found'
+			}
+		};
+	}
+
+	try {
+		await Prisma.client.collab.delete({
+			where: {
+				id: params.id
+			}
+		});
+
+		return {
+			status: 200
+		};
+	} catch (error) {
+		return {
+			status: 500
+		};
+	}
+};
