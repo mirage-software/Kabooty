@@ -17,4 +17,4 @@ COPY --from=core /app/package-lock.json ./package-lock.json
 COPY --from=core /app/package.json ./package.json
 COPY --from=core /app/stack.env ./.env
 ENV NODE_ENV=production
-ENTRYPOINT ["npx", "prisma", "migrate", "deploy", "&&", "node", "build/index.js"]
+ENTRYPOINT ["npm", "run", "prod:start"]

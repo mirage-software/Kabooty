@@ -4,6 +4,7 @@
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"dev:host": "svelte-kit dev --host",
+		"prod:start": "prisma migrate deploy && node build/index.js",
 		"build": "npm run clean && svelte-kit build",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
