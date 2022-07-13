@@ -2,7 +2,7 @@ version: "3.9"  # optional since v1.27.0
 services:
   kabooty:
     build: .
-    image: kabooty/3 ## !!TODO: build version, triggers a deployment
+    image: kabooty/4 ## !!TODO: build version, triggers a deployment
     ports:
       - "3000:3000"
     volumes:
@@ -12,15 +12,19 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.kabooty.entrypoints=http"
-      - "traefik.http.routers.kabooty.rule=Host(`test.endlessmirage.net`)"
+      - "traefik.http.routers.kabooty.rule=Host(`endlessmirage.net`)"
       - "traefik.http.middlewares.kabooty-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.kabooty.middlewares=kabooty-https-redirect"
       - "traefik.http.routers.kabooty-secure.entrypoints=https"
-      - "traefik.http.routers.kabooty-secure.rule=Host(`test.endlessmirage.net`)"
+      - "traefik.http.routers.kabooty-secure.rule=Host(`endlessmirage.net`)"
       - "traefik.http.routers.kabooty-secure.tls=true"
       - "traefik.http.routers.kabooty-secure.tls.certresolver=http"
       - "traefik.http.routers.kabooty-secure.service=kabooty"
       - "traefik.http.services.kabooty.loadbalancer.server.port=3000"
       - "traefik.docker.network=proxy"
+networks:
+  default:
+    name: proxy
+    external: true
 volumes:
   data: {}
