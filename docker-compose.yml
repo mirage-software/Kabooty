@@ -2,7 +2,9 @@ version: "3.9"  # optional since v1.27.0
 services:
   kabooty:
     build: .
-    image: kabooty/2 ## !!TODO: build version, triggers a deployment
+    image: kabooty/3 ## !!TODO: build version, triggers a deployment
+    ports:
+      - "3000:3000"
     volumes:
       - data:/kabooty
     env_file:
