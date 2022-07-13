@@ -1,30 +1,24 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 
-	import { onMount } from 'svelte';
-
 	import { discord } from '../../stores/discord';
 
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
-	import axios from 'axios';
 	import PageTitle from '../../components/generic/design/page_title.svelte';
 	import Ongoing from '../../components/collabs/ongoing.svelte';
 </script>
 
-{#if $discord}
-	<div id="column">
-		<!-- <img src="/api/images/maxresdefault.jpg" alt="" /> -->
-		<div id="content">
-			<div id="title">
-				<PageTitle string="collabs.title" />
-				{#if $discord.admin}
-					<SolidButton click={() => goto('/collabs/new')} color="green" string="collabs.create" />
-				{/if}
-			</div>
-			<Ongoing />
+<div id="column">
+	<div id="content">
+		<div id="title">
+			<PageTitle string="collabs.title" />
+			{#if $discord?.admin}
+				<SolidButton click={() => goto('/collabs/new')} color="green" string="collabs.create" />
+			{/if}
 		</div>
+		<Ongoing />
 	</div>
-{/if}
+</div>
 
 <style lang="scss">
 	#column {

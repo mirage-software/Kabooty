@@ -47,7 +47,9 @@
 				</div>
 				<div id="info">
 					<div>
-						<h6>{$t('collabs.status.' + collab.status)}</h6>
+						{#if collab.status}
+							<h6>{$t('collabs.status.' + collab.status)}</h6>
+						{/if}
 						<h4>{collab.title}</h4>
 						<h5>{collab.topic}</h5>
 					</div>
@@ -109,8 +111,6 @@
 			img {
 				width: 100%;
 			}
-
-			margin-bottom: $margin-s;
 		}
 
 		#info {

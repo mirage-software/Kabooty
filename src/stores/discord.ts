@@ -27,6 +27,9 @@ function createDiscordUserStore() {
 		subscribe: userStore.subscribe,
 		update: (user: IDiscordUser) => {
 			userStore.set(user);
+		},
+		setRedirectUrl: (url: string) => {
+			localStorage.setItem('discord_page_redirect', url);
 		}
 	};
 }

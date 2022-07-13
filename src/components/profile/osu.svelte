@@ -34,7 +34,7 @@
 <div id="osu">
 	<!-- svelte-ignore a11y-missing-attribute -->
 	<img id="logo" src="/profile/osu.png" />
-	{#if !osuRequest && $osu}
+	{#if !osuRequest && $osu !== null && $osu !== undefined}
 		<div id="connection">
 			<img id="avatar" src={$osu.avatar} alt="osu! avatar" />
 
@@ -52,12 +52,12 @@
 				<LoadingSpinner />
 			</div>
 		{:else}
-			{#if $osu}
+			{#if $osu !== null && $osu !== undefined}
 				<Details />
 			{/if}
 
 			<div id="buttons">
-				{#if !$osu}
+				{#if $osu === null || $osu === undefined}
 					<SolidButton
 						click={async () => {
 							const state = await axios.get('/api/osu/authorize');

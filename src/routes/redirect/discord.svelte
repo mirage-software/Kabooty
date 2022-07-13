@@ -30,7 +30,14 @@
 					discord.update(user.data);
 				}
 
-				goto(localStorage.getItem('discord_page_redirect') ?? '/profile');
+				const redirect = localStorage.getItem('discord_page_redirect');
+
+				if (redirect) {
+					localStorage.removeItem('discord_page_redirect');
+					goto(redirect);
+				} else {
+					goto('/profile');
+				}
 			} catch (_) {
 				discordError = 'invalid_code';
 			}

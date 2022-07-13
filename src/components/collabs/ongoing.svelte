@@ -15,6 +15,16 @@
 
 <h2>{$t('collabs.ongoing')}</h2>
 <div id="ongoing">
+	{#if collabs.length === 0}
+		<div id="none">
+			<Card>
+				<div id="flex">
+					<i class="las la-flushed" />
+					<h2>{$t('collabs.no_ongoing')}</h2>
+				</div>
+			</Card>
+		</div>
+	{/if}
 	{#each collabs as collab}
 		<CollabCard {collab} />
 	{/each}
@@ -42,5 +52,33 @@
 		align-content: stretch;
 
 		align-items: stretch;
+
+		#none {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+
+			#flex {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+
+				gap: $margin-m;
+
+				padding: $margin-m;
+
+				i {
+					font-size: 40pt;
+					color: white;
+				}
+
+				h2 {
+					margin: 0;
+				}
+			}
+		}
 	}
 </style>

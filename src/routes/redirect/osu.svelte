@@ -20,7 +20,14 @@
 				}
 			});
 
-			goto('/profile');
+			const redirect = localStorage.getItem('osu_page_redirect');
+
+			if (redirect) {
+				localStorage.removeItem('osu_page_redirect');
+				goto(redirect);
+			} else {
+				goto('/profile');
+			}
 		} catch (_) {
 			error = 'invalid_code';
 		}

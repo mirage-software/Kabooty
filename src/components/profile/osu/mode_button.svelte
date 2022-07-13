@@ -4,8 +4,12 @@
 
 	async function updateGamemode() {
 		if ($osu && $osu.modes[0].gamemode !== icon) {
-			const user = await axios.get<IOsuUser>(`/api/osu/update/${icon}`);
-			osu.update(user.data);
+			try {
+				const user = await axios.get<IOsuUser>(`/api/osu/update/${icon}`);
+				osu.update(user.data);
+			} catch (error) {
+				osu.update(null);
+			}
 		}
 	}
 

@@ -35,6 +35,10 @@ export const get: RequestHandler = async ({ request }) => {
 		if (user) {
 			user.access_token = null;
 			user.refresh_token = null;
+		} else {
+			return {
+				status: 404
+			};
 		}
 
 		return {

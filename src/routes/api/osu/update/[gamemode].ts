@@ -217,10 +217,7 @@ export const get: RequestHandler = async ({ request, params }) => {
 		});
 
 		return {
-			status: 400,
-			body: {
-				error: 'Failed to get osu details'
-			}
+			status: 400
 		};
 	}
 };

@@ -41,6 +41,7 @@
 		"create": "Create collab",
 		"update": "Update collab",
 		"ongoing": "Ongoing",
+		"no_ongoing": "There are no ongoing collabs",
 		"upload_logo": "Upload logo",
 		"register": "Register",
 		"manage": {
