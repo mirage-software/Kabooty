@@ -20,6 +20,15 @@ export async function getOsuUser(access_token: string, gamemode: string) {
 			Authorization: `Bearer ${access_token}`
 		}
 	});
+
+	const user = request.data;
+
+	if (user?.statistics) {
+		if (user.statistics.ranked_score) {
+			user.statistics.ranked_score = user.statistics.ranked_score.toString();
+		}
+	}
+
 	return request.data;
 }
 
@@ -130,6 +139,8 @@ export const get: RequestHandler = async ({ request }) => {
 			status: 200
 		};
 	} catch (error) {
+		console.log(error);
+
 		return {
 			status: 500,
 			body: {

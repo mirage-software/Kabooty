@@ -3,14 +3,19 @@
 
 	import { osu } from '../../../stores/osu';
 
-	let playTime: string | undefined;
+	function getPlayTime(time: number | null | undefined) {
+		if (!time) {
+			return $t('osu.no_time');
+		}
 
-	if ($osu?.modes[0]?.playTime) {
-		const time = $osu?.modes[0]?.playTime;
 		const total = time / 60 / 60;
 		const hours = Math.floor(total);
 		const minutes = Math.floor((total - hours) * 60);
-		playTime = hours + 'h ' + minutes + 'm';
+		return hours + 'h ' + minutes + 'm';
+	}
+
+	function roundToTwoDecimalPoints(num: string) {
+		return parseFloat(num).toFixed(2);
 	}
 </script>
 
@@ -30,7 +35,7 @@
 	</div>
 	<div class="detail">
 		<p id="title">PP</p>
-		<p id="subtitle">{$osu?.modes[0]?.pp ?? 0}</p>
+		<p id="subtitle">{roundToTwoDecimalPoints(($osu?.modes[0]?.pp ?? 0).toString())}</p>
 	</div>
 	<div class="detail">
 		<p id="title">Ranked Score</p>
@@ -38,7 +43,9 @@
 	</div>
 	<div class="detail">
 		<p id="title">Hit Accuracy</p>
-		<p id="subtitle">{($osu?.modes[0]?.hitAccuracy ?? 0) + '%'}</p>
+		<p id="subtitle">
+			{roundToTwoDecimalPoints(($osu?.modes[0]?.hitAccuracy ?? 0).toString()) + '%'}
+		</p>
 	</div>
 	<div class="detail">
 		<p id="title">Play Count</p>
@@ -46,7 +53,9 @@
 	</div>
 	<div class="detail">
 		<p id="title">Play Time</p>
-		<p id="subtitle">{playTime ? playTime : $t('osu.no_time')}</p>
+		<p id="subtitle">
+			{getPlayTime($osu?.modes[0]?.playCount)}
+		</p>
 	</div>
 </div>
 
