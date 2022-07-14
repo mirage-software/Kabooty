@@ -62,7 +62,7 @@ model OsuMode {
   rank          Int?
   countryRank   Int?
   level         Int?
-  pp            Int?
+  pp            Float?
   rankedScore   Int?
   hitAccuracy   Decimal?
   playCount     Int?

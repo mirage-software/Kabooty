@@ -20,10 +20,7 @@ export async function getOsuUser(access_token: string, gamemode: string) {
 			Authorization: `Bearer ${access_token}`
 		}
 	});
-
-	// !! maybe this helps with special characters?
-	const user = JSON.stringify(request.data);
-	return JSON.parse(user);
+	return request.data;
 }
 
 export const get: RequestHandler = async ({ request }) => {
@@ -133,8 +130,6 @@ export const get: RequestHandler = async ({ request }) => {
 			status: 200
 		};
 	} catch (error) {
-		console.error(error);
-
 		return {
 			status: 500,
 			body: {
