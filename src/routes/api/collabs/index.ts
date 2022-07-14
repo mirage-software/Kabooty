@@ -24,16 +24,12 @@ export const post: RequestHandler = async ({ request }) => {
 	const decodedUser = Jwt.decode(cookies['user_id']);
 	const userId = decodedUser['user_id'] as string;
 
-	console.log('test1');
-
 	try {
 		if (!token) {
 			return {
 				status: 401
 			};
 		}
-
-		console.log('test2');
 
 		const user = await getUser(token, userId);
 
@@ -43,11 +39,7 @@ export const post: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		console.log('test3');
-
 		const body: Collab = await request.json();
-
-		console.log('test4');
 
 		const collab = await Prisma.client.collab.create({
 			data: {
@@ -56,19 +48,16 @@ export const post: RequestHandler = async ({ request }) => {
 				status: CollabStatus.EARLY_ACCESS,
 				creatorId: userId,
 				title: body.title,
-				topic: body.topic
+				topic: body.topic,
+				rules: body.rules === '' ? null : body.rules
 			}
 		});
-
-		console.log('test5');
 
 		return {
 			status: 200,
 			body: collab
 		};
 	} catch (error) {
-		console.log(error);
-
 		return {
 			status: 400
 		};

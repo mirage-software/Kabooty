@@ -63,6 +63,9 @@ export const get: RequestHandler = async ({ request }) => {
 
 		const user = await getOsuUser(data.access_token, 'osu');
 
+		// TODO: remove after debugging
+		console.log(user);
+
 		await Prisma.client.osu.upsert({
 			where: {
 				id: user.id.toString()

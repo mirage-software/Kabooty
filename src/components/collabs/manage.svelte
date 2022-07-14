@@ -67,12 +67,20 @@
 						width={300}
 						height={100}
 						onDataUrl={(data) => (image = data)}
-						onBuffer={(buffer, filename) => {
+						onBuffer={(buffer, _) => {
 							imageBuffer = buffer;
-							filename = filename;
+							filename = _;
 						}}
 					/>
 					<p id="filereqs">{$t('collabs.manage.filereqs')}</p>
+				</div>
+				<div id="rules">
+					<InputText
+						bind:value={collab.rules}
+						multiline={true}
+						title={'collabs.manage.rules'}
+						hint={'- No cheese allowed\n- User must have played with barbie dolls at least once'}
+					/>
 				</div>
 			</div>
 			<SolidButton
@@ -143,6 +151,11 @@
 				margin: 0;
 
 				width: 100%;
+
+				#rules {
+					margin-top: $margin-m;
+					width: 100%;
+				}
 
 				#logo {
 					display: flex;

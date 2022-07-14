@@ -4,12 +4,27 @@
 	export let title = 'title';
 	export let hint = 'hint';
 
-	export let value: string = '';
+	export let value: string | null | undefined = '';
+
+	export let multiline: boolean = false;
+
+	export let max: number | null | undefined = null;
 </script>
 
 <div>
 	<h6>{$t(title)}</h6>
-	<input type="text" name={$t(title)} id="input" placeholder={$t(hint)} bind:value />
+	{#if multiline}
+		<textarea name={$t(title)} id="input" placeholder={$t(hint)} bind:value />
+	{:else}
+		<input
+			type="text"
+			maxlength={max}
+			name={$t(title)}
+			id="input"
+			placeholder={$t(hint)}
+			bind:value
+		/>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -24,7 +39,8 @@
 		width: 100%;
 		max-width: 400px;
 
-		input {
+		input,
+		textarea {
 			border: none;
 			background-color: $dark-overlay;
 			color: white;
@@ -37,11 +53,18 @@
 
 			border-radius: $border-radius-s;
 
+			resize: none;
+
 			width: calc(100% - $margin-s * 2);
 
 			:active {
 				border: 1px solid $dark-overlay;
 			}
+		}
+
+		textarea {
+			overflow: scroll;
+			height: 200px;
 		}
 
 		:focus {

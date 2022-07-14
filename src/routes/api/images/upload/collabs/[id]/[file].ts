@@ -68,6 +68,17 @@ export const post: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
+	const extension = path.extname(params.file);
+
+	if (!extension) {
+		return {
+			status: 400,
+			body: {
+				message: 'Invalid file extension'
+			}
+		};
+	}
+
 	const buffer = Buffer.from(blob);
 
 	const file = params.id + path.extname(params.file);

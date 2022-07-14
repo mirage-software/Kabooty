@@ -14,8 +14,6 @@
 	const onFileSelected = (e: any) => {
 		let image = e.target.files[0];
 
-		console.log(image);
-
 		if (image.size > maxBytes) {
 			alert('File is too large');
 			return;
@@ -34,8 +32,6 @@
 			const filename = image.name;
 
 			if (result) {
-				console.log(e.target);
-
 				onBuffer(result, filename);
 			}
 		};

@@ -7,6 +7,7 @@
 	import Error from '../error.svelte';
 	import Loading from '../../components/generic/design/loading_spinner.svelte';
 	import axios from 'axios';
+	import { osu } from '../../stores/osu';
 
 	let error: string | undefined | null;
 
@@ -19,6 +20,8 @@
 					Authorization: code ?? ''
 				}
 			});
+
+			await osu.fetch();
 
 			const redirect = localStorage.getItem('osu_page_redirect');
 

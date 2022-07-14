@@ -3,20 +3,47 @@ import { Prisma } from '../../../../database/prisma';
 import cookie from 'cookie';
 import { Jwt } from '../../../../jwt';
 import { getUser } from '../../discord/user';
-import { CollabStatus } from '@prisma/client';
+import { CollabStatus, type Collab } from '@prisma/client';
 import type { IDiscordUser } from '../../../../database/discord_user';
 
 // TODO: move this into the database rather than the codebase
 function hasEarlyAccess(user: IDiscordUser): boolean {
 	const roles: { [key: string]: Date } = {
-		'1244o5768365837824': new Date(2022, 7, 15),
-		'1244357683658e7824': new Date(2022, 7, 15)
+		'861679323739717642': new Date(2022, 7, 15),
+		'994409775691472937': new Date(2022, 7, 15),
+		'787723186556108840': new Date(2022, 7, 17),
+		'723175697987666010': new Date(2022, 7, 17),
+		'787388721255153694': new Date(2022, 7, 19),
+		'787388728795987969': new Date(2022, 7, 21),
+		'630636502187114496': new Date(2022, 7, 21),
+		'767452000777535488': new Date(2022, 7, 23),
+		'916677406104883200': new Date(2022, 7, 23),
+		'630636846937800754': new Date(2022, 7, 23),
+		'855525093044387900': new Date(2022, 7, 23),
+		'963221388892700723': new Date(2022, 7, 25),
+		'713451803357741168': new Date(2022, 7, 25)
 	};
 
 	for (const role of user.roles) {
 		if (roles[role.id] && roles[role.id] < new Date()) {
 			return true;
 		}
+	}
+
+	return false;
+}
+
+export function isCollabOpen(collab: Collab, user: IDiscordUser): boolean {
+	if (user && user.admin) {
+		return true;
+	}
+
+	if (collab.status === CollabStatus.OPEN) {
+		return true;
+	}
+
+	if (user && collab.status === CollabStatus.EARLY_ACCESS && hasEarlyAccess(user)) {
+		return true;
 	}
 
 	return false;
@@ -54,19 +81,7 @@ export const get: RequestHandler = async ({ params, request }) => {
 		};
 	}
 
-	if (user && user.admin) {
-		return {
-			status: 200
-		};
-	}
-
-	if (collab.status === CollabStatus.OPEN) {
-		return {
-			status: 200
-		};
-	}
-
-	if (user && collab.status === CollabStatus.EARLY_ACCESS && hasEarlyAccess(user)) {
+	if (user && isCollabOpen(collab, user)) {
 		return {
 			status: 200
 		};

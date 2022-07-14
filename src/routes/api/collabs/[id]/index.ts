@@ -74,7 +74,8 @@ export const put: RequestHandler = async ({ request, params }) => {
 			},
 			data: {
 				topic: body.topic,
-				title: body.title
+				title: body.title,
+				rules: body.rules === '' ? null : body.rules
 			}
 		});
 

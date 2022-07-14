@@ -43,13 +43,63 @@
 		"ongoing": "Ongoing",
 		"no_ongoing": "There are no ongoing collabs",
 		"upload_logo": "Upload logo",
+		"retry": "Retry",
+		"picked": "Unfortunately this character has already been picked by another user while you were trying to pick it",
+		"registered": "You have successfully registered for the collab",
 		"register": "Register",
+		"registration": {
+			"title": "Collab registration >~<",
+			"connect": {
+				"discord": "Connect your Discord account",
+				"discord_description": "In order to participate in the collab, you need to sign in using your Discord account.",
+				"osu": "Connect your osu! account",
+				"osu_description": "This collab requires the use of statistics connected to your osu! account. In order to continue, you need to connect your osu! account."
+			},
+			"rules": "Rules",
+			"rules_description": "Please read the rules before participating in the collab.",
+			"rules_accept": "I accept the rules",
+			"character": {
+				"pick": "Pick a character",
+				"duplicate": "Please note, using already used characters or art will result in a ban",
+				"custom": "Custom character",
+				"original": "Use a character that's not present in our database, or use your own art",
+				"available": "Available",
+				"picked": "Picked",
+				"search": "Search",
+				"search_title": "Search for a character",
+				"search_subtitle": "You may also search by game or anime name, however for OC or unavailable characters, please input the name of the character",
+				"name": "Character name"
+			},
+			"extra": {
+				"title": "Now just some extra information",
+				"avatar": "Add some text to your avatar (optional, 11 characters max)",
+				"osu": {
+					"stamina": "Stamina",
+					"tenacity": "Tenacity",
+					"precision": "Precision",
+					"accuracy": "Accuracy",
+					"reaction": "Reaction",
+					"agility": "Agility",
+					"specialty": "Select your specialty"
+				},
+				"card_title": "These options will be used for the collab",
+				"card_subtitle": "You may grade yourself however you want, but we suggest you try to stick to realistic values"
+			},
+			"image": {
+				"title": "Upload character",
+				"filereqs": "Note, a maximum file size of 5MB is allowed. Minimum dimensions are 900x900 pixels."
+			},
+			"submit": "Submit",
+			"register": "Register"
+		},
+		"rules": "Rules",
 		"manage": {
 			"name": "Name",
 			"topic": "Topic",
 			"logo": "Upload logo",
 			"filereqs": "Note, a maximum file size of 1MB is allowed. Minimum dimensions are 300x100 pixels.",
-			"delete": "Delete"
+			"delete": "Delete",
+			"rules": "Rules (optional)"
 		},
 		"status": {
 			"EARLY_ACCESS": "Early Access",

@@ -81,6 +81,7 @@ model Collab {
   logo        String?
   creator     User          @relation(fields: [creatorId], references: [discordId], onDelete: Cascade)
   creatorId   String
+  rules       String?
   type        CollabType
   status      CollabStatus
   Pick        Pick[]
@@ -103,16 +104,20 @@ enum CollabStatus {
 }
 
 model Pick {
-  id          String        @id @default(cuid())
-  createdAt   DateTime      @default(now())
+  id          String          @id @default(cuid())
+  createdAt   DateTime        @default(now())
   name        String
-  image       String
-  characterId String?
-  collab      Collab        @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  image       String?
+  extra       Json?
+  characterId Int?
+  character   AnimeCharacter? @relation(fields: [characterId], references: [id], onDelete: SetNull)
+  collab      Collab          @relation(fields: [collabId], references: [id], onDelete: Cascade)
   collabId    String
-  User        User?         @relation(fields: [userId], references: [discordId])
+  User        User?           @relation(fields: [userId], references: [discordId])
   userId      String
   Participant Participant[]
+
+  @@unique([collabId, characterId])
 }
 
 model Participant {
@@ -124,4 +129,13 @@ model Participant {
   collabId  String
   pick      Pick     @relation(fields: [pickId], references: [id], onDelete: Cascade)
   pickId    String
+}
+
+model AnimeCharacter {
+  id         Int    @id
+  name       String
+  anime_name String
+
+  Pick Pick[]
+  @@index([name])
 }
