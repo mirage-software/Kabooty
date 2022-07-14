@@ -20,7 +20,10 @@ export async function getOsuUser(access_token: string, gamemode: string) {
 			Authorization: `Bearer ${access_token}`
 		}
 	});
-	return request.data;
+
+	// !! maybe this helps with special characters?
+	const user = JSON.stringify(request.data);
+	return JSON.parse(user);
 }
 
 export const get: RequestHandler = async ({ request }) => {
@@ -62,9 +65,6 @@ export const get: RequestHandler = async ({ request }) => {
 		const expiresAt = new Date(Date.now() + data.expires_in * 1000);
 
 		const user = await getOsuUser(data.access_token, 'osu');
-
-		// TODO: remove after debugging
-		console.log(user);
 
 		await Prisma.client.osu.upsert({
 			where: {
@@ -133,6 +133,8 @@ export const get: RequestHandler = async ({ request }) => {
 			status: 200
 		};
 	} catch (error) {
+		console.error(error);
+
 		return {
 			status: 500,
 			body: {
