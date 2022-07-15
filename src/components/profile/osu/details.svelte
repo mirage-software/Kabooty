@@ -54,7 +54,7 @@
 	<div class="detail">
 		<p id="title">Play Time</p>
 		<p id="subtitle">
-			{getPlayTime($osu?.modes[0]?.playCount)}
+			{getPlayTime($osu?.modes[0]?.playTime)}
 		</p>
 	</div>
 </div>

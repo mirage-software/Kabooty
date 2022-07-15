@@ -24,12 +24,12 @@ export async function getOsuUser(access_token: string, gamemode: string) {
 	const user = request.data;
 
 	if (user?.statistics) {
-		if (user.statistics.ranked_score) {
+		if (user.statistics.ranked_score !== undefined && user.statistics.ranked_score !== null) {
 			user.statistics.ranked_score = user.statistics.ranked_score.toString();
 		}
 	}
 
-	return request.data;
+	return user;
 }
 
 export const get: RequestHandler = async ({ request }) => {

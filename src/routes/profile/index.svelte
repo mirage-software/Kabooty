@@ -174,7 +174,7 @@
 										font-weight: 700;
 										color: white;
 
-										padding: $margin-xs / 4;
+										padding: calc($margin-xs / 4);
 										padding-left: $margin-xs;
 										padding-right: $margin-xs;
 									}
