@@ -6,6 +6,10 @@ export abstract class Prisma {
 	static _client: PrismaClient;
 
 	static async importCharacters() {
+		if ((await Prisma._client.animeCharacter.count()) > 0) {
+			return;
+		}
+
 		console.log('Importing characters...');
 		try {
 			await Prisma._client.animeCharacter.createMany({

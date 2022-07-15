@@ -132,7 +132,7 @@ model Participant {
 }
 
 model AnimeCharacter {
-  id         Int    @id
+  id         Int    @id @default(autoincrement())
   name       String
   anime_name String
 

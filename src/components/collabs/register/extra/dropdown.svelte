@@ -18,6 +18,7 @@
 				<option value={item}>{item}</option>
 			{/each}
 		</select>
+		<li class="la la-angle-down" />
 	</div>
 </div>
 
@@ -41,9 +42,17 @@
 			border-radius: $border-radius-s;
 
 			width: calc(100% - $margin-s);
+
+			display: flex;
+			align-items: center;
+
+			li {
+				color: white;
+			}
 		}
 
 		select {
+			appearance: none;
 			border: none;
 			color: white;
 			font-size: $font-size-body;
@@ -51,11 +60,15 @@
 
 			padding: $margin-xs;
 			padding-left: $margin-s;
-			padding-right: 0;
+			padding-right: $margin-s;
 
 			background-color: transparent;
 
 			width: 100%;
+
+			option {
+				color: initial !important;
+			}
 
 			:active {
 				border: 1px solid $dark-overlay;

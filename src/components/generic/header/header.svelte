@@ -26,7 +26,7 @@
 			<div id="links">
 				{#each links as link}
 					<div>
-						<HeaderButton route={link['route']} string={link['string']} icon={link['icon']} />
+						<HeaderButton route={link['route']} string={link['string']} />
 					</div>
 				{/each}
 			</div>

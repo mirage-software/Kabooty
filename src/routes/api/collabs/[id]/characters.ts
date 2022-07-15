@@ -22,7 +22,10 @@ export const get: RequestHandler = async ({ params, request }) => {
 
 	const characters = await Prisma.client.animeCharacter.findMany({
 		where: {
-			OR: [{ name: { contains: query } }, { anime_name: { contains: query } }]
+			OR: [
+				{ name: { contains: query, mode: 'insensitive' } },
+				{ anime_name: { contains: query, mode: 'insensitive' } }
+			]
 		},
 		include: {
 			Pick: {

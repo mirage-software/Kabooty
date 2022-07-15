@@ -46,7 +46,8 @@
 			img.src = result;
 
 			img.onload = () => {
-				if (image.width < width || image.height < height) {
+				if (img.width < width || img.height < height) {
+					// TODO: make alerts look nice
 					alert('Image is too small');
 					return;
 				}

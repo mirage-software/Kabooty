@@ -57,7 +57,7 @@ export const get: RequestHandler = async ({ request }) => {
 			{
 				expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
 				httpOnly: true,
-				sameSite: 'strict',
+				sameSite: 'lax',
 				secure: !dev,
 				path: '/api/'
 			}
@@ -66,7 +66,7 @@ export const get: RequestHandler = async ({ request }) => {
 		const userIdCookie = cookie.serialize('user_id', Jwt.encode({ user_id: user.id }), {
 			expires: new Date(Date.now() + (token.expires_in - 5000) * 1000),
 			httpOnly: true,
-			sameSite: 'none', // !! same-site 'lax' has poor standards, and varies per browser
+			sameSite: 'lax', // !! same-site 'lax' has poor standards, and varies per browser
 			secure: !dev,
 			path: '/api/'
 		});

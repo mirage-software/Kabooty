@@ -1,7 +1,6 @@
 <script lang="ts">
 	export let route: string;
 	export let string: string;
-	export let icon: string;
 
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -55,20 +54,24 @@
 
 		border-radius: 3px 3px 0 0;
 
-		transition: width 0.2s, left 0.2s;
+		transition: width 0.2s, left 0.2s, opacity 0.2s;
 		transition-timing-function: ease;
 		bottom: 0;
+
+		opacity: 0;
 	}
 
 	button.active > div#active {
 		width: calc(100% - $margin-s * 2);
 		left: $margin-s;
 		align-self: flex-end;
+		opacity: 1 !important;
 	}
 
 	button:hover > div#active {
 		width: 10px;
 		left: calc(50% - 5px);
 		align-self: flex-end;
+		opacity: 1;
 	}
 </style>

@@ -6,6 +6,12 @@ import { getUser } from '../../discord/user';
 import { CollabStatus, type Collab } from '@prisma/client';
 import type { IDiscordUser } from '../../../../database/discord_user';
 
+function dateIsInPast(date: Date): boolean {
+	const now = new Date();
+
+	return now.getTime() > date.getTime();
+}
+
 // TODO: move this into the database rather than the codebase
 function hasEarlyAccess(user: IDiscordUser): boolean {
 	const roles: { [key: string]: Date } = {
@@ -25,7 +31,7 @@ function hasEarlyAccess(user: IDiscordUser): boolean {
 	};
 
 	for (const role of user.roles) {
-		if (roles[role.id] && roles[role.id] < new Date()) {
+		if (roles[role.id] && dateIsInPast(roles[role.id])) {
 			return true;
 		}
 	}
