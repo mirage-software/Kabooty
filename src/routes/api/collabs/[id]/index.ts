@@ -4,6 +4,7 @@ import { getUser } from '../../discord/user';
 import { Jwt } from '../../../../jwt';
 import { Prisma } from '../../../../database/prisma';
 import type { Collab } from '@prisma/client';
+import { SentryClient } from '../../../../bot/sentry';
 
 export const get: RequestHandler = async ({ params }) => {
 	const collab = await Prisma.client.collab.findUnique({
@@ -84,6 +85,8 @@ export const put: RequestHandler = async ({ request, params }) => {
 			body: updated
 		};
 	} catch (error) {
+		SentryClient.log(error);
+
 		return {
 			status: 400
 		};
@@ -141,6 +144,8 @@ export const del: RequestHandler = async ({ request, params }) => {
 			status: 200
 		};
 	} catch (error) {
+		SentryClient.log(error);
+
 		return {
 			status: 500
 		};

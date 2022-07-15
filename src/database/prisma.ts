@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { SentryClient } from '../bot/sentry';
 import characters from './characters.json';
 
 export abstract class Prisma {
@@ -11,10 +12,10 @@ export abstract class Prisma {
 				data: characters as { name: string; id: number; anime_name: string }[],
 				skipDuplicates: true
 			});
+			console.log('Characters imported!');
 		} catch (error) {
-			console.log(error);
+			SentryClient.log(error);
 		}
-		console.log('Characters imported!');
 	}
 
 	static get client() {

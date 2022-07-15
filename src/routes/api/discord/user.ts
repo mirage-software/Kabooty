@@ -7,6 +7,7 @@ import { Jwt } from '../../../jwt';
 import type { IDiscordUser } from '../../../database/discord_user';
 import { DiscordBot } from '../../../bot/discord';
 import { isAdmin } from '../../../database/is_admin';
+import { SentryClient } from '../../../bot/sentry';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -68,6 +69,8 @@ export async function getUser(token: string, userId: string) {
 				roles: roles
 			};
 		} catch (error) {
+			SentryClient.log(error);
+
 			discord = await client.getUser(token);
 		}
 	} else {
@@ -206,6 +209,8 @@ export const get: RequestHandler = async ({ request }) => {
 			body: JSON.stringify(user)
 		};
 	} catch (error) {
+		SentryClient.log(error);
+
 		return {
 			status: 400,
 			body: {

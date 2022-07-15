@@ -4,6 +4,7 @@ import cookie from 'cookie';
 import axios from 'axios';
 import { Prisma } from '../../../database/prisma';
 import { Jwt } from '../../../jwt';
+import { SentryClient } from '../../../bot/sentry';
 
 export interface IOsuAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -139,7 +140,7 @@ export const get: RequestHandler = async ({ request }) => {
 			status: 200
 		};
 	} catch (error) {
-		console.log(error);
+		SentryClient.log(error);
 
 		return {
 			status: 500,

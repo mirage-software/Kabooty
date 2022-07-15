@@ -6,6 +6,7 @@ import { getOsuUser, type IOsuAccessToken } from '../access';
 import axios from 'axios';
 import { Env } from '../../../../env';
 import { canUpdateOsu } from './can_update';
+import { SentryClient } from '../../../../bot/sentry';
 
 export const get: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -210,6 +211,8 @@ export const get: RequestHandler = async ({ request, params }) => {
 			body: user
 		};
 	} catch (error) {
+		SentryClient.log(error);
+
 		await Prisma.client.osu.delete({
 			where: {
 				discordId: userId

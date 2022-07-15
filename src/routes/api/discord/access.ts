@@ -4,6 +4,7 @@ import { Env } from '../../../env';
 import cookie from 'cookie';
 import { dev } from '$app/env';
 import { Jwt } from '../../../jwt';
+import { SentryClient } from '../../../bot/sentry';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -84,6 +85,8 @@ export const get: RequestHandler = async ({ request }) => {
 			headers: headers
 		};
 	} catch (error) {
+		SentryClient.log(error);
+
 		return {
 			status: 400,
 			body: {

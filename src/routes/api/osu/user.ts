@@ -2,6 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { Prisma } from '../../../database/prisma';
 import cookie from 'cookie';
 import { Jwt } from '../../../jwt';
+import { SentryClient } from '../../../bot/sentry';
 
 export const get: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -46,6 +47,8 @@ export const get: RequestHandler = async ({ request }) => {
 			body: user
 		};
 	} catch (error) {
+		SentryClient.log(error);
+
 		return {
 			status: 400,
 			body: {

@@ -4,6 +4,7 @@ import { Jwt } from '../../../jwt';
 import { getUser } from '../discord/user';
 import { Prisma } from '../../../database/prisma';
 import { CollabStatus, CollabType, type Collab } from '@prisma/client';
+import { SentryClient } from '../../../bot/sentry';
 
 export const get: RequestHandler = async () => {
 	// !! TODO: this call needs to be paginated in the future
@@ -58,6 +59,8 @@ export const post: RequestHandler = async ({ request }) => {
 			body: collab
 		};
 	} catch (error) {
+		SentryClient.log(error);
+
 		return {
 			status: 400
 		};

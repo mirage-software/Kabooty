@@ -33,7 +33,7 @@ function hasEarlyAccess(user: IDiscordUser): boolean {
 	return false;
 }
 
-export function isCollabOpen(collab: Collab, user: IDiscordUser): boolean {
+export function isCollabOpen(collab: Collab, user: IDiscordUser | null | undefined): boolean {
 	if (user && user.admin) {
 		return true;
 	}
@@ -81,7 +81,7 @@ export const get: RequestHandler = async ({ params, request }) => {
 		};
 	}
 
-	if (user && isCollabOpen(collab, user)) {
+	if (isCollabOpen(collab, user)) {
 		return {
 			status: 200
 		};

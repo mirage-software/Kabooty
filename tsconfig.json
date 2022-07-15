@@ -11,7 +11,11 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
+		"inlineSources": true,
+		"sourceRoot": "/",
 		"strict": true,
+		"noEmitHelpers": true,
+		"importHelpers": true,
 		"target": "es2020"
 	}
 }

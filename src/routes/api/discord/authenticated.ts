@@ -1,5 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
+import { SentryClient } from '../../../bot/sentry';
 import { Jwt } from '../../../jwt';
 
 export const get: RequestHandler = async ({ request }) => {
@@ -12,8 +13,12 @@ export const get: RequestHandler = async ({ request }) => {
 		const decoded = Jwt.decode(cookies['discord_token']);
 		token = decoded['access_token'] as string;
 	} catch (error) {
+		SentryClient.log(error);
+
 		return {
-			status: 401
+			body: {
+				authenticated: false
+			}
 		};
 	}
 
