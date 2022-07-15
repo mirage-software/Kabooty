@@ -187,21 +187,22 @@ export async function getUser(token: string, userId: string) {
 }
 
 export const get: RequestHandler = async ({ request }) => {
-	const cookieHeader = request.headers.get('cookie');
-	const cookies = cookie.parse(cookieHeader ?? '');
-	const decoded = Jwt.decode(cookies['discord_token']);
-	const token = decoded['access_token'] as string;
-
-	const decodedUser = Jwt.decode(cookies['user_id']);
-	const userId = decodedUser['user_id'] as string;
-
-	if (!token) {
-		return {
-			status: 401
-		};
-	}
-
 	try {
+		const cookieHeader = request.headers.get('cookie');
+		const cookies = cookie.parse(cookieHeader ?? '');
+		const decoded = Jwt.decode(cookies['discord_token']);
+		const token = decoded['access_token'] as string;
+
+		const decodedUser = Jwt.decode(cookies['user_id']);
+		const userId = decodedUser['user_id'] as string;
+
+		if (!token) {
+			SentryClient.log(new Error('No token found'));
+			return {
+				status: 401
+			};
+		}
+
 		const user = await getUser(token, userId);
 
 		return {

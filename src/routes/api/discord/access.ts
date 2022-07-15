@@ -15,36 +15,31 @@ export interface IDiscordAccessToken extends Record<string, string | number> {
 }
 
 export const get: RequestHandler = async ({ request }) => {
-	const cookieHeader = request.headers.get('cookie');
-	const cookies = cookie.parse(cookieHeader ?? '');
-	const decoded = Jwt.decode(cookies['discord_token']);
-	const token = decoded['access_token'] as string;
-
-	if (token) {
-		return {
-			status: 200
-		};
-	}
-
-	const env = Env.load();
-
-	const client = new OAuth({
-		clientId: env['DISCORD_CLIENT_ID'],
-		clientSecret: env['DISCORD_CLIENT_SECRET']
-	});
-
-	const code = request.headers.get('Authorization');
-
-	if (!code || code.length === 0) {
-		return {
-			status: 400,
-			body: {
-				error: 'Missing Discord code'
-			}
-		};
-	}
-
 	try {
+		const cookieHeader = request.headers.get('cookie');
+		const cookies = cookie.parse(cookieHeader ?? '');
+		const decoded = Jwt.decode(cookies['discord_token']);
+		const access_token = decoded['access_token'] as string;
+
+		if (access_token) {
+			return {
+				status: 200
+			};
+		}
+
+		const env = Env.load();
+
+		const client = new OAuth({
+			clientId: env['DISCORD_CLIENT_ID'],
+			clientSecret: env['DISCORD_CLIENT_SECRET']
+		});
+
+		const code = request.headers.get('Authorization');
+
+		if (!code || code.length === 0) {
+			throw new Error('Missing authorization code');
+		}
+
 		const token = await client.tokenRequest({
 			code: code ?? '',
 			grantType: 'authorization_code',

@@ -25,8 +25,8 @@ model User {
 }
 
 model UserRole {
-  user          User        @relation(fields: [userDiscordId], references: [discordId])
-  role          DiscordRole @relation(fields: [discordRoleId], references: [id])
+  user          User        @relation(fields: [userDiscordId], references: [discordId], onDelete: Cascade)
+  role          DiscordRole @relation(fields: [discordRoleId], references: [id], onDelete: Cascade)
   userDiscordId String
   discordRoleId String
 
