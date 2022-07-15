@@ -24,11 +24,17 @@
 
 	{#each links as link}
 		<div>
-			<SidebarButton route={link['route']} string={link['string']} icon={link['icon']} />
+			<SidebarButton
+				onClick={functions.toggle}
+				route={link['route']}
+				string={link['string']}
+				icon={link['icon']}
+			/>
 		</div>
 	{/each}
 </div>
 <div id="scrim" class={active ? 'active' : 'inactive'} />
+<div on:click={functions.toggle} id="toggle" class={active ? 'active' : 'inactive'} />
 
 <style lang="scss">
 	#sidebar.active {
@@ -38,6 +44,29 @@
 
 	#scrim.active {
 		opacity: 1;
+	}
+
+	#toggle {
+		position: fixed;
+
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+		opacity: 0;
+
+		z-index: 5;
+
+		display: block;
+
+		@media (min-width: $breakpoint-m) {
+			display: none;
+		}
+	}
+
+	#toggle.inactive {
+		display: none;
 	}
 
 	#sidebar {

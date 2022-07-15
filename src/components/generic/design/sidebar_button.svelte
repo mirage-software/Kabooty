@@ -8,7 +8,13 @@
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
 
+	export let onClick: () => void;
+
 	function click() {
+		if (onClick) {
+			onClick();
+		}
+
 		goto(route);
 	}
 </script>
@@ -23,19 +29,19 @@
 	div#active {
 		position: absolute;
 		background-color: white;
-		height: 50px - $margin-s * 2;
+		height: 0;
 		width: 0px;
-		left: 50%;
 
 		border-radius: 0 3px 3px 0;
 
-		transition: width 0.2s, left 0.2s;
+		transition: height 0.2s;
 		transition-timing-function: ease;
 	}
 
 	button.active div#active {
 		width: 3px;
 		left: 0;
+		height: 50px - $margin-s * 2;
 	}
 
 	button {
