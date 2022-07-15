@@ -38,7 +38,7 @@ export async function getUser(token: string, userId: string) {
 	let discord: OAuth.User | null | undefined;
 	let lastUpdated: Date | null | undefined;
 
-	if (!prismaUser?.lastUpdated || prismaUser.lastUpdated < new Date(Date.now() - 1000 * 60 * 60)) {
+	if (!prismaUser?.lastUpdated || prismaUser.lastUpdated < new Date(Date.now() - 1000 * 60 * 15)) {
 		try {
 			const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
 			const guildUser = await guild.members.fetch({ user: userId });
@@ -69,8 +69,6 @@ export async function getUser(token: string, userId: string) {
 				roles: roles
 			};
 		} catch (error) {
-			SentryClient.log(error);
-
 			discord = await client.getUser(token);
 		}
 	} else {
