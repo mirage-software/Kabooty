@@ -6,6 +6,8 @@ import { Env } from '../../../../../../../../env';
 import cookie from 'cookie';
 import { Jwt } from '../../../../../../../../jwt';
 import { getUser } from '../../../../../../discord/user';
+import { SentryClient } from '../../../../../../../../bot/sentry';
+import imageType from 'image-type';
 
 export const post: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -16,121 +18,129 @@ export const post: RequestHandler = async ({ request, params }) => {
 	const decodedUser = Jwt.decode(cookies['user_id']);
 	const userId = decodedUser['user_id'] as string;
 
-	if (!token) {
-		return {
-			status: 401
-		};
-	}
-
-	const user = await getUser(token, userId);
-
-	if (!user) {
-		return {
-			status: 403
-		};
-	}
-
-	const collabId = params.id;
-	const pickId = params['pick_id'];
-
-	const env = Env.load();
-
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			id: collabId
+	try {
+		if (!token) {
+			return {
+				status: 401
+			};
 		}
-	});
 
-	if (!collab) {
-		return {
-			status: 404,
-			body: {
-				message: 'Collab not found'
-			}
-		};
-	}
+		const user = await getUser(token, userId);
 
-	const pick = await Prisma.client.pick.findUnique({
-		where: {
-			id: pickId
+		if (!user) {
+			return {
+				status: 403
+			};
 		}
-	});
 
-	if (!pick) {
-		return {
-			status: 404,
-			body: {
-				message: 'Pick not found'
+		const collabId = params.id;
+		const pickId = params['pick_id'];
+
+		const env = Env.load();
+
+		const collab = await Prisma.client.collab.findUnique({
+			where: {
+				id: collabId
 			}
-		};
-	}
+		});
 
-	if (pick.userId !== userId) {
-		return {
-			status: 403
-		};
-	}
-
-	if (pick.image) {
-		const originalFile = path.join(
-			env['FILE_STORAGE_PATH'],
-			'collabs',
-			collab.id,
-			'picks',
-			pick.image
-		);
-
-		if (existsSync(originalFile)) {
-			unlinkSync(originalFile);
+		if (!collab) {
+			return {
+				status: 404,
+				body: {
+					message: 'Collab not found'
+				}
+			};
 		}
-	}
 
-	const blob = await request.arrayBuffer();
-
-	const mb = 5120 * 1024;
-
-	if (blob.byteLength > mb) {
-		return {
-			status: 413,
-			body: {
-				message: 'File too large'
+		const pick = await Prisma.client.pick.findUnique({
+			where: {
+				id: pickId
 			}
-		};
-	}
+		});
 
-	const extension = path.extname(params.file);
-
-	if (!extension) {
-		return {
-			status: 400,
-			body: {
-				message: 'Invalid file extension'
-			}
-		};
-	}
-
-	const buffer = Buffer.from(blob);
-
-	const file = params['pick_id'] + extension;
-
-	const filePath = path.join(env['FILE_STORAGE_PATH'], 'collabs', collab.id, 'picks', file);
-
-	mkdirSync(path.dirname(filePath), { recursive: true });
-
-	writeFileSync(filePath, buffer);
-
-	pick.image = file;
-
-	await Prisma.client.pick.update({
-		where: {
-			id: pickId
-		},
-		data: {
-			image: file
+		if (!pick) {
+			return {
+				status: 404,
+				body: {
+					message: 'Pick not found'
+				}
+			};
 		}
-	});
 
-	return {
-		status: 200
-	};
+		if (pick.userId !== userId) {
+			return {
+				status: 403
+			};
+		}
+
+		if (pick.image) {
+			const originalFile = path.join(
+				env['FILE_STORAGE_PATH'],
+				'collabs',
+				collab.id,
+				'picks',
+				pick.image
+			);
+
+			if (existsSync(originalFile)) {
+				unlinkSync(originalFile);
+			}
+		}
+
+		const blob = await request.arrayBuffer();
+
+		const mb = 5120 * 1024;
+
+		if (blob.byteLength > mb) {
+			return {
+				status: 413,
+				body: {
+					message: 'File too large'
+				}
+			};
+		}
+
+		const buffer = Buffer.from(blob);
+
+		const type = imageType(buffer);
+
+		if (type?.ext !== 'png') {
+			return {
+				status: 400,
+				body: {
+					message: 'Invalid file extension'
+				}
+			};
+		}
+
+		const file = params['pick_id'] + '.' + type.ext;
+
+		const filePath = path.join(env['FILE_STORAGE_PATH'], 'collabs', collab.id, 'picks', file);
+
+		mkdirSync(path.dirname(filePath), { recursive: true });
+
+		writeFileSync(filePath, buffer);
+
+		pick.image = file;
+
+		await Prisma.client.pick.update({
+			where: {
+				id: pickId
+			},
+			data: {
+				image: file
+			}
+		});
+
+		return {
+			status: 200
+		};
+	} catch (error) {
+		SentryClient.log(error);
+
+		return {
+			status: 400
+		};
+	}
 };
