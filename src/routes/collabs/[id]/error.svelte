@@ -7,11 +7,13 @@
 	const id = $page.params.id;
 
 	const url = `/collabs/${id}/register`;
+
+	const error = $page.url.searchParams.get('error');
 </script>
 
 <div>
 	<i class="las la-skull-crossbones" />
-	<h2>{$t('collabs.picked')}</h2>
+	<h2>{$t('collabs.' + error)}</h2>
 
 	<SolidButton color="green" string="collabs.retry" click={() => goto(url)} />
 </div>

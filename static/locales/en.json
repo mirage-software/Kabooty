@@ -44,7 +44,6 @@
 		"no_ongoing": "There are no ongoing collabs",
 		"upload_logo": "Upload logo",
 		"retry": "Retry",
-		"picked": "Unfortunately this character has already been picked by another user while you were trying to pick it",
 		"registered": "You have successfully registered for the collab",
 		"register": "Register",
 		"registration": {
@@ -108,6 +107,13 @@
 			"BUMP": "Bump Period",
 			"RELEASE": "Released",
 			"CLOSED": "Closed"
+		},
+		"errors": {
+			"unauthorized": "You must be logged in to register for this collab",
+			"collab_not_found": "This collab does not exist",
+			"collab_closed": "This collab is closed",
+			"already_picked": "You have already picked a character for this collab",
+			"duplicate_pick": "Unfortunately this character has already been picked by another user while you were trying to pick it"
 		}
 	}
 }

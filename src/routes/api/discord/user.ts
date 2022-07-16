@@ -151,10 +151,7 @@ export async function getUser(token: string, userId: string) {
 		include: {
 			roles: {
 				where: {
-					userDiscordId: userId,
-					role: {
-						display: true
-					}
+					userDiscordId: userId
 				},
 				include: {
 					role: true

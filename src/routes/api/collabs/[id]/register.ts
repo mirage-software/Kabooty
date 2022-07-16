@@ -19,7 +19,10 @@ export const post: RequestHandler = async ({ request, params }) => {
 	try {
 		if (!token) {
 			return {
-				status: 401
+				status: 401,
+				body: {
+					message: 'errors.unauthorized'
+				}
 			};
 		}
 
@@ -27,7 +30,10 @@ export const post: RequestHandler = async ({ request, params }) => {
 
 		if (!user) {
 			return {
-				status: 403
+				status: 403,
+				body: {
+					message: 'errors.unauthorized'
+				}
 			};
 		}
 
@@ -39,13 +45,19 @@ export const post: RequestHandler = async ({ request, params }) => {
 
 		if (!collab) {
 			return {
-				status: 404
+				status: 404,
+				body: {
+					message: 'errors.collab_not_found'
+				}
 			};
 		}
 
 		if (!isCollabOpen(collab, user)) {
 			return {
-				status: 403
+				status: 403,
+				body: {
+					message: 'errors.collab_closed'
+				}
 			};
 		}
 
@@ -55,14 +67,15 @@ export const post: RequestHandler = async ({ request, params }) => {
 			where: {
 				collabId: collab.id,
 				userId: userId
-			}
+			},
+			take: 1
 		});
 
 		if (existingPicks.length > 0) {
 			return {
 				status: 420,
 				body: {
-					message: 'You already have a pick for this collab'
+					message: 'errors.already_picked'
 				}
 			};
 		}
@@ -79,9 +92,9 @@ export const post: RequestHandler = async ({ request, params }) => {
 
 			if (duplicatePick) {
 				return {
-					status: 400,
+					status: 422,
 					body: {
-						message: 'This character has already been picked'
+						message: 'errors.duplicate_pick'
 					}
 				};
 			}

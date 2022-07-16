@@ -9,6 +9,7 @@
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import axios from 'axios';
 	import Connections from '../../components/profile/connections.svelte';
+	import type { IDiscordRole } from '../../database/discord_user';
 
 	onMount(async () => {
 		const result = await axios.get('/api/discord/authenticated');
@@ -17,6 +18,12 @@
 			goto('/');
 		}
 	});
+
+	function getDisplayRoles(roles: IDiscordRole[]) {
+		return roles.filter((role) => {
+			return role.display;
+		});
+	}
 </script>
 
 {#if $discord}
@@ -36,11 +43,11 @@
 								<p>Joined {getFormattedDate($discord.joinedAt.toString())}</p>
 							</div>
 						{/if}
-						{#if $discord.roles && $discord.roles.length > 0}
+						{#if $discord.roles && getDisplayRoles($discord.roles).length > 0}
 							<div class="stat">
 								<i class="las la-tags roleicon" />
 								<div id="roles">
-									{#each $discord.roles as role}
+									{#each getDisplayRoles($discord.roles) as role}
 										<div id="role">
 											<p>{role.name}</p>
 										</div>

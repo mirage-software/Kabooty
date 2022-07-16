@@ -3,7 +3,7 @@
 	import SolidButton from '../../generic/design/solid_button.svelte';
 	import Card from '../../generic/design/card.svelte';
 	import type { AnimeCharacter, Collab, Pick } from '@prisma/client';
-	import axios from 'axios';
+	import axios, { AxiosError } from 'axios';
 	import InputText from '../../generic/design/input_text.svelte';
 	import { goto } from '$app/navigation';
 	import Dropdown from './extra/dropdown.svelte';
@@ -68,8 +68,15 @@
 
 			goto(`/collabs/${collab.id}/registered`);
 		} catch (error) {
-			console.error(error);
-			goto(`/collabs/${collab.id}/picked`);
+			if (error instanceof AxiosError) {
+				goto(
+					`/collabs/${collab.id}/error?error=${encodeURIComponent(
+						error.response?.data['message'] ?? 'errors.unknown'
+					)}`
+				);
+			} else {
+				goto(`/collabs/${collab.id}/error?error=${encodeURIComponent('errors.unknown')}`);
+			}
 		}
 	}
 </script>

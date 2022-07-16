@@ -9,13 +9,13 @@ import type { IDiscordUser } from '../../../../database/discord_user';
 function dateIsInPast(date: Date): boolean {
 	const now = new Date();
 
-	return now.getTime() > date.getTime();
+	return now.getTime() < date.getTime();
 }
 
 // TODO: move this into the database rather than the codebase
 function hasEarlyAccess(user: IDiscordUser): boolean {
 	const roles: { [key: string]: Date } = {
-		'861679323739717642': new Date(2022, 7, 15),
+		'995772224529235978': new Date(2022, 7, 15),
 		'994409775691472937': new Date(2022, 7, 15),
 		'787723186556108840': new Date(2022, 7, 17),
 		'723175697987666010': new Date(2022, 7, 17),
