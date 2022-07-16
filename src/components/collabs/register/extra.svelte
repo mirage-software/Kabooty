@@ -30,7 +30,7 @@
 	];
 
 	const requestData: Partial<Pick> = {
-		characterId: character.id,
+		characterId: character.id !== -1 ? character.id : undefined,
 		name: character.name,
 		extra: {}
 	};
@@ -68,6 +68,7 @@
 
 			goto(`/collabs/${collab.id}/registered`);
 		} catch (error) {
+			console.error(error);
 			goto(`/collabs/${collab.id}/picked`);
 		}
 	}

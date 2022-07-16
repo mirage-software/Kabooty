@@ -15,7 +15,6 @@
 	let results: (AnimeCharacter & { Pick: Pick[] })[] | null = null;
 
 	let query = '';
-	let custom = true;
 
 	async function searchCharacters() {
 		if (query.length < 2 || !collab?.id) {
@@ -50,8 +49,12 @@
 					{#each results as result}
 						<Character
 							character={result}
-							onClick={() => {
-								custom = false;
+							onClick={(_) => {
+								selected.update({
+									id: _.id,
+									name: _.name,
+									anime_name: _.anime_name
+								});
 							}}
 						/>
 					{/each}
@@ -62,8 +65,12 @@
 							id: -1,
 							Pick: []
 						}}
-						onClick={() => {
-							custom = true;
+						onClick={(_) => {
+							selected.update({
+								id: _.id,
+								name: query,
+								anime_name: 'Custom'
+							});
 						}}
 					/>
 				</div>

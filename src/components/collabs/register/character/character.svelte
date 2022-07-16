@@ -9,7 +9,7 @@
 
 	const picked = character.Pick.length > 0;
 
-	export let onClick: (() => void) | null = null;
+	export let onClick: ((character: AnimeCharacter) => void) | null = null;
 </script>
 
 <button
@@ -17,9 +17,8 @@
 	class:unavailable={character?.id === -1 ? false : picked}
 	on:click={() => {
 		if (!picked) {
-			selected.update(character);
 			if (onClick) {
-				onClick();
+				onClick(character);
 			}
 		}
 	}}

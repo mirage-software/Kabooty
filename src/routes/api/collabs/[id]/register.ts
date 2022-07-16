@@ -60,7 +60,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 
 		if (existingPicks.length > 0) {
 			return {
-				status: 400,
+				status: 420,
 				body: {
 					message: 'You already have a pick for this collab'
 				}
@@ -110,7 +110,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 			body: pick
 		};
 	} catch (error) {
-		SentryClient.log(error);
+		SentryClient.log(error, await request.json());
 
 		return {
 			status: 400

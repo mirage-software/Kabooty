@@ -25,11 +25,15 @@ export abstract class SentryClient {
 		return true;
 	}
 
-	static log(e: unknown): void {
+	static log(e: unknown, data: { [key: string]: unknown } | null | undefined = undefined): void {
 		if (!SentryClient.initialized()) {
 			return;
 		}
 
-		Sentry.captureException(e);
+		Sentry.captureException(e, {
+			contexts: {
+				data: data ?? {}
+			}
+		});
 	}
 }
