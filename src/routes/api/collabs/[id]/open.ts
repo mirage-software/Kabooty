@@ -9,25 +9,25 @@ import type { IDiscordUser } from '../../../../database/discord_user';
 function dateIsInPast(date: Date): boolean {
 	const now = new Date();
 
-	return now.getTime() < date.getTime();
+	return now.getTime() > date.getTime();
 }
 
 // TODO: move this into the database rather than the codebase
 function hasEarlyAccess(user: IDiscordUser): boolean {
 	const roles: { [key: string]: Date } = {
-		'995772224529235978': new Date(2022, 7, 15),
-		'994409775691472937': new Date(2022, 7, 15),
-		'787723186556108840': new Date(2022, 7, 17),
-		'723175697987666010': new Date(2022, 7, 17),
-		'787388721255153694': new Date(2022, 7, 19),
-		'787388728795987969': new Date(2022, 7, 21),
-		'630636502187114496': new Date(2022, 7, 21),
-		'767452000777535488': new Date(2022, 7, 23),
-		'916677406104883200': new Date(2022, 7, 23),
-		'630636846937800754': new Date(2022, 7, 23),
-		'855525093044387900': new Date(2022, 7, 23),
-		'963221388892700723': new Date(2022, 7, 25),
-		'713451803357741168': new Date(2022, 7, 25)
+		'861679323739717642': new Date(2022, 6, 15),
+		'994409775691472937': new Date(2022, 6, 15),
+		'787723186556108840': new Date(2022, 6, 17),
+		'723175697987666010': new Date(2022, 6, 17),
+		'787388721255153694': new Date(2022, 6, 19),
+		'787388728795987969': new Date(2022, 6, 21),
+		'630636502187114496': new Date(2022, 6, 21),
+		'767452000777535488': new Date(2022, 6, 23),
+		'916677406104883200': new Date(2022, 6, 23),
+		'630636846937800754': new Date(2022, 6, 23),
+		'855525093044387900': new Date(2022, 6, 23),
+		'963221388892700723': new Date(2022, 6, 25),
+		'713451803357741168': new Date(2022, 6, 25)
 	};
 
 	for (const role of user.roles) {
