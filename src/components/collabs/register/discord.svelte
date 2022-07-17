@@ -16,7 +16,15 @@
 <div id="discord">
 	<Card>
 		<div id="content">
-			<p>{$t('collabs.registration.connect.discord_description')}</p>
+			<div id="permissions">
+				{#each $t('discord.permissions').split('<br>') as line}
+					{#if !line.startsWith('- ')}
+						<h4>{line}</h4>
+					{:else}
+						<p>{line}</p>
+					{/if}
+				{/each}
+			</div>
 			<SolidButton
 				click={async () => {
 					const state = await axios.get('/api/discord/authorize');
@@ -24,7 +32,7 @@
 					goto(state.data.url);
 				}}
 				color="green"
-				string="header.signin"
+				string="discord.signin"
 			/>
 		</div>
 	</Card>
@@ -38,6 +46,11 @@
 
 	p {
 		margin: 0;
+	}
+
+	h4 {
+		margin: 0;
+		margin-bottom: $margin-s;
 	}
 
 	#discord {

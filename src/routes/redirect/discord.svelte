@@ -8,6 +8,7 @@
 	import Error from '../error.svelte';
 	import Loading from '../../components/generic/design/loading_spinner.svelte';
 	import axios from 'axios';
+	import { osu } from '../../stores/osu';
 
 	let discordError: string | undefined | null;
 
@@ -29,6 +30,8 @@
 
 					discord.update(user.data);
 				}
+
+				await osu.fetch();
 
 				const redirect = localStorage.getItem('discord_page_redirect');
 

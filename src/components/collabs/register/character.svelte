@@ -7,6 +7,8 @@
 	import InputText from '../../generic/design/input_text.svelte';
 	import Character from './character/character.svelte';
 	import { selected } from './character/selected_store';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let collab: Collab;
 
@@ -15,6 +17,14 @@
 	let results: (AnimeCharacter & { Pick: Pick[] })[] | null = null;
 
 	let query = '';
+
+	onMount(async () => {
+		try {
+			await axios.get('/api/collabs/' + collab.id + '/open');
+		} catch (_) {
+			goto('/collabs/' + collab.id + '/error?error=errors.collab_closed');
+		}
+	});
 
 	async function searchCharacters() {
 		if (query.length < 2 || !collab?.id) {

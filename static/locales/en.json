@@ -23,6 +23,10 @@
 		},
 		"404": "This page does not exist, uwu."
 	},
+	"discord": {
+		"signin": "Sign In",
+		"permissions": "In order to use the website, you need to allow access to your Discord account. The following permissions are required.<br>- Access to your account details, in order for the registration to the website to function, and create an account.<br>- Know what servers you're in, to connect your Discord account with the Endless Mirage Discord server.<br>- Get the total amount of servers you are in, as a check for the server verification process.<br>- Join servers for you, to add a functional \"Join the Discord\" button on your profile page."
+	},
 	"osu": {
 		"connect": "Connect osu!",
 		"update": "Update",

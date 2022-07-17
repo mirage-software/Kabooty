@@ -16,7 +16,7 @@
 <div id="osu">
 	<Card>
 		<div id="content">
-			<p>{$t('collabs.registration.connect.osu_description')}</p>
+			<h4>{$t('collabs.registration.connect.osu_description')}</h4>
 			<SolidButton
 				click={async () => {
 					const state = await axios.get('/api/osu/authorize');
@@ -36,7 +36,7 @@
 		margin-top: $margin-s;
 	}
 
-	p {
+	h4 {
 		margin: 0;
 	}
 
