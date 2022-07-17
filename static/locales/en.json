@@ -25,7 +25,8 @@
 	},
 	"discord": {
 		"signin": "Sign In",
-		"permissions": "In order to use the website, you need to allow access to your Discord account. The following permissions are required.<br>- Access to your account details, in order for the registration to the website to function, and create an account.<br>- Know what servers you're in, to connect your Discord account with the Endless Mirage Discord server.<br>- Get the total amount of servers you are in, as a check for the server verification process.<br>- Join servers for you, to add a functional \"Join the Discord\" button on your profile page."
+		"permissions": "In order to use the website, you need to allow access to your Discord account. The following permissions are required.<br>- Access to your account details, in order for the registration to the website to function, and create an account.<br>- Know what servers you're in, to connect your Discord account with the Endless Mirage Discord server.<br>- Get the total amount of servers you are in, as a check for the server verification process.<br>- Join servers for you, to add a functional \"Join the Discord\" button on your profile page.",
+		"join": "Join the Discord"
 	},
 	"osu": {
 		"connect": "Connect osu!",
@@ -119,5 +120,8 @@
 			"already_picked": "You have already picked a character for this collab",
 			"duplicate_pick": "Unfortunately this character has already been picked by another user while you were trying to pick it"
 		}
+	},
+	"admin": {
+		"title": "Admin settings"
 	}
 }

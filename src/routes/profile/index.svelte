@@ -56,6 +56,22 @@
 							</div>
 						{/if}
 					</div>
+
+					{#if $discord.admin || !$discord.joinedAt}
+						<div id="buttons">
+							{#if !$discord.joinedAt}
+								<SolidButton
+									string="discord.join"
+									click={async () => {
+										await axios.get('/api/discord/join');
+									}}
+								/>
+							{/if}
+							{#if $discord.admin}
+								<SolidButton string="admin.title" click={() => goto('/admin')} />
+							{/if}
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -104,6 +120,9 @@
 					display: flex;
 					align-items: center;
 					flex-direction: column;
+					flex-wrap: wrap;
+
+					width: 100%;
 
 					@media (min-width: $breakpoint-xs) {
 						flex-direction: row;
@@ -129,6 +148,8 @@
 						margin-top: 0;
 						margin-left: $margin-s;
 						align-items: center;
+
+						flex-grow: 1;
 
 						@media (min-width: $breakpoint-xs) {
 							margin-top: unset;
@@ -201,6 +222,17 @@
 								}
 							}
 						}
+					}
+
+					#buttons {
+						display: flex;
+						flex-direction: row;
+						justify-content: center;
+						align-items: center;
+						gap: $margin-s;
+						margin: $margin-m;
+						margin-top: 0;
+						flex-wrap: wrap;
 					}
 				}
 			}
