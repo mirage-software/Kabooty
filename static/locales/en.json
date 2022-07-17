@@ -122,6 +122,21 @@
 		}
 	},
 	"admin": {
-		"title": "Admin settings"
+		"title": "Admin settings",
+		"buttons": {
+			"characters": {
+				"title": "Anime Character Database",
+				"description": "Manage the internal anime character database"
+			}
+		},
+		"characters": {
+			"in_use": "In Use",
+			"manage": "Manage characters",
+			"source": "Source (game or anime)",
+			"add": "Add",
+			"add_single": "Add a character",
+			"add_bulk": "Add bulk characters using JSON",
+			"multiline": "Multiline JSON"
+		}
 	}
 }

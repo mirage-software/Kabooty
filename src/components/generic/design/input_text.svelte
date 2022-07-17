@@ -9,12 +9,40 @@
 	export let multiline: boolean = false;
 
 	export let max: number | null | undefined = null;
+
+	export let maxWidth: string | null | undefined = null;
+	export let height: string | null | undefined = null;
+
+	function getMultilineStyle(
+		_maxWidth: string | null | undefined,
+		_height: string | null | undefined
+	) {
+		let style = '';
+
+		if (_maxWidth) {
+			style += `max-width: ${_maxWidth} !important;`;
+		}
+
+		if (_height) {
+			style += `height: ${_height} !important;`;
+		}
+
+		return style;
+	}
+
+	export let onChanged: (() => void) | null = null;
 </script>
 
-<div>
+<div style={getMultilineStyle(maxWidth, null)}>
 	<h6>{$t(title)}</h6>
 	{#if multiline}
-		<textarea name={$t(title)} id="input" placeholder={$t(hint)} bind:value />
+		<textarea
+			name={$t(title)}
+			id="input"
+			placeholder={$t(hint)}
+			bind:value
+			style={getMultilineStyle(maxWidth, height)}
+		/>
 	{:else}
 		<input
 			type="text"
@@ -22,6 +50,7 @@
 			name={$t(title)}
 			id="input"
 			placeholder={$t(hint)}
+			on:change={onChanged}
 			bind:value
 		/>
 	{/if}

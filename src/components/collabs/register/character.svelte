@@ -43,11 +43,7 @@
 				<h4>{$t('collabs.registration.character.search_title')}</h4>
 				<h5>{$t('collabs.registration.character.search_subtitle')}</h5>
 			</div>
-			<InputText
-				bind:value={query}
-				title={$t('collabs.registration.character.name')}
-				hint={'Yumiko'}
-			/>
+			<InputText bind:value={query} title={'collabs.registration.character.name'} hint={'Yumiko'} />
 			<SolidButton
 				click={searchCharacters}
 				color="green"

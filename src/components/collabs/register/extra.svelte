@@ -131,7 +131,7 @@
 
 			<InputText
 				bind:value={avatarText}
-				title={$t('collabs.registration.extra.avatar')}
+				title={'collabs.registration.extra.avatar'}
 				hint={'Wowzers'}
 				max={11}
 			/>
