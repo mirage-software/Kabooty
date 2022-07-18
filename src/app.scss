@@ -1,18 +1,27 @@
 /* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */
 
 html {
-    height: 100%;
+	height: 100%;
 }
 
-body, html {
-    margin: 0;
-    font-family: 'Noto Sans', sans-serif;
+body,
+html {
+	margin: 0;
+	font-family: 'Noto Sans', sans-serif;
 
-    min-height: 100%;
+	min-height: 100%;
 
-    overflow-x: hidden;
+	overflow-x: hidden;
 }
 
-p, h1, h2, h3, h4, h5, h6, a {
-    color: $font-color;
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a {
+	color: $font-color;
+	text-align: left;
 }

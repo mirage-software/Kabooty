@@ -12,10 +12,19 @@ export function getDiscordProfilePicture(user: IDiscordUser) {
 	}
 }
 
-export function getFormattedDate(date: string) {
-	const options = {
+export function getFormattedDate(date: string, withTime = false) {
+	const options: Intl.DateTimeFormatOptions = {
 		timeZone: 'UTC'
 	};
+
+	if (withTime) {
+		options.timeZone = 'UTC';
+		options.hour12 = false;
+		options.hour = 'numeric';
+		options.minute = 'numeric';
+		options.second = 'numeric';
+		options.timeZoneName = 'short';
+	}
 
 	return new Date(date).toLocaleDateString(navigator.language, options);
 }

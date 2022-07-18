@@ -46,7 +46,7 @@ export const get: RequestHandler = async ({ request }) => {
 			redirectUri: env['DISCORD_REDIRECT_URI'],
 			clientId: env['DISCORD_CLIENT_ID'],
 			clientSecret: env['DISCORD_CLIENT_SECRET'],
-			scope: ['identify', 'guilds', 'guilds.join']
+			scope: ['identify', 'guilds.join']
 		});
 
 		const user = await client.getUser(token.access_token);

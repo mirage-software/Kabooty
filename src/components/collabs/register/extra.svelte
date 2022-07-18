@@ -85,7 +85,7 @@
 <div id="character">
 	<Card>
 		<div id="content">
-			<div>
+			<div id="title">
 				<h4>{$t('collabs.registration.extra.card_title')}</h4>
 				<h5>{$t('collabs.registration.extra.card_subtitle')}</h5>
 			</div>
@@ -191,6 +191,12 @@
 			flex-direction: column;
 			align-items: flex-start;
 			gap: $margin-m;
+
+			#title {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+			}
 
 			#grid {
 				display: grid;

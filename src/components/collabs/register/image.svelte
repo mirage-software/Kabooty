@@ -37,7 +37,7 @@
 					filename = _;
 				}}
 			/>
-			<div>
+			<div id="reqs">
 				<h4>{$t('collabs.registration.character.duplicate')}</h4>
 				<p id="filereqs">{$t('collabs.registration.image.filereqs')}</p>
 			</div>
@@ -83,6 +83,12 @@
 			flex-direction: column;
 			align-items: flex-start;
 			gap: $margin-m;
+
+			#reqs {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+			}
 
 			#image {
 				width: 100%;

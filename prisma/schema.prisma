@@ -113,6 +113,7 @@ model Pick {
   character   AnimeCharacter? @relation(fields: [characterId], references: [id], onDelete: SetNull)
   collab      Collab          @relation(fields: [collabId], references: [id], onDelete: Cascade)
   collabId    String
+  original    Boolean         @default(false)
   User        User?           @relation(fields: [userId], references: [discordId])
   userId      String
   Participant Participant[]

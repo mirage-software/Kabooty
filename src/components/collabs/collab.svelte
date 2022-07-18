@@ -35,6 +35,22 @@
 	<div id="card">
 		<Card>
 			<div id="container">
+				{#if collab.id}
+					<div id="view-absolute">
+						<button
+							on:click={collab?.id
+								? () => {
+										if (collab?.id) {
+											goto('/collabs/' + collab.id.toString());
+										}
+								  }
+								: null}
+							id="view"
+						>
+							<i class="las la-external-link-alt" />
+						</button>
+					</div>
+				{/if}
 				<div>
 					{#if dataUrl || collab.logo}
 						<div id="image">
@@ -46,46 +62,46 @@
 					{/if}
 				</div>
 				<div id="info">
-					<div>
+					<div class="info">
 						{#if collab.status}
 							<h6>{$t('collabs.status.' + collab.status)}</h6>
 						{/if}
 						<h4>{collab.title}</h4>
 						<h5>{collab.topic}</h5>
 					</div>
-					<div id="buttons">
-						{#if canRegister}
-							<SolidButton
-								color="green"
-								click={async () => {
-									if (collab?.id) {
-										goto(`/collabs/${collab.id}/register`);
-									}
-								}}
-								string={$t('collabs.register')}
-							/>
-						{:else}
-							<div />
-						{/if}
-						{#if $discord?.admin}
-							<div id="admin">
-								<IconButton
-									icon="la la-pencil"
-									click={() => {
+					{#if canRegister || $discord?.admin}
+						<div id="buttons">
+							{#if canRegister}
+								<SolidButton
+									color="green"
+									click={async () => {
 										if (collab?.id) {
-											goto(`/collabs/${collab.id}/manage`);
+											goto(`/collabs/${collab.id}/register`);
 										}
 									}}
+									string={$t('collabs.register')}
 								/>
-								<IconButton
-									icon="la la-trash"
-									click={() => {
-										alert('Not implemented yet');
-									}}
-								/>
-							</div>
-						{/if}
-					</div>
+							{/if}
+							{#if $discord?.admin}
+								<div id="admin">
+									<IconButton
+										icon="la la-pencil"
+										click={() => {
+											if (collab?.id) {
+												goto(`/collabs/${collab.id}/manage`);
+											}
+										}}
+									/>
+									<IconButton
+										icon="la la-trash"
+										click={() => {
+											alert('Not implemented yet');
+										}}
+									/>
+								</div>
+							{/if}
+						</div>
+					{/if}
 				</div>
 			</div>
 		</Card>
@@ -99,6 +115,36 @@
 		}
 
 		flex-grow: 1;
+	}
+
+	#view-absolute {
+		display: flex;
+		position: relative;
+
+		#view {
+			position: absolute;
+
+			right: 0;
+
+			margin: calc($margin-s * 1.5);
+
+			width: 35px;
+			height: 35px;
+
+			background-color: rgba($color: black, $alpha: 0.3);
+
+			border-radius: 50%;
+			border: none;
+			cursor: pointer;
+
+			color: white;
+
+			font-size: $font-size-body;
+
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 	}
 
 	#container {
@@ -121,7 +167,15 @@
 
 			justify-content: space-between;
 
+			gap: $margin-s;
+
 			height: 100%;
+
+			div.info {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+			}
 
 			h4,
 			h5,
@@ -148,7 +202,9 @@
 
 				justify-content: space-between;
 
-				margin-top: $margin-s;
+				position: relative;
+
+				z-index: 10;
 
 				flex-wrap: wrap;
 				gap: $margin-xs;

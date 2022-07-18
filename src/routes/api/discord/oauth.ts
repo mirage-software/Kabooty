@@ -8,7 +8,7 @@ export abstract class DiscordOAuth {
 		const env = Env.load();
 
 		return DiscordOAuth.client.generateAuthUrl({
-			scope: ['identify', 'guilds', 'guilds.join'],
+			scope: ['identify', 'guilds.join'],
 			clientId: env['DISCORD_CLIENT_ID'],
 			redirectUri: env['DISCORD_REDIRECT_URI'],
 			responseType: 'code'

@@ -33,7 +33,7 @@
 	export let onChanged: (() => void) | null = null;
 </script>
 
-<div style={getMultilineStyle(maxWidth, null)}>
+<div id="text" style={getMultilineStyle(maxWidth, null)}>
 	<h6>{$t(title)}</h6>
 	{#if multiline}
 		<textarea
@@ -57,16 +57,22 @@
 </div>
 
 <style lang="scss">
-	div {
+	div#text {
 		h6 {
 			margin: 0;
 			margin-bottom: $margin-xs;
 
 			font-size: $font-size-caption;
+
+			text-align: start;
 		}
 
 		width: 100%;
 		max-width: 400px;
+
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
 
 		input,
 		textarea {

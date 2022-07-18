@@ -106,7 +106,8 @@ export const post: RequestHandler = async ({ request, params }) => {
 				userId: userId,
 				characterId: body.characterId,
 				extra: body.extra ?? undefined,
-				name: body.name
+				name: body.name,
+				original: body.characterId ? false : true
 			}
 		});
 

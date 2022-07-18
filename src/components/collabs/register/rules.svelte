@@ -73,7 +73,7 @@
 				width: calc(100% - $margin-m * 2);
 
 				background-color: $dark-overlay;
-				padding: $margin-m;
+				padding: $margin-s;
 
 				border-radius: $border-radius-s;
 
@@ -82,6 +82,7 @@
 					white-space: break-spaces;
 					text-overflow: ellipsis;
 					overflow: hidden;
+					text-align: left;
 				}
 			}
 		}

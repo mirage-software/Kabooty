@@ -1,12 +1,12 @@
-<script>
-</script>
-
-<div>
+<div id="card">
 	<slot />
 </div>
 
 <style lang="scss">
-	div {
+	#card {
+		display: flex;
+		flex-direction: column;
+
 		background-color: $card-color;
 		width: 100%;
 		height: 100%;

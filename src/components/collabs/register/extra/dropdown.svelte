@@ -9,7 +9,7 @@
 	export let data: string[] = [];
 </script>
 
-<div>
+<div id="dropdown">
 	<h6>{$t(title)}</h6>
 	<div id="select">
 		<select name="data" bind:value>
@@ -23,7 +23,11 @@
 </div>
 
 <style lang="scss">
-	div {
+	#dropdown {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+
 		h6 {
 			margin: 0;
 			margin-bottom: $margin-xs;
