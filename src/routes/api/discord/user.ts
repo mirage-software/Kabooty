@@ -41,11 +41,11 @@ export async function getUser(token: string, userId: string) {
 	if (!prismaUser?.lastUpdated || prismaUser.lastUpdated < new Date(Date.now() - 1000 * 60 * 15)) {
 		try {
 			const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
-			const guildUser = await guild.members.fetch({ user: userId });
+			const guildUser = await guild.members.fetch({ user: userId, cache: false });
 
 			const roles = [];
 
-			for (const role of guildUser.roles.cache) {
+			for (const role of guildUser.roles.valueOf()) {
 				roles.push({
 					id: role[0],
 					name: role[1].name,
