@@ -12,11 +12,15 @@
 
 	export let collab: Collab;
 
-	export let submit: (data: AnimeCharacter | null | undefined) => Promise<void>;
+	export let submit: (
+		data: AnimeCharacter | null | undefined,
+		name: string | null | undefined
+	) => Promise<void>;
 
 	let results: (AnimeCharacter & { Pick: Pick[] })[] | null = null;
 
 	let query = '';
+	let customName = '';
 
 	onMount(async () => {
 		try {
@@ -43,7 +47,11 @@
 				<h4>{$t('collabs.registration.character.search_title')}</h4>
 				<h5>{$t('collabs.registration.character.search_subtitle')}</h5>
 			</div>
-			<InputText bind:value={query} title={'collabs.registration.character.name'} hint={'Yumiko'} />
+			<InputText
+				bind:value={query}
+				title={'collabs.registration.character.search'}
+				hint={'Yumiko'}
+			/>
 			<SolidButton
 				click={searchCharacters}
 				color="green"
@@ -81,9 +89,16 @@
 					/>
 				</div>
 			{/if}
-			{#if $selected}
+			{#if $selected && $selected.id === -1}
+				<InputText
+					bind:value={customName}
+					title={'collabs.registration.character.name'}
+					hint={'Yumiko'}
+				/>
+			{/if}
+			{#if $selected && ($selected.id !== -1 || ($selected.id === -1 && customName.length > 2))}
 				<SolidButton
-					click={async () => submit($selected)}
+					click={async () => submit($selected, customName)}
 					color="green"
 					string="collabs.registration.submit"
 				/>

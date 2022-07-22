@@ -53,8 +53,13 @@
 			{:else if !character}
 				<Character
 					{collab}
-					submit={async (_) => {
+					submit={async (_, name) => {
 						character = _;
+
+						if (character?.id === -1 && name) {
+							character.name = name;
+						}
+
 						selected.update(null);
 					}}
 				/>
