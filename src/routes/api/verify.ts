@@ -286,8 +286,11 @@ export const get: RequestHandler = async ({ request }) => {
 			sendEmbedToDiscord(data);
 		}
 
+		const unverifiedRole = env['DISCORD_UNVERIFIED_ROLE_ID'];
+
 		const guildMember = await guild.members.fetch(user.id);
 		guildMember.roles.add(roleId);
+		guildMember.roles.remove(unverifiedRole);
 
 		await Prisma.client.user.update({
 			where: {
