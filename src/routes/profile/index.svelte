@@ -10,6 +10,7 @@
 	import axios from 'axios';
 	import Connections from '../../components/profile/connections.svelte';
 	import type { IDiscordRole } from '../../database/discord_user';
+	import Picks from '../../components/profile/picks.svelte';
 
 	onMount(async () => {
 		const result = await axios.get('/api/discord/authenticated');
@@ -76,6 +77,7 @@
 			</div>
 		</div>
 		<div id="content">
+			<Picks />
 			<Connections />
 			<div id="buttons">
 				<!-- TODO: move delete to bottom of page -->

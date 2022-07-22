@@ -13,6 +13,15 @@
 
 	export let pick: Pick & { User: User };
 	export let collab: Collab;
+	export let profile = false;
+
+	export let onDelete: () => void;
+
+	async function deletePick() {
+		await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id);
+
+		onDelete();
+	}
 </script>
 
 <div id="card">
@@ -30,6 +39,9 @@
 			</div>
 			<div id="info">
 				<div class="info">
+					{#if profile}
+						<h3>{collab.title}</h3>
+					{/if}
 					{#if pick.original}
 						<h6>Original</h6>
 					{/if}
@@ -40,16 +52,12 @@
 					<h6 style="margin: 0;">Picked at</h6>
 					<h5>{getFormattedDate(pick.createdAt.toString(), true)}</h5>
 				</div>
-				{#if $discord?.admin}
+				<!-- !! TODO: currently only show buttons on profile -->
+				{#if profile}
 					<div id="buttons">
-						{#if $discord?.admin}
+						{#if $discord?.admin || profile}
 							<div id="admin">
-								<IconButton
-									icon="la la-trash"
-									click={() => {
-										alert('Not implemented yet');
-									}}
-								/>
+								<IconButton icon="la la-trash" click={deletePick} />
 							</div>
 						{/if}
 					</div>
@@ -102,12 +110,14 @@
 				align-items: flex-start;
 			}
 
+			h3,
 			h4,
 			h5,
 			h6 {
 				margin: 0;
 			}
 
+			h3,
 			h4 {
 				margin-bottom: $margin-xs;
 			}

@@ -21,8 +21,12 @@
 		const collabId = $page.params['id'];
 
 		collab = (await axios.get('/api/collabs/' + collabId)).data;
-		picks = (await axios.get('/api/collabs/' + collabId + '/picks')).data;
+		getPicks();
 	});
+
+	async function getPicks() {
+		picks = (await axios.get('/api/collabs/' + collab?.id + '/picks')).data;
+	}
 </script>
 
 {#if collab && picks}
@@ -40,7 +44,7 @@
 			</div>
 			<div id="picks">
 				{#each picks as pick}
-					<PickComponent {pick} {collab} />
+					<PickComponent {pick} {collab} onDelete={getPicks} />
 				{/each}
 			</div>
 		</div>

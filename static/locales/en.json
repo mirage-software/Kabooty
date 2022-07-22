@@ -39,7 +39,11 @@
 	},
 	"account": {
 		"delete": "Delete account",
-		"connections": "Connections"
+		"connections": "Connections",
+		"picks": {
+			"title": "Your current picks",
+			"none": "You are currently not participating in any collabs"
+		}
 	},
 	"collabs": {
 		"title": "Collabs",
