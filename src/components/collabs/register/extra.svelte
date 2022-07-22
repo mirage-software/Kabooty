@@ -54,6 +54,12 @@
 				avatar: avatarText
 			};
 
+			try {
+				await axios.get('/api/verify');
+			} catch (error) {
+				// !! may fail if the user isn't in the discord
+			}
+
 			const pick: Pick = (await axios.post(`/api/collabs/${collab.id}/register`, requestData)).data;
 
 			await axios.post(

@@ -13,8 +13,86 @@ export interface IOsuAccessToken extends Record<string, string | number> {
 	refresh_token: string;
 }
 
-export async function getOsuUser(access_token: string, gamemode: string) {
-	const request = await axios.get(`https://osu.ppy.sh/api/v2/me/${gamemode}`, {
+export async function getUpdatedOsuUser(userId: string) {
+	const user = await Prisma.client.osu.findUnique({
+		where: {
+			discordId: userId
+		}
+	});
+
+	if (!user) {
+		throw new Error('User not found');
+	}
+
+	const env = Env.load();
+
+	let access_token = user.access_token;
+	let refresh_token = user.refresh_token;
+	let expires_at = user.expires_at;
+
+	if (!access_token || !refresh_token || !expires_at) {
+		throw new Error('User has no access token');
+	}
+
+	if (!expires_at || expires_at.getTime() < Date.now()) {
+		const response = await axios.post<IOsuAccessToken>(
+			'https://osu.ppy.sh/oauth/token',
+			{
+				client_id: parseInt(env['OSU_CLIENT_ID']),
+				client_secret: env['OSU_CLIENT_SECRET'],
+				refresh_token: refresh_token,
+				grant_type: 'refresh_token'
+			},
+			{
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json'
+				}
+			}
+		);
+
+		access_token = response.data.access_token;
+		refresh_token = response.data.refresh_token;
+		expires_at = new Date(Date.now() + response.data.expires_in * 1000);
+
+		await Prisma.client.osu.update({
+			where: {
+				id: user.id.toString()
+			},
+			data: {
+				expires_at: expires_at,
+				access_token: access_token,
+				refresh_token: refresh_token
+			}
+		});
+	}
+
+	const osu = await getOsuUser(access_token, null);
+
+	return await Prisma.client.osu.update({
+		where: {
+			id: user.id.toString()
+		},
+		data: {
+			id: user.id.toString(),
+			country: osu.country_code,
+			avatar: osu.avatar_url,
+			username: osu.username,
+			discordId: userId,
+			restricted: osu.is_restricted,
+			creation_date: osu.join_date
+		}
+	});
+}
+
+export async function getOsuUser(access_token: string, gamemode: string | undefined | null) {
+	let url = `https://osu.ppy.sh/api/v2/me/`;
+
+	if (gamemode) {
+		url += `${gamemode}`;
+	}
+
+	const request = await axios.get(url, {
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
@@ -71,7 +149,7 @@ export const get: RequestHandler = async ({ request }) => {
 
 		const expiresAt = new Date(Date.now() + data.expires_in * 1000);
 
-		const user = await getOsuUser(data.access_token, 'osu');
+		const user = await getOsuUser(data.access_token, null);
 
 		await Prisma.client.osu.upsert({
 			where: {
@@ -86,7 +164,8 @@ export const get: RequestHandler = async ({ request }) => {
 				restricted: user.is_restricted,
 				expires_at: expiresAt,
 				access_token: data.access_token,
-				refresh_token: data.refresh_token
+				refresh_token: data.refresh_token,
+				creation_date: user.join_date
 			},
 			create: {
 				id: user.id.toString(),
@@ -97,7 +176,8 @@ export const get: RequestHandler = async ({ request }) => {
 				restricted: user.is_restricted,
 				expires_at: expiresAt,
 				access_token: data.access_token,
-				refresh_token: data.refresh_token
+				refresh_token: data.refresh_token,
+				creation_date: user.join_date
 			}
 		});
 

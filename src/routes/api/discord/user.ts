@@ -17,6 +17,40 @@ export interface IDiscordAccessToken extends Record<string, string | number> {
 	scope: string;
 }
 
+export async function getUpdatedDiscordUser(userId: string): Promise<IDiscordUser> {
+	const env = Env.load();
+
+	const serverId = env['DISCORD_SERVER_ID'];
+
+	const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
+	const guildUser = await guild.members.fetch({ user: userId, cache: false });
+
+	const roles = [];
+
+	for (const role of guildUser.roles.valueOf()) {
+		roles.push({
+			id: role[0],
+			name: role[1].name,
+			display: undefined
+		});
+	}
+
+	if (!guildUser) {
+		throw new Error('No user found');
+	}
+
+	return {
+		id: guildUser.user.id,
+		username: guildUser.user.username,
+		discriminator: guildUser.user.discriminator,
+		avatar: guildUser.user.avatar,
+		joinedAt: guildUser.joinedAt,
+		admin: false,
+		roles: roles,
+		creation_date: guildUser.user.createdAt
+	};
+}
+
 export async function getUser(token: string, userId: string) {
 	const env = Env.load();
 
@@ -33,41 +67,14 @@ export async function getUser(token: string, userId: string) {
 
 	let user: IDiscordUser | null | undefined;
 
-	const serverId = env['DISCORD_SERVER_ID'];
-
 	let discord: OAuth.User | null | undefined;
 	let lastUpdated: Date | null | undefined;
 
 	if (!prismaUser?.lastUpdated || prismaUser.lastUpdated < new Date(Date.now() - 1000 * 60 * 15)) {
 		try {
-			const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
-			const guildUser = await guild.members.fetch({ user: userId, cache: false });
-
-			const roles = [];
-
-			for (const role of guildUser.roles.valueOf()) {
-				roles.push({
-					id: role[0],
-					name: role[1].name,
-					display: undefined
-				});
-			}
+			user = await getUpdatedDiscordUser(userId);
 
 			lastUpdated = new Date();
-
-			if (!guildUser) {
-				throw new Error('No user found');
-			}
-
-			user = {
-				id: guildUser.user.id,
-				username: guildUser.user.username,
-				discriminator: guildUser.user.discriminator,
-				avatar: guildUser.user.avatar,
-				joinedAt: guildUser.joinedAt,
-				admin: false,
-				roles: roles
-			};
 		} catch (error) {
 			discord = await client.getUser(token);
 		}
@@ -83,7 +90,8 @@ export async function getUser(token: string, userId: string) {
 			avatar: discord.avatar,
 			joinedAt: undefined,
 			admin: false,
-			roles: []
+			roles: [],
+			creation_date: undefined
 		};
 	}
 
@@ -101,7 +109,8 @@ export async function getUser(token: string, userId: string) {
 			discriminator: user.discriminator,
 			avatar: user.avatar,
 			joinedAt: user.joinedAt ?? prismaUser?.joinedAt,
-			lastUpdated: lastUpdated ?? prismaUser?.lastUpdated
+			lastUpdated: lastUpdated ?? prismaUser?.lastUpdated,
+			creation_date: user?.creation_date
 		},
 		create: {
 			discordId: user.id,
@@ -109,7 +118,8 @@ export async function getUser(token: string, userId: string) {
 			discriminator: user.discriminator,
 			avatar: user.avatar,
 			joinedAt: user.joinedAt ?? prismaUser?.joinedAt,
-			lastUpdated: lastUpdated ?? prismaUser?.lastUpdated
+			lastUpdated: lastUpdated ?? prismaUser?.lastUpdated,
+			creation_date: user?.creation_date
 		}
 	});
 
@@ -175,7 +185,8 @@ export async function getUser(token: string, userId: string) {
 			id: role.role.id,
 			name: role.role.name,
 			display: role.role.display
-		}))
+		})),
+		creation_date: response.creation_date
 	};
 
 	return transformed;

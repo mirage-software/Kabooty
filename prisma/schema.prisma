@@ -22,6 +22,8 @@ model User {
   collab        Collab[]
   pick          Pick[]
   participant   Participant[]
+  creation_date DateTime?
+  verified      Boolean       @default(false)
 }
 
 model UserRole {
@@ -51,6 +53,7 @@ model Osu {
   access_token  String?
   refresh_token String?
   expires_at    DateTime?
+  creation_date DateTime?
   modes         OsuMode[]
 }
 
@@ -138,5 +141,6 @@ model AnimeCharacter {
   anime_name String
 
   Pick Pick[]
+
   @@index([name])
 }

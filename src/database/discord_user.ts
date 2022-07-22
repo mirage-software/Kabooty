@@ -12,4 +12,5 @@ export interface IDiscordUser {
 	admin: boolean;
 	joinedAt: Date | string | null | undefined;
 	roles: IDiscordRole[];
+	creation_date: Date | string | null | undefined;
 }
