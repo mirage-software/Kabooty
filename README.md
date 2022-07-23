@@ -8,11 +8,11 @@ Kabooty is the System for the [Endlessmirage](https://endlessmirage.net) collab 
 Clone the Project
 
 ```bash
-    git clone git@github.com:mirage-software/Kabooty.git
+git clone git@github.com:mirage-software/Kabooty.git
 ```
 Download required Packages and Dependencies
 ```bash
-    npm install
+npm install
 ```
 ### Set up Enviorment Variables  
   
@@ -84,7 +84,7 @@ Install Docker from [here](https://www.docker.com/products/docker-desktop/)
 #### Docker Compose
 Swap into the Kabooty Project Folder and compose the docker project with docker compose
 ```bash
-    docker compose up -d
+docker compose up -d
 ```
 
 #### Database
@@ -92,7 +92,7 @@ Swap into the Kabooty Project Folder and compose the docker project with docker 
 Set up the Database for Kabooty
 
 ```bash
-    docker run --name postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -v /data:/var/lib/postgresql/data -d postgres
+docker run --name postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -v /data:/var/lib/postgresql/data -d postgres
 ```
 
 ### Prisma Migration
