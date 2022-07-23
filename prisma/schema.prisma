@@ -24,6 +24,7 @@ model User {
   participant   Participant[]
   creation_date DateTime?
   verified      Boolean       @default(false)
+  Log           Log[]
 }
 
 model UserRole {
@@ -127,7 +128,7 @@ model Pick {
 model Participant {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [discordId])
+  user      User?    @relation(fields: [userId], references: [discordId])
   userId    String
   collab    Collab   @relation(fields: [collabId], references: [id], onDelete: Cascade)
   collabId  String
@@ -143,4 +144,13 @@ model AnimeCharacter {
   Pick Pick[]
 
   @@index([name])
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  action    String
+  user      User?    @relation(fields: [userId], references: [discordId])
+  userId    String
+  data      Json?
 }

@@ -15,12 +15,19 @@
 	export let collab: Collab;
 	export let profile = false;
 
-	export let onDelete: () => void;
+	export let onChange: () => void;
 
 	async function deletePick() {
 		await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id);
 
-		onDelete();
+		onChange();
+	}
+
+	async function linkPick() {
+		// TODO: link the pick to a character
+		// await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id);
+
+		onChange();
 	}
 </script>
 
@@ -52,12 +59,17 @@
 					<h6 style="margin: 0;">Picked at</h6>
 					<h5>{getFormattedDate(pick.createdAt.toString(), true)}</h5>
 				</div>
-				<!-- !! TODO: currently only show buttons on profile -->
-				{#if profile}
+
+				{#if $discord?.admin || profile}
 					<div id="buttons">
 						{#if $discord?.admin || profile}
 							<div id="admin">
 								<IconButton icon="la la-trash" click={deletePick} />
+							</div>
+						{/if}
+						{#if $discord?.admin}
+							<div id="admin">
+								<IconButton icon="la la-link" click={linkPick} />
 							</div>
 						{/if}
 					</div>

@@ -41,7 +41,7 @@
 			pick={getTypedPick(pick)}
 			collab={pick['collab']}
 			profile={true}
-			onDelete={getPicks}
+			onChange={getPicks}
 		/>
 	{/each}
 </div>

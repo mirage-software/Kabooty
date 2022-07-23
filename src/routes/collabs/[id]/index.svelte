@@ -44,7 +44,7 @@
 			</div>
 			<div id="picks">
 				{#each picks as pick}
-					<PickComponent {pick} {collab} onDelete={getPicks} />
+					<PickComponent {pick} {collab} onChange={getPicks} />
 				{/each}
 			</div>
 		</div>

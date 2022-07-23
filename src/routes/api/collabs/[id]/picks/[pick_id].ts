@@ -80,11 +80,18 @@ export const del: RequestHandler = async ({ request, params }) => {
 
 		if (pick.userId !== user.id) {
 			if (user.admin) {
-				// !! TODO: you're not allowed to do shit yet
-				// implement logging first
+				await Prisma.client.log.create({
+					data: {
+						action: 'admin_delete_pick',
+						userId: user.id,
+						data: JSON.stringify(pick)
+					}
+				});
+
+				await deletePick(pick);
 
 				return {
-					status: 403
+					status: 200
 				};
 			} else {
 				return {
