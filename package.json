@@ -55,6 +55,7 @@
 		"image-type": "^4.1.0",
 		"jsonwebtoken": "^8.5.1",
 		"mime-types": "^2.1.35",
+		"svelte-infinite-scroll": "^2.0.1",
 		"svelte-intl-precompile": "^0.8.1",
 		"tslib": "^2.3.1"
 	}

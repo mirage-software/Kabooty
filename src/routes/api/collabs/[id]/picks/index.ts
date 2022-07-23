@@ -1,7 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { Prisma } from '../../../../../database/prisma';
 
-export const get: RequestHandler = async ({ params }) => {
+export const get: RequestHandler = async ({ params, request }) => {
 	const collab = await Prisma.client.collab.findUnique({
 		where: {
 			id: params.id
@@ -17,7 +17,10 @@ export const get: RequestHandler = async ({ params }) => {
 		};
 	}
 
-	// !! TODO: implement pagination ASAP
+	const url = new URL(request.url);
+	// const query = url.searchParams.get('search') ?? '';
+	const page = parseInt(url.searchParams.get('page') ?? '1');
+
 	const picks = await Prisma.client.pick.findMany({
 		where: {
 			collabId: collab.id
@@ -30,9 +33,11 @@ export const get: RequestHandler = async ({ params }) => {
 				original: 'desc'
 			},
 			{
-				createdAt: 'asc'
+				createdAt: 'desc'
 			}
-		]
+		],
+		take: 25,
+		skip: 25 * (page - 1)
 	});
 
 	return {

@@ -12,9 +12,29 @@
 	import PageTitle from '../../../components/generic/design/page_title.svelte';
 	import SolidButton from '../../../components/generic/design/solid_button.svelte';
 	import PickComponent from '../../../components/collabs/pick.svelte';
-	import ImageContainer from '../../../components/generic/design/image_container.svelte';
+	import InfiniteScroll from 'svelte-infinite-scroll';
 
-	let picks: (Pick & { User: User })[] | null = null;
+	let pageIndex = 1;
+	let data: (Pick & { User: User })[] = [];
+	let newBatch: (Pick & { User: User })[] = [];
+
+	let loading = true;
+
+	async function getPicks() {
+		newBatch = (await axios.get('/api/collabs/' + collab?.id + '/picks?page=' + pageIndex)).data;
+		if (newBatch.length !== 25) {
+			loading = false;
+		}
+	}
+
+	async function resetPicks() {
+		pageIndex = 1;
+		data = [];
+		newBatch = [];
+		loading = true;
+		await getPicks();
+	}
+
 	let collab: Collab | null = null;
 
 	onMount(async () => {
@@ -24,12 +44,10 @@
 		getPicks();
 	});
 
-	async function getPicks() {
-		picks = (await axios.get('/api/collabs/' + collab?.id + '/picks')).data;
-	}
+	$: data = [...data, ...newBatch];
 </script>
 
-{#if collab && picks}
+{#if collab && data}
 	<div id="column">
 		<div id="content">
 			<div id="title">
@@ -43,10 +61,23 @@
 				{/if}
 			</div>
 			<div id="picks">
-				{#each picks as pick}
-					<PickComponent {pick} {collab} onChange={getPicks} />
+				{#each data as pick}
+					<PickComponent {pick} {collab} onChange={resetPicks} />
 				{/each}
+
+				<InfiniteScroll
+					hasMore={loading}
+					threshold={0}
+					on:loadMore={() => {
+						pageIndex++;
+						getPicks();
+					}}
+					window={true}
+				/>
 			</div>
+			{#if loading}
+				<LoadingSpinner />
+			{/if}
 		</div>
 	</div>
 {:else}

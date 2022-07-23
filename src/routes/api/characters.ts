@@ -11,7 +11,7 @@ import { deletePick } from './collabs/[id]/picks/[pick_id]';
 export const get: RequestHandler = async ({ request }) => {
 	const url = new URL(request.url);
 	const query = url.searchParams.get('search') ?? '';
-	const page = parseInt(url.searchParams.get('page') ?? '0');
+	const page = parseInt(url.searchParams.get('page') ?? '1');
 
 	const characters = await Prisma.client.animeCharacter.findMany({
 		where: {
