@@ -99,7 +99,7 @@
 								<IconButton icon="la la-trash" click={deletePick} />
 							</div>
 						{/if}
-						{#if $discord?.admin && pick.characterId}
+						{#if $discord?.admin}
 							<div id="admin">
 								<IconButton icon="la la-link" click={linkPick} />
 							</div>
