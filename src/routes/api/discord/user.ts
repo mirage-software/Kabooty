@@ -23,7 +23,7 @@ export async function getUpdatedDiscordUser(userId: string): Promise<IDiscordUse
 	const serverId = env['DISCORD_SERVER_ID'];
 
 	const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
-	const guildUser = await guild.members.fetch({ user: userId, cache: false });
+	const guildUser = await guild.members.fetch({ user: userId, cache: false, force: true });
 
 	const roles = [];
 

@@ -291,6 +291,9 @@ export const get: RequestHandler = async ({ request }) => {
 		const guildMember = await guild.members.fetch(user.id);
 		guildMember.roles.add(roleId);
 		guildMember.roles.remove(unverifiedRole);
+		// because xeg is too lazy to have another bot do it
+		// TODO: implement dynamic way of setting roles
+		guildMember.roles.add('630980373374828544');
 
 		await Prisma.client.user.update({
 			where: {
