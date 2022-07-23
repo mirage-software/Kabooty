@@ -39,7 +39,13 @@
 					<div id="image">
 						<ImageContainer>
 							<!-- svelte-ignore a11y-missing-attribute -->
-							<img src={'/api/images/collabs/' + collab.id + '/picks/' + pick.image} />
+							<img
+								src={'/api/images/collabs/' +
+									collab.id +
+									'/picks/' +
+									pick.image +
+									'?width=200&height=200'}
+							/>
 						</ImageContainer>
 					</div>
 				{/if}
