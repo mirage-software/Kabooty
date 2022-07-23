@@ -30,7 +30,7 @@ npm install
 
 Configure the Oauth callback like this: `http://localhost:3000/redirect/discord`
 
-![](https://i.imgur.com/qfMCQ9g.png)
+![](https://i.imgur.com/RMbclG9.png)
 
 #### Discord Bot
 
