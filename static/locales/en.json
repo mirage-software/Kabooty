@@ -13,7 +13,7 @@
 		},
 		"discord": {
 			"access_denied": "While signing in you denied access to your Discord account.<br>In order to sign in, you need to allow access to your Discord account.<br>In case you denied access out of concern for your account, we do not do anything to your account without giving us your explicit permission.",
-			"invalid_code": "Something went wrong while signing in. The code provided by Discord is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us."
+			"invalid_code": "Something went wrong while signing in. The code provided by Discord is invalid.<br>Please try again. If the problem persists, try again in a few minutes, and clearing your cookies.<br>In case this still doesn't solve the issue, please contact us."
 		},
 		"osu": {
 			"invalid_code": "Something went wrong while signing in. The code provided by osu! is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us.",
@@ -129,7 +129,8 @@
 			"collab_closed": "This collab is closed",
 			"already_picked": "You have already picked a character for this collab",
 			"duplicate_pick": "Unfortunately this character has already been picked by another user while you were trying to pick it"
-		}
+		},
+		"delete_pick_confirm": "Are you sure you want to delete this pick?"
 	},
 	"admin": {
 		"title": "Admin settings",

@@ -96,6 +96,18 @@
 				<h5>{$t('collabs.registration.extra.card_subtitle')}</h5>
 			</div>
 
+			<div id="explanation">
+				1. Evaluate your Stamina in scale from D to S (Tapping stamina in case of all modes)<br />
+				2. Evaluate your Tenacity in scale from D to S (Streams in case of std and taiko, and fast notes
+				in mania and ctb)<br />
+				3. Evaluate your Precision in scale from D to S (Ability to hit small circles in case of std,
+				taiko(?) and small fruits in ctb and reading 7k in mania)<br />
+				4. Evaluate your Reaction in scale from D to S (Sight Read in case of all modes)<br />
+				5. Evaluate your Accuracy in scale from D to S<br />
+				6. Evaluate your Agility in scale from D to S (Aim in case of std, pixel jump in ctb and reading
+				anormal patterns in mania and taiko)
+			</div>
+
 			<div id="grid">
 				<Dropdown
 					bind:value={skills.stamina}
@@ -180,6 +192,23 @@
 		margin: 0;
 		font-weight: 400;
 		font-style: italic;
+	}
+
+	#explanation {
+		display: flex;
+
+		flex-direction: column;
+		gap: calc($margin-xs / 4);
+
+		// max-width: 500px;
+		width: calc(100% - $margin-s * 2);
+
+		background-color: $dark-overlay;
+		padding: $margin-s;
+
+		border-radius: $border-radius-s;
+
+		color: white;
 	}
 
 	#character {

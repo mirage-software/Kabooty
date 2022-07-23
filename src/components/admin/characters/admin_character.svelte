@@ -15,16 +15,15 @@
 		await axios.delete('/api/characters?id=' + character.id);
 		onDelete();
 	}
-
-	const picked = character.Pick.length > 0;
 </script>
 
 <div id="character">
-	{#if picked}
+	{#if character.Pick.length > 0}
 		<p id="status">
 			{$t('admin.characters.in_use')}
 		</p>
 	{/if}
+	<p id="id">ID: {character.id}</p>
 	<p id="name">{character?.name}</p>
 	<p id="anime">{character?.anime_name}</p>
 	<div id="buttons">
@@ -55,6 +54,14 @@
 
 		#status {
 			font-size: $font-size-caption;
+			color: white !important;
+			margin-bottom: $margin-xs;
+		}
+
+		#id {
+			font-size: $font-size-caption;
+			font-weight: 400;
+			font-style: italic;
 			color: white !important;
 		}
 

@@ -175,12 +175,12 @@
 						title={'admin.characters.multiline'}
 						hint={`[
     {
-        name: "Hikari-chan",
-        anime_name: "Stay! Stay! DPRK!"
+        "name": "Hikari-chan",
+        "anime_name": "Stay! Stay! DPRK!"
     },
     {
-        name: "XegC",
-        anime_name: "UwU in the disco"
+        "name": "XegC",
+        "anime_name": "UwU in the disco"
     }
 ]`}
 						multiline={true}

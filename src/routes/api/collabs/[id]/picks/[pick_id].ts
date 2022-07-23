@@ -37,6 +37,113 @@ export async function deletePick(pick: Pick): Promise<void> {
 	});
 }
 
+export const patch: RequestHandler = async ({ request, params }) => {
+	const cookieHeader = request.headers.get('cookie');
+	const cookies = cookie.parse(cookieHeader ?? '');
+	const decoded = Jwt.decode(cookies['discord_token']);
+	const token = decoded['access_token'] as string;
+
+	const decodedUser = Jwt.decode(cookies['user_id']);
+	const userId = decodedUser['user_id'] as string;
+
+	if (!token) {
+		return {
+			status: 401
+		};
+	}
+
+	try {
+		const user = await getUser(token, userId);
+
+		if (!user || !user.admin) {
+			return {
+				status: 403
+			};
+		}
+
+		const body = await request.json();
+
+		if (!body.characterId) {
+			return {
+				status: 400
+			};
+		}
+
+		const characterId = parseInt(body.characterId);
+
+		const character = await Prisma.client.animeCharacter.findUnique({
+			where: {
+				id: characterId
+			}
+		});
+
+		if (!character) {
+			return {
+				status: 404
+			};
+		}
+
+		const pickId = params['pick_id'];
+
+		const pick = await Prisma.client.pick.findUnique({
+			where: {
+				id: pickId
+			}
+		});
+
+		if (!pick) {
+			return {
+				status: 404
+			};
+		}
+
+		const pickedCharacter = await Prisma.client.pick.findUnique({
+			where: {
+				collabId_characterId: {
+					collabId: pick.collabId,
+					characterId: characterId
+				}
+			}
+		});
+
+		if (pickedCharacter) {
+			return {
+				status: 400
+			};
+		}
+
+		await Prisma.client.log.create({
+			data: {
+				action: 'admin_link_pick',
+				userId: user.id,
+				data: { id: pickId, characterId: characterId }
+			}
+		});
+
+		await Prisma.client.pick.update({
+			where: {
+				id: pickId
+			},
+			data: {
+				characterId: characterId,
+				original: false,
+				name: character.name
+			}
+		});
+
+		return {
+			status: 200
+		};
+	} catch (error) {
+		SentryClient.log(error);
+		console.log(error);
+
+		return {
+			status: 500
+		};
+	}
+};
+
 export const del: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');

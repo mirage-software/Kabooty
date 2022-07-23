@@ -7,16 +7,14 @@
 
 	export let character: AnimeCharacter & { Pick: Pick[] };
 
-	const picked = character.Pick.length > 0;
-
 	export let onClick: ((character: AnimeCharacter) => void) | null = null;
 </script>
 
 <button
 	class:selected={character?.id === $selected?.id}
-	class:unavailable={character?.id === -1 ? false : picked}
+	class:unavailable={character?.id === -1 ? false : character.Pick.length > 0}
 	on:click={() => {
-		if (!picked) {
+		if (character.Pick.length === 0) {
 			if (onClick) {
 				onClick(character);
 			}
@@ -25,7 +23,7 @@
 >
 	{#if character?.id !== -1}
 		<p id="status">
-			{picked
+			{character.Pick.length > 0
 				? $t('collabs.registration.character.picked')
 				: $t('collabs.registration.character.available')}
 		</p>

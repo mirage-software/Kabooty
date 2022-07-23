@@ -67,7 +67,7 @@
 
 				<InfiniteScroll
 					hasMore={loading}
-					threshold={0}
+					threshold={50}
 					on:loadMore={() => {
 						pageIndex++;
 						getPicks();
@@ -76,7 +76,9 @@
 				/>
 			</div>
 			{#if loading}
-				<LoadingSpinner />
+				<div id="spinner">
+					<LoadingSpinner />
+				</div>
 			{/if}
 		</div>
 	</div>
@@ -85,6 +87,10 @@
 {/if}
 
 <style lang="scss">
+	#spinner {
+		align-self: center;
+	}
+
 	#column {
 		display: flex;
 		flex-direction: column;

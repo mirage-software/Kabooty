@@ -15,19 +15,45 @@
 	export let collab: Collab;
 	export let profile = false;
 
+	let _window: Window | undefined;
+
+	onMount(() => {
+		_window = window;
+	});
+
 	export let onChange: () => void;
 
 	async function deletePick() {
-		await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id);
+		if (!_window) {
+			return;
+		}
 
-		onChange();
+		const response = _window.confirm($t('collabs.delete_pick_confirm'));
+
+		if (response) {
+			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id);
+
+			onChange();
+		}
 	}
 
 	async function linkPick() {
-		// TODO: link the pick to a character
-		// await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id);
+		if (!_window) {
+			return;
+		}
 
-		onChange();
+		const response = _window.prompt('Link the pick to anime character ID:', '123456');
+
+		if (response) {
+			try {
+				await axios.patch('/api/collabs/' + collab.id + '/picks/' + pick.id, {
+					characterId: response
+				});
+				onChange();
+			} catch (error) {
+				_window.alert('Failed to assign character');
+			}
+		}
 	}
 </script>
 
@@ -73,7 +99,7 @@
 								<IconButton icon="la la-trash" click={deletePick} />
 							</div>
 						{/if}
-						{#if $discord?.admin}
+						{#if $discord?.admin && pick.characterId}
 							<div id="admin">
 								<IconButton icon="la la-link" click={linkPick} />
 							</div>
