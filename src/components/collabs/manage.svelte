@@ -55,7 +55,7 @@ import Dropdown from './register/extra/dropdown.svelte';
 					hint={'Endless Mirage Megacollab'}
 				/>
 				<InputText bind:value={collab.topic} title={'collabs.manage.topic'} hint={'Hotwheels'} />
-				<Dropdown bind:value={collab.status} title={'Collab Status'} data={options} placeholder={'Collab Status'}/>
+				<Dropdown bind:value={collab.status} title={'collabs.manage.status'} data={options} placeholder={'collabs.manage.status'}/>
 				<div id="logo">
 					{#if (collab && collab.logo) || image}
 						<div id="image">
