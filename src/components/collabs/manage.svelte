@@ -3,13 +3,14 @@
 	import Card from '../generic/design/card.svelte';
 	import { t } from 'svelte-intl-precompile';
 	import SolidButton from '../generic/design/solid_button.svelte';
-	import type { Collab } from '@prisma/client';
+	import { CollabStatus, type Collab } from '@prisma/client';
 	import axios from 'axios';
 	import InputText from '../generic/design/input_text.svelte';
 	import FileUpload from '../generic/design/file_upload.svelte';
 	import ImageContainer from '../generic/design/image_container.svelte';
 	import { goto } from '$app/navigation';
 	import CollabCard from './collab.svelte';
+import Dropdown from './register/extra/dropdown.svelte';
 
 	export let collab: Partial<Collab> = {
 		title: undefined,
@@ -19,6 +20,15 @@
 	let image: string | null = null;
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
+
+	function prepareStatusOptions() {
+		let options: Array<string> = []
+		Object.keys(CollabStatus).forEach(status => {
+			let option: string = status;
+			options.push(option);
+		})
+		return options;
+	}
 
 	async function onSave() {
 		if (!collab.id) {
@@ -52,6 +62,7 @@
 					hint={'Endless Mirage Megacollab'}
 				/>
 				<InputText bind:value={collab.topic} title={'collabs.manage.topic'} hint={'Hotwheels'} />
+				<Dropdown bind:value={collab.status} title={'Collab Status'} data={prepareStatusOptions()} placeholder={'Collab Status'}/>
 				<div id="logo">
 					{#if (collab && collab.logo) || image}
 						<div id="image">
@@ -89,8 +100,10 @@
 				string={collab.id ? $t('collabs.update') : $t('collabs.create')}
 				disabled={!collab.title ||
 					!collab.topic ||
+					!collab.status ||
 					collab.title.length < 5 ||
-					collab.topic.length < 4}
+					collab.topic.length < 4
+				}
 			/>
 		</div>
 	</Card>
