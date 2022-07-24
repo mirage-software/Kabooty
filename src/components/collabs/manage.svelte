@@ -21,14 +21,7 @@ import Dropdown from './register/extra/dropdown.svelte';
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
 
-	function prepareStatusOptions() {
-		let options: Array<string> = [];
-		Object.keys(CollabStatus).forEach(status => {
-			let option: string = status;
-			options.push(option);
-		})
-		return options;
-	}
+	let options = Object.keys(CollabStatus);
 
 	async function onSave() {
 		if (!collab.id) {
@@ -62,7 +55,7 @@ import Dropdown from './register/extra/dropdown.svelte';
 					hint={'Endless Mirage Megacollab'}
 				/>
 				<InputText bind:value={collab.topic} title={'collabs.manage.topic'} hint={'Hotwheels'} />
-				<Dropdown bind:value={collab.status} title={'Collab Status'} data={prepareStatusOptions()} placeholder={'Collab Status'}/>
+				<Dropdown bind:value={collab.status} title={'Collab Status'} data={options} placeholder={'Collab Status'}/>
 				<div id="logo">
 					{#if (collab && collab.logo) || image}
 						<div id="image">
