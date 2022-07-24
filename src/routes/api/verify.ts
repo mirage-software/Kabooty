@@ -293,7 +293,7 @@ export const get: RequestHandler = async ({ request }) => {
 		guildMember.roles.remove(unverifiedRole);
 		// because xeg is too lazy to have another bot do it
 		// TODO: implement dynamic way of setting roles
-		const roles = guild.roles.valueOf();
+		const roles = guildMember.roles.valueOf();
 
 		if (!roles.has('739111062682730507') && !roles.has('739111130034733108')) {
 			guildMember.roles.add('630980373374828544');
