@@ -113,7 +113,8 @@
 			"logo": "Upload logo",
 			"filereqs": "Note, a maximum file size of 1MB is allowed. Minimum dimensions are 300x100 pixels.",
 			"delete": "Delete",
-			"rules": "Rules (optional)"
+			"rules": "Rules (optional)",
+			"status": "Collab Status"
 		},
 		"status": {
 			"EARLY_ACCESS": "Early Access",
