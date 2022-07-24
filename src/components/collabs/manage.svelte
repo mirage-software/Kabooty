@@ -22,7 +22,7 @@ import Dropdown from './register/extra/dropdown.svelte';
 	let filename: string | null = null;
 
 	function prepareStatusOptions() {
-		let options: Array<string> = []
+		let options: Array<string> = [];
 		Object.keys(CollabStatus).forEach(status => {
 			let option: string = status;
 			options.push(option);
