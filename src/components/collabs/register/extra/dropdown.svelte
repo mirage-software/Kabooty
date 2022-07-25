@@ -7,26 +7,60 @@
 	export let value: string | null | undefined = '';
 
 	export let data: string[] = [];
+	export let strings: string[] = [];
 </script>
 
 <div id="dropdown">
 	<h6>{$t(title)}</h6>
 	<div id="select">
 		<select name="data" bind:value>
-			<option value="">{$t(placeholder)}</option>
-			{#each data as item}
-				<option value={item}>{item}</option>
+			{#each data as item, index}
+				<option value={item}>{strings.length > index ? strings[index] : item}</option>
 			{/each}
 		</select>
+		{#if placeholder && !value}
+			<div id="wrapper">
+				<p id="placeholder">{$t(placeholder)}</p>
+			</div>
+		{/if}
 		<li class="la la-angle-down" />
 	</div>
 </div>
 
 <style lang="scss">
+	#wrapper {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+
+		#placeholder {
+			color: #ac9a99;
+			position: absolute;
+
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+
+			margin-left: $margin-s;
+			margin-right: calc($margin-m + $margin-s);
+
+			display: flex;
+			align-items: center;
+
+			overflow: hidden;
+			text-overflow: clip;
+			white-space: nowrap;
+		}
+	}
+
 	#dropdown {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
+
+		position: relative;
 
 		h6 {
 			margin: 0;

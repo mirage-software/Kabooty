@@ -74,6 +74,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 				id: params.id
 			},
 			data: {
+				status: body.status,
 				topic: body.topic,
 				title: body.title,
 				rules: body.rules === '' ? null : body.rules

@@ -46,7 +46,7 @@ export const post: RequestHandler = async ({ request }) => {
 			data: {
 				// TODO: these are hardcoded for now, must be an option later
 				type: CollabType.OPEN,
-				status: CollabStatus.EARLY_ACCESS,
+				status: body.status,
 				creatorId: userId,
 				title: body.title,
 				topic: body.topic,
