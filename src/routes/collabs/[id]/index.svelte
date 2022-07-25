@@ -7,7 +7,7 @@
 	import { discord } from '../../../stores/discord';
 
 	import axios from 'axios';
-	import type { Collab, Pick, User } from '@prisma/client';
+	import type { AnimeCharacter, Collab, Pick, User } from '@prisma/client';
 	import LoadingSpinner from '../../../components/generic/design/loading_spinner.svelte';
 	import PageTitle from '../../../components/generic/design/page_title.svelte';
 	import SolidButton from '../../../components/generic/design/solid_button.svelte';
@@ -15,8 +15,8 @@
 	import InfiniteScroll from 'svelte-infinite-scroll';
 
 	let pageIndex = 1;
-	let data: (Pick & { User: User })[] = [];
-	let newBatch: (Pick & { User: User })[] = [];
+	let data: (Pick & { User: User; Character: AnimeCharacter })[] = [];
+	let newBatch: (Pick & { User: User; Character: AnimeCharacter })[] = [];
 
 	let loading = true;
 
