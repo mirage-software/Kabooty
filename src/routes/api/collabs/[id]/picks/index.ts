@@ -26,7 +26,8 @@ export const get: RequestHandler = async ({ params, request }) => {
 			collabId: collab.id
 		},
 		include: {
-			User: true
+			User: true,
+			character: true
 		},
 		orderBy: [
 			{

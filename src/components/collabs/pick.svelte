@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Collab, User, Pick } from '@prisma/client';
+	import type { Collab, User, Pick, AnimeCharacter } from '@prisma/client';
 	import Card from '../generic/design/card.svelte';
 	import { t } from 'svelte-intl-precompile';
 
@@ -11,7 +11,7 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 
-	export let pick: Pick & { User: User };
+	export let pick: Pick & { User: User; character: AnimeCharacter };
 	export let collab: Collab;
 	export let profile = false;
 
@@ -83,6 +83,8 @@
 					{/if}
 					{#if pick.original}
 						<h6>Original</h6>
+					{:else}
+						<h6>{pick.character.anime_name}</h6>
 					{/if}
 					<h4>{pick.name}</h4>
 					<h6 style="margin: 0;">Picked by</h6>

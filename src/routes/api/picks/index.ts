@@ -35,6 +35,7 @@ export const get: RequestHandler = async ({ request }) => {
 			},
 			include: {
 				User: true,
+				character: true,
 				collab: true
 			}
 		});
