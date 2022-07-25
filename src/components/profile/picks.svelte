@@ -3,10 +3,10 @@
 	import { t } from 'svelte-intl-precompile';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
-	import type { Collab, Pick, User } from '@prisma/client';
+	import type { AnimeCharacter, Collab, Pick, User } from '@prisma/client';
 	import PickCard from '../collabs/pick.svelte';
 
-	let picks: (Pick & { User: User; collab: Collab })[] = [];
+	let picks: (Pick & { User: User; Character: AnimeCharacter; collab: Collab })[] = [];
 
 	onMount(async () => {
 		getPicks();
@@ -16,10 +16,13 @@
 		picks = (await axios.get('/api/picks')).data;
 	}
 
-	function getTypedPick(pick: Pick & { User: User; collab: Collab }): Pick & { User: User } {
+	function getTypedPick(
+		pick: Pick & { User: User; Character: AnimeCharacter; collab: Collab }
+	): Pick & { User: User; Character: AnimeCharacter } {
 		return {
 			...pick,
-			User: pick.User
+			User: pick.User,
+			Character: pick.Character
 		};
 	}
 </script>
