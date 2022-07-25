@@ -83,7 +83,7 @@
 						<h6>Original</h6>
 					{/if}
 					{#if pick.character}
-						<h6>{pick.character.anime_name}</h6>	
+						<h6>{pick.character.anime_name}</h6>
 					{/if}
 					<h4>{pick.name}</h4>
 					<h6 style="margin: 0;">Picked by</h6>
