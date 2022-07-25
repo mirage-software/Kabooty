@@ -6,7 +6,7 @@
 	import type { AnimeCharacter, Collab, Pick, User } from '@prisma/client';
 	import PickCard from '../collabs/pick.svelte';
 	
-	let picks: (Pick & { User: User | null, character: AnimeCharacter; collab: Collab;})[] = [];
+	let picks: (Pick & { User: User | null, Character: AnimeCharacter; collab: Collab;})[] = [];
 
 	onMount(async () => {
 		getPicks();
@@ -16,11 +16,11 @@
 		picks = (await axios.get('/api/picks')).data;
 	}
 
-	function getTypedPick(pick: Pick & { User: User | null; character: AnimeCharacter; collab: Collab }): Pick & { User: User; character: AnimeCharacter } {
+	function getTypedPick(pick: Pick & { User: User | null; Character: AnimeCharacter; collab: Collab }): Pick & { User: User; Character: AnimeCharacter } {
 		return {
 			...pick,
 			User: pick.User!,
-			character: pick.character
+			Character: pick.Character
 		};
 	}
 </script>
