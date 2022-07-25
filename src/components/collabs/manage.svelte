@@ -10,7 +10,7 @@
 	import ImageContainer from '../generic/design/image_container.svelte';
 	import { goto } from '$app/navigation';
 	import CollabCard from './collab.svelte';
-import Dropdown from './register/extra/dropdown.svelte';
+	import Dropdown from './register/extra/dropdown.svelte';
 
 	export let collab: Partial<Collab> = {
 		title: undefined,
@@ -21,7 +21,8 @@ import Dropdown from './register/extra/dropdown.svelte';
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
 
-	let options = Object.keys(CollabStatus);
+	let statusOptions = Object.keys(CollabStatus);
+	let statusStrings = statusOptions.map((status) => $t(`collabs.status.${status}`));
 
 	async function onSave() {
 		if (!collab.id) {
@@ -55,7 +56,13 @@ import Dropdown from './register/extra/dropdown.svelte';
 					hint={'Endless Mirage Megacollab'}
 				/>
 				<InputText bind:value={collab.topic} title={'collabs.manage.topic'} hint={'Hotwheels'} />
-				<Dropdown bind:value={collab.status} title={'collabs.manage.status'} data={options} placeholder={'collabs.manage.status'}/>
+				<Dropdown
+					bind:value={collab.status}
+					title={'collabs.manage.status'}
+					data={statusOptions}
+					strings={statusStrings}
+					placeholder={'collabs.manage.status'}
+				/>
 				<div id="logo">
 					{#if (collab && collab.logo) || image}
 						<div id="image">
@@ -95,8 +102,7 @@ import Dropdown from './register/extra/dropdown.svelte';
 					!collab.topic ||
 					!collab.status ||
 					collab.title.length < 5 ||
-					collab.topic.length < 4
-				}
+					collab.topic.length < 4}
 			/>
 		</div>
 	</Card>
