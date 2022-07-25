@@ -15,8 +15,8 @@
 	import InfiniteScroll from 'svelte-infinite-scroll';
 
 	let pageIndex = 1;
-	let data: (Pick & { User: User; Character: AnimeCharacter })[] = [];
-	let newBatch: (Pick & { User: User; Character: AnimeCharacter })[] = [];
+	let data: (Pick & { User: User; character: AnimeCharacter })[] = [];
+	let newBatch: (Pick & { User: User; character: AnimeCharacter })[] = [];
 
 	let loading = true;
 
