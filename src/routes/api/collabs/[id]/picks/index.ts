@@ -20,10 +20,13 @@ export const get: RequestHandler = async ({ params, request }) => {
 	const url = new URL(request.url);
 	// const query = url.searchParams.get('search') ?? '';
 	const page = parseInt(url.searchParams.get('page') ?? '1');
+	const query = url.searchParams.get('query') ?? undefined;
 
 	const picks = await Prisma.client.pick.findMany({
 		where: {
-			collabId: collab.id
+			collabId: collab.id,
+			OR: [{ name: { contains: query, mode: "insensitive" } },
+			{ character: { anime_name: { contains: query, mode: "insensitive" } } }]
 		},
 		include: {
 			User: true,
@@ -32,6 +35,11 @@ export const get: RequestHandler = async ({ params, request }) => {
 		orderBy: [
 			{
 				original: 'desc'
+			},
+			{
+				character: {
+					anime_name: 'asc'
+				}
 			},
 			{
 				createdAt: 'desc'

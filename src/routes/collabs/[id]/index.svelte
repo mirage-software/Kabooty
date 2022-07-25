@@ -13,18 +13,26 @@
 	import SolidButton from '../../../components/generic/design/solid_button.svelte';
 	import PickComponent from '../../../components/collabs/pick.svelte';
 	import InfiniteScroll from 'svelte-infinite-scroll';
+	import InputText from '../../../components/generic/design/input_text.svelte';
 
 	let pageIndex = 1;
 	let data: (Pick & { User: User; character: AnimeCharacter })[] = [];
 	let newBatch: (Pick & { User: User; character: AnimeCharacter })[] = [];
 
 	let loading = true;
+	let query = '';
 
 	async function getPicks() {
-		newBatch = (await axios.get('/api/collabs/' + collab?.id + '/picks?page=' + pageIndex)).data;
+		newBatch = (await axios.get('/api/collabs/' + collab?.id + '/picks?page=' + pageIndex + '&query=' + query)).data;
 		if (newBatch.length !== 25) {
 			loading = false;
 		}
+	}
+
+	async function filterPicks() {
+		data = [];
+		newBatch = [];
+		await getPicks();
 	}
 
 	async function resetPicks() {
@@ -59,6 +67,18 @@
 						string="collabs.update"
 					/>
 				{/if}
+			</div>
+			<div id="filter">
+				<InputText
+				bind:value={query}
+				title={'collabs.registration.character.search'}
+				hint={'Yumiko'}
+			/>
+			<SolidButton
+				click={filterPicks}
+				color="green"
+				string="collabs.registration.character.search"
+			/>
 			</div>
 			<div id="picks">
 				{#each data as pick}
@@ -130,6 +150,27 @@
 				}
 			}
 
+			#filter {
+				display: flex;
+				flex-direction: column;
+
+				align-self: stretch;
+
+				justify-content: space-between;
+
+				padding: $margin-m;
+				padding-top: $margin-s;
+				padding-bottom: 0;
+
+				gap: $margin-s;
+
+				align-items: start;
+
+				@media (min-width: 400px) {
+					flex-direction: row;
+				}
+			}
+
 			#picks {
 				display: flex;
 				flex-direction: row;
@@ -137,7 +178,7 @@
 				flex-wrap: wrap;
 
 				padding: $margin-m;
-				padding-top: $margin-l;
+				padding-top: $margin-m;
 				padding-bottom: 0;
 
 				gap: $margin-s;
