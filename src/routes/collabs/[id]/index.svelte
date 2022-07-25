@@ -228,7 +228,7 @@
 
 			// Cant get it to fill screen when it breaks :madge:
 			#dropdown {
-				@media screen and (max-width: $breakpoint-m) {
+				@media (max-width: $breakpoint-m) {
 					max-width: 100%;
 				}
 			}
