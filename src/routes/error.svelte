@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
 
-	// @ts-ignore
-	export let status: number = 200;
+	// export let status = 200;
 	// export let error: any;
 	export let type = 'unknown';
 </script>

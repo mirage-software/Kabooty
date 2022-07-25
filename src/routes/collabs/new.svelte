@@ -3,10 +3,8 @@
 
 	import { onDestroy, onMount } from 'svelte';
 
-	import { osu } from '../../stores/osu';
-	import { discord, getDiscordProfilePicture } from '../../stores/discord';
+	import { discord } from '../../stores/discord';
 
-	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import axios from 'axios';
 	import Manage from '../../components/collabs/manage.svelte';
 	import type { Unsubscriber } from 'svelte/store';

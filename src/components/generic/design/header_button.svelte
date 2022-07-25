@@ -4,7 +4,6 @@
 
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
 
 	function click() {

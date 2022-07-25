@@ -1,6 +1,5 @@
 <script context="module">
 	/** @type {import('@sveltejs/kit').Load} */
-	// @ts-ignore
 	export function load({ error, status }) {
 		console.error(error);
 
@@ -17,8 +16,7 @@
 <script>
 	import Error from './error.svelte';
 
-	export let status = 200;
 	export let type = 'unknown';
 </script>
 
-<Error {status} {type} />
+<Error {type} />

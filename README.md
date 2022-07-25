@@ -1,4 +1,3 @@
-
 # Kabooty
 
 Kabooty is the System for the [Endlessmirage](https://endlessmirage.net) collab Project.
@@ -10,13 +9,16 @@ Clone the Project
 ```bash
 git clone git@github.com:mirage-software/Kabooty.git
 ```
+
 Download required Packages and Dependencies
+
 ```bash
 npm install
 ```
-### Set up Enviorment Variables  
-  
-- Setup a new Discord Application [here](https://discord.com/developers/applications)  
+
+### Set up Enviorment Variables
+
+- Setup a new Discord Application [here](https://discord.com/developers/applications)
 - Setup a new osu Application [here](https://osu.ppy.sh/home/account/edit#new-oauth-application).
 
 #### Discord Server
@@ -48,15 +50,16 @@ Create a new Oauth Application like this: `http://localhost:3000/redirect/osu`
 
 ![](https://i.imgur.com/a418T9F.png)
 
-### JWT Secret  
+### JWT Secret
 
-JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public/private key pair using RSA or ECDSA.  
+JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public/private key pair using RSA or ECDSA.
 
 Generate a new Token for this.
 
 More Info on how to generate a new Token you can find [here](https://www.ssh.com/academy/ssh/keygen)
 
 ### Enviroment Variables
+
 ```bash
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/mirage?schema=public
 
@@ -82,7 +85,9 @@ PUBLIC_BASE_URL=http://localhost:3000
 Install Docker from [here](https://www.docker.com/products/docker-desktop/)
 
 #### Docker Compose
+
 Swap into the Kabooty Project Folder and compose the docker project with docker compose
+
 ```bash
 docker compose up -d
 ```

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
 
 	import { onMount } from 'svelte';
 
@@ -8,9 +7,7 @@
 	import { osu } from '../stores/osu';
 
 	import axios from 'axios';
-	import type { AnimeCharacter, Collab } from '@prisma/client';
 	import LoadingSpinner from '../components/generic/design/loading_spinner.svelte';
-	import Info from '../components/collabs/register/info.svelte';
 	import Discord from '../components/collabs/register/discord.svelte';
 	import Osu from '../components/collabs/register/osu.svelte';
 
@@ -20,7 +17,7 @@
 
 	let rules: string[];
 
-	let rulesAgreed: boolean = false;
+	let rulesAgreed = false;
 
 	onMount(async () => {
 		rules = (await axios.get('/api/rules')).data.split('\n');

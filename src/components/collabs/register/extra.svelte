@@ -43,8 +43,8 @@
 		reaction: '',
 		agility: ''
 	};
-	let gameSpecialty: string = '';
-	let avatarText: string = '';
+	let gameSpecialty = '';
+	let avatarText = '';
 
 	async function register() {
 		try {

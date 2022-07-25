@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { t } from 'svelte-intl-precompile';
 	import SolidButton from '../../generic/design/solid_button.svelte';
 	import Card from '../../generic/design/card.svelte';
@@ -7,7 +6,7 @@
 
 	export let collab: Collab;
 
-	export let accept: () => Promise<void> = async () => {};
+	export let accept: () => Promise<void>;
 
 	function getRules(): string[] {
 		if (!collab.rules) {
