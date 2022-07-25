@@ -150,5 +150,8 @@
 			"add_bulk": "Add bulk characters using JSON",
 			"multiline": "Multiline JSON"
 		}
+	},
+	"picks": {
+		"report": "Report"
 	}
 }

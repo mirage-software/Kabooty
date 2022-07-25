@@ -8,6 +8,7 @@
 	import { discord, getFormattedDate } from '../../stores/discord';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
+	import SolidButton from '../generic/design/solid_button.svelte';
 
 	export let pick: Pick & { User: User };
 	export let collab: Collab;
@@ -53,6 +54,25 @@
 			}
 		}
 	}
+
+	async function reportPick() {
+		if (!_window) {
+			return;
+		}
+
+		const response = _window.prompt(
+			'What would you like to report the pick for?',
+			'Duplicate pick'
+		);
+
+		if (response) {
+			await axios.post('/api/collabs/' + collab.id + '/picks/' + pick.id + '/report', {
+				report: response
+			});
+
+			_window.alert('Pick reported');
+		}
+	}
 </script>
 
 <div id="card">
@@ -90,20 +110,26 @@
 					<h5>{getFormattedDate(pick.createdAt.toString(), true)}</h5>
 				</div>
 
-				{#if $discord?.admin || profile}
-					<div id="buttons">
-						{#if $discord?.admin || profile}
-							<div id="admin">
-								<IconButton icon="la la-trash" click={deletePick} />
-							</div>
-						{/if}
-						{#if $discord?.admin}
-							<div id="admin">
-								<IconButton icon="la la-link" click={linkPick} />
-							</div>
-						{/if}
+				<div id="buttons">
+					<div id="report">
+						<SolidButton click={reportPick} string={'picks.report'} color="red" />
 					</div>
-				{/if}
+
+					{#if $discord?.admin || profile}
+						<div id="icon-buttons">
+							{#if $discord?.admin || profile}
+								<div id="admin">
+									<IconButton icon="la la-trash" click={deletePick} />
+								</div>
+							{/if}
+							{#if $discord?.admin}
+								<div id="admin">
+									<IconButton icon="la la-link" click={linkPick} />
+								</div>
+							{/if}
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 	</Card>
@@ -185,10 +211,29 @@
 				display: flex;
 				flex-direction: row;
 
+				justify-content: space-between;
+
 				flex-wrap: wrap;
 				gap: $margin-xs;
 
 				width: 100%;
+
+				#icon-buttons {
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					// justify-content: flex-end;
+
+					gap: $margin-xs;
+
+					align-self: flex-end;
+				}
+
+				#report {
+					align-self: stretch;
+					display: flex;
+					justify-content: stretch;
+				}
 
 				#admin {
 					display: flex;

@@ -134,6 +134,8 @@
 				display: flex;
 				flex-direction: row;
 
+				align-self: stretch;
+
 				flex-wrap: wrap;
 
 				padding: $margin-m;
