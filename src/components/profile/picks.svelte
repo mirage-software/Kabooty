@@ -6,7 +6,7 @@
 	import type { AnimeCharacter, Collab, Pick, User } from '@prisma/client';
 	import PickCard from '../collabs/pick.svelte';
 
-	let picks: (Pick & { User: User | null; Character: AnimeCharacter; collab: Collab })[] = [];
+	let picks: (Pick & { User: User; Character: AnimeCharacter; collab: Collab })[] = [];
 
 	onMount(async () => {
 		getPicks();
@@ -17,11 +17,11 @@
 	}
 
 	function getTypedPick(
-		pick: Pick & { User: User | null; Character: AnimeCharacter; collab: Collab }
+		pick: Pick & { User: User; Character: AnimeCharacter; collab: Collab }
 	): Pick & { User: User; Character: AnimeCharacter } {
 		return {
 			...pick,
-			User: pick.User!,
+			User: pick.User,
 			Character: pick.Character
 		};
 	}
