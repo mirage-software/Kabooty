@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
 	import { onMount } from 'svelte';
@@ -17,12 +16,11 @@
 	import Character from '../../../components/collabs/register/character.svelte';
 	import { selected } from '../../../components/collabs/register/character/selected_store';
 	import Image from '../../../components/collabs/register/image.svelte';
-	import Card from '../../../components/generic/design/card.svelte';
 	import Extra from '../../../components/collabs/register/extra.svelte';
 
 	let collab: Collab | null = null;
 
-	let rulesAgreed: boolean = false;
+	let rulesAgreed = false;
 
 	let character: AnimeCharacter | undefined | null = null;
 	let imageBuffer: ArrayBuffer | null = null;

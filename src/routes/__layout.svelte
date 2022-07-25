@@ -8,8 +8,7 @@
 
 	init({
 		fallbackLocale: 'en',
-		// @ts-ignore - !! type returns null but expects undefined instead
-		initialLocale: getLocaleFromNavigator('en')
+		initialLocale: getLocaleFromNavigator('en') ?? undefined
 	});
 
 	import axios from 'axios';

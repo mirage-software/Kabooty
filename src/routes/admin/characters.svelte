@@ -7,8 +7,7 @@
 
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import PageTitle from '../../components/generic/design/page_title.svelte';
-	import AdminButton from '../../components/admin/admin_button.svelte';
-	import type { AnimeCharacter, Pick, Prisma } from '@prisma/client';
+	import type { AnimeCharacter, Pick } from '@prisma/client';
 	import axios from 'axios';
 	import InputText from '../../components/generic/design/input_text.svelte';
 	import AdminCharacter from '../../components/admin/characters/admin_character.svelte';

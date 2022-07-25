@@ -1,5 +1,4 @@
 <script lang="ts">
-	import axios from 'axios';
 	import SolidButton from './solid_button.svelte';
 
 	let fileinput: HTMLInputElement;
@@ -8,11 +7,19 @@
 	export let height = 0;
 	export let maxBytes = 0;
 
-	export let onDataUrl = (dataUrl: string) => {};
-	export let onBuffer = (buffer: ArrayBuffer, filename: string) => {};
+	export let onDataUrl: (dataUrl: string) => void;
+	export let onBuffer: (buffer: ArrayBuffer, filename: string) => void;
 
-	const onFileSelected = (e: any) => {
-		let image = e.target.files[0];
+	const onFileSelected = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
+		let image: File | null = null;
+
+		if (e.currentTarget && e.currentTarget['files'] && e.currentTarget['files'].length > 0) {
+			image = e.currentTarget['files'][0];
+		}
+
+		if (!image || image === null) {
+			return;
+		}
 
 		if (image.size > maxBytes) {
 			alert('File is too large');
@@ -29,9 +36,9 @@
 
 		buffer.onload = (e) => {
 			const result = e.target?.result as ArrayBuffer;
-			const filename = image.name;
+			const filename = image?.name;
 
-			if (result) {
+			if (result && filename) {
 				onBuffer(result, filename);
 			}
 		};

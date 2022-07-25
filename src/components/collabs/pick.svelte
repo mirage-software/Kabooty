@@ -4,8 +4,6 @@
 	import { t } from 'svelte-intl-precompile';
 
 	import ImageContainer from '../generic/design/image_container.svelte';
-	import SolidButton from '../generic/design/solid_button.svelte';
-	import { goto } from '$app/navigation';
 	import IconButton from './icon_button.svelte';
 	import { discord, getFormattedDate } from '../../stores/discord';
 	import { onMount } from 'svelte';

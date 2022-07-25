@@ -3,7 +3,6 @@
 
 	import { onMount } from 'svelte';
 
-	import { osu } from '../../stores/osu';
 	import { discord, getDiscordProfilePicture, getFormattedDate } from '../../stores/discord';
 
 	import SolidButton from '../../components/generic/design/solid_button.svelte';

@@ -5,7 +5,7 @@
 	import axios from 'axios';
 	import type { AnimeCharacter, Collab, Pick, User } from '@prisma/client';
 	import PickCard from '../collabs/pick.svelte';
-	
+
 	let picks: (Pick & { User: User | null, Character: AnimeCharacter; collab: Collab;})[] = [];
 
 	onMount(async () => {
