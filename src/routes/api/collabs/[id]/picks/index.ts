@@ -58,15 +58,15 @@ export const get: RequestHandler = async ({ params, request }) => {
 						original: "desc"
 					},
 					{
+						character: {
+							anime_name: "asc"
+						}
+					},
+					{
 						name: "desc"
 					},
 					{
 						createdAt: "desc"
-					},
-					{
-						character: {
-							anime_name: "asc"
-						}
 					}
 				]
 			} else {
@@ -75,15 +75,15 @@ export const get: RequestHandler = async ({ params, request }) => {
 						original: "asc"
 					},
 					{
+						character: {
+							anime_name: "desc"
+						}
+					},
+					{
 						name: "asc"
 					},
 					{
 						createdAt: "asc"
-					},
-					{
-						character: {
-							anime_name: "desc"
-						}
 					}
 				]
 			}
