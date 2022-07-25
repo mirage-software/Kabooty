@@ -109,7 +109,7 @@
 			</div>
 			<div id="filter">
 				<InputText
-					maxWidth={'1550px'}
+					maxWidth={'100%'}
 					bind:value={query}
 					title={'collabs.registration.character.search'}
 					hint={'Yumiko'}
@@ -219,10 +219,17 @@
 
 				gap: $margin-s;
 
-				align-items: end;
+				align-items: left;
 
-				@media (min-width: 400px) {
+				@media (min-width: $breakpoint-m) {
 					flex-direction: row;
+				}
+			}
+
+			// Cant get it to fill screen when it breaks :madge:
+			#dropdown {
+				@media screen and (max-width: $breakpoint-m) {
+					max-width: 100%;
 				}
 			}
 
