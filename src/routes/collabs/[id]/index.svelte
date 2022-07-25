@@ -2,6 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
+	import { t } from 'svelte-intl-precompile';
+
 	import { onMount } from 'svelte';
 
 	import { discord } from '../../../stores/discord';
@@ -14,25 +16,62 @@
 	import PickComponent from '../../../components/collabs/pick.svelte';
 	import InfiniteScroll from 'svelte-infinite-scroll';
 	import InputText from '../../../components/generic/design/input_text.svelte';
+	import Dropdown from '../../../components/collabs/register/extra/dropdown.svelte';
+	import IconButton from '../../../components/collabs/icon_button.svelte';
 
 	let pageIndex = 1;
 	let data: (Pick & { User: User; character: AnimeCharacter })[] = [];
 	let newBatch: (Pick & { User: User; character: AnimeCharacter })[] = [];
 
-	let loading = true;
+	let filtervalues: Array<string> = ['default', 'original', 'char', 'date', 'anime'];
+	let fiterstrings: Array<string> = filtervalues.map((filter) => $t(`collabs.filter.${filter}`));
+
+	let filter = 'default';
+	let order = 'desc';
 	let query = '';
 
+	let loading = true;
+
 	async function getPicks() {
-		newBatch = (await axios.get('/api/collabs/' + collab?.id + '/picks?page=' + pageIndex + '&query=' + query)).data;
+		newBatch = (
+			await axios.get(
+				'/api/collabs/' +
+					collab?.id +
+					'/picks?page=' +
+					pageIndex +
+					'&query=' +
+					query +
+					'&sort=' +
+					filter +
+					'&order=' +
+					order
+			)
+		).data;
 		if (newBatch.length !== 25) {
 			loading = false;
 		}
+	}
+
+	async function swapFilter() {
+		if (order === 'desc') {
+			order = 'asc';
+		} else {
+			order = 'desc';
+		}
+		await filterPicks();
 	}
 
 	async function filterPicks() {
 		data = [];
 		newBatch = [];
 		await getPicks();
+	}
+
+	async function clearFilter() {
+		filter = 'default';
+		order = 'desc';
+		query = '';
+		await filterPicks();
 	}
 
 	async function resetPicks() {
@@ -70,15 +109,33 @@
 			</div>
 			<div id="filter">
 				<InputText
-				bind:value={query}
-				title={'collabs.registration.character.search'}
-				hint={'Yumiko'}
-			/>
-			<SolidButton
-				click={filterPicks}
-				color="green"
-				string="collabs.registration.character.search"
-			/>
+					maxWidth={'1550px'}
+					bind:value={query}
+					title={'collabs.registration.character.search'}
+					hint={'Yumiko'}
+				/>
+				<Dropdown
+					bind:value={filter}
+					data={filtervalues}
+					strings={fiterstrings}
+					title={'Sort'}
+					placeholder={'Default'}
+				/>
+				{#if order === 'desc'}
+					<IconButton icon="la la-angle-down" click={swapFilter} />
+				{:else}
+					<IconButton icon="la la-angle-up" click={swapFilter} />
+				{/if}
+				<SolidButton
+					click={clearFilter}
+					color="blue"
+					string="collabs.registration.character.search_reset"
+				/>
+				<SolidButton
+					click={filterPicks}
+					color="green"
+					string="collabs.registration.character.search"
+				/>
 			</div>
 			<div id="picks">
 				{#each data as pick}
@@ -156,15 +213,13 @@
 
 				align-self: stretch;
 
-				justify-content: space-between;
-
 				padding: $margin-m;
 				padding-top: $margin-s;
 				padding-bottom: 0;
 
 				gap: $margin-s;
 
-				align-items: start;
+				align-items: end;
 
 				@media (min-width: 400px) {
 					flex-direction: row;

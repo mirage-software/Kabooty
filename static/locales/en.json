@@ -80,6 +80,7 @@
 				"available": "Available",
 				"picked": "Picked",
 				"search": "Search",
+				"search_reset": "Clear",
 				"search_title": "Search for a character",
 				"search_subtitle": "You may also search by game or anime name, however for OC or unavailable characters, please input the name of the character",
 				"name": "Character name"
@@ -123,6 +124,13 @@
 			"BUMP": "Bump Period",
 			"RELEASE": "Released",
 			"CLOSED": "Closed"
+		},
+		"filter": {
+			"default": "Default",
+			"char": "Character Name",
+			"date": "Creation Date",
+			"anime": "Anime",
+			"original": "Original Characters"
 		},
 		"errors": {
 			"unauthorized": "You must be logged in to register for this collab",

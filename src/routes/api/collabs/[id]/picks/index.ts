@@ -21,6 +21,74 @@ export const get: RequestHandler = async ({ params, request }) => {
 	// const query = url.searchParams.get('search') ?? '';
 	const page = parseInt(url.searchParams.get('page') ?? '1');
 	const query = url.searchParams.get('query') ?? undefined;
+	const sort = url.searchParams.get('sort') ?? undefined;
+	const order = url.searchParams.get('order') ?? undefined;
+
+	// if original should still always be first add
+	// as default {original: "desc"} here
+	let orderBy: Array<object> = [{ original: "desc" }];
+
+	switch (sort) {
+		case 'original': {
+			orderBy = [{ original: order }];
+			break;
+		}
+		case 'char': {
+			orderBy.push({ name: order });
+			break;
+		}
+		case 'date': {
+			orderBy.push({
+				createdAt: order
+			})
+			break;
+		}
+		case 'anime': {
+			orderBy.push({
+				character: {
+					anime_name: order
+				}
+			});
+			break;
+		}
+		default: {
+			if (order === "desc") {
+				orderBy = [
+					{
+						original: "desc"
+					},
+					{
+						name: "desc"
+					},
+					{
+						createdAt: "desc"
+					},
+					{
+						character: {
+							anime_name: "asc"
+						}
+					}
+				]
+			} else {
+				orderBy = [
+					{
+						original: "asc"
+					},
+					{
+						name: "asc"
+					},
+					{
+						createdAt: "asc"
+					},
+					{
+						character: {
+							anime_name: "desc"
+						}
+					}
+				]
+			}
+		}
+	}
 
 	const picks = await Prisma.client.pick.findMany({
 		where: {
@@ -32,19 +100,7 @@ export const get: RequestHandler = async ({ params, request }) => {
 			User: true,
 			character: true
 		},
-		orderBy: [
-			{
-				original: 'desc'
-			},
-			{
-				character: {
-					anime_name: 'asc'
-				}
-			},
-			{
-				createdAt: 'desc'
-			}
-		],
+		orderBy: orderBy,
 		take: 25,
 		skip: 25 * (page - 1)
 	});
