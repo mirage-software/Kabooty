@@ -9,7 +9,7 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 
-	export let pick: Pick & { User: User; Character: AnimeCharacter };
+	export let pick: Pick & { User: User; character: AnimeCharacter };
 	export let collab: Collab;
 	export let profile = false;
 
