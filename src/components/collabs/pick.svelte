@@ -8,9 +8,8 @@
 	import { discord, getFormattedDate } from '../../stores/discord';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
-	import Character from './register/character/character.svelte';
 
-	export let pick: Pick & { User: User; Character: AnimeCharacter };
+	export let pick: Pick & { User: User; character: AnimeCharacter };
 	export let collab: Collab;
 	export let profile = false;
 
@@ -82,8 +81,9 @@
 					{/if}
 					{#if pick.original}
 						<h6>Original</h6>
-					{:else if pick.Character !== undefined && pick.Character.anime_name !== undefined}
-						<h6>{pick.Character.anime_name}</h6>
+					{/if}
+					{#if pick.character}
+						<h6>{pick.character.anime_name}</h6>
 					{/if}
 					<h4>{pick.name}</h4>
 					<h6 style="margin: 0;">Picked by</h6>
