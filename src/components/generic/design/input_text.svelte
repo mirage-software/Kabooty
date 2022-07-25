@@ -6,7 +6,7 @@
 
 	export let value: string | null | undefined = '';
 
-	export let multiline: boolean = false;
+	export let multiline = false;
 
 	export let max: number | null | undefined = null;
 

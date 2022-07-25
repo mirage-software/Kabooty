@@ -14,7 +14,7 @@
 	export let dataUrl: string | null = null;
 	export let collab: Partial<Collab> | null = null;
 
-	let canRegister: boolean = false;
+	let canRegister = false;
 
 	onMount(async () => {
 		if (!collab?.id) {

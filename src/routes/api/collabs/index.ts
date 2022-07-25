@@ -3,7 +3,7 @@ import cookie from 'cookie';
 import { Jwt } from '../../../jwt';
 import { getUser } from '../discord/user';
 import { Prisma } from '../../../database/prisma';
-import { CollabStatus, CollabType, type Collab } from '@prisma/client';
+import { CollabType, type Collab } from '@prisma/client';
 import { SentryClient } from '../../../bot/sentry';
 
 export const get: RequestHandler = async () => {

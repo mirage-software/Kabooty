@@ -3,7 +3,6 @@
 
 	import { discord } from '../../stores/discord';
 
-	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import PageTitle from '../../components/generic/design/page_title.svelte';
 	import AdminButton from '../../components/admin/admin_button.svelte';
 	import { onDestroy, onMount } from 'svelte';

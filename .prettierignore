@@ -1,0 +1,13 @@
+# long files that don't need checking
+src/database/characters.json
+
+# from .gitignore
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+stack.env
+!.env.example

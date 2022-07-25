@@ -27,7 +27,7 @@
 		if ($discord) {
 			goto('/profile');
 		} else {
-			goto(url!);
+			goto(url);
 		}
 	}
 </script>

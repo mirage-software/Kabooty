@@ -1,13 +1,13 @@
 @font-face {
-  font-family: 'osu-icons';
-  src: url('./osu-icons/osu-icons.eot?45332552');
-  src: url('./osu-icons/osu-icons.eot?45332552#iefix') format('embedded-opentype'),
-       url('./osu-icons/osu-icons.woff2?45332552') format('woff2'),
-       url('./osu-icons/osu-icons.woff?45332552') format('woff'),
-       url('./osu-icons/osu-icons.ttf?45332552') format('truetype'),
-       url('./osu-icons/osu-icons.svg?45332552#osu-icons') format('svg');
-  font-weight: normal;
-  font-style: normal;
+	font-family: 'osu-icons';
+	src: url('./osu-icons/osu-icons.eot?45332552');
+	src: url('./osu-icons/osu-icons.eot?45332552#iefix') format('embedded-opentype'),
+		url('./osu-icons/osu-icons.woff2?45332552') format('woff2'),
+		url('./osu-icons/osu-icons.woff?45332552') format('woff'),
+		url('./osu-icons/osu-icons.ttf?45332552') format('truetype'),
+		url('./osu-icons/osu-icons.svg?45332552#osu-icons') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
 /* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
 /* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
@@ -19,28 +19,39 @@
   }
 }
 */
-[class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "osu-icons";
-  font-style: normal;
-  font-weight: normal;
+[class^='icon-']:before,
+[class*=' icon-']:before {
+	font-family: 'osu-icons';
+	font-style: normal;
+	font-weight: normal;
 
-  display: inline-block;
-  text-decoration: inherit;
-  width: 1em;
-  text-align: center;
-  /* opacity: .8; */
+	display: inline-block;
+	text-decoration: inherit;
+	width: 1em;
+	text-align: center;
+	/* opacity: .8; */
 
-  /* For safety - reset parent styles, that can break glyph codes*/
-  font-variant: normal;
-  text-transform: none;
+	/* For safety - reset parent styles, that can break glyph codes*/
+	font-variant: normal;
+	text-transform: none;
 
-  /* Font smoothing. That was taken from TWBS */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	/* Font smoothing. That was taken from TWBS */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-mode-osu:before { content: '\e800'; } /* '' */
-.icon-mode-fruits:before { content: '\e801'; } /* '' */
-.icon-mode-mania:before { content: '\e802'; } /* '' */
-.icon-mode-taiko:before { content: '\e803'; } /* '' */
-.icon-osu:before { content: '\e805'; } /* '' */
+.icon-mode-osu:before {
+	content: '\e800';
+} /* '' */
+.icon-mode-fruits:before {
+	content: '\e801';
+} /* '' */
+.icon-mode-mania:before {
+	content: '\e802';
+} /* '' */
+.icon-mode-taiko:before {
+	content: '\e803';
+} /* '' */
+.icon-osu:before {
+	content: '\e805';
+} /* '' */
