@@ -18,11 +18,12 @@ export const get: RequestHandler = async ({ params, request }) => {
 	}
 
 	const url = new URL(request.url);
-	// const query = url.searchParams.get('search') ?? '';
 	const page = parseInt(url.searchParams.get('page') ?? '1');
-	const query = url.searchParams.get('query') ?? undefined;
+	const query = url.searchParams.get('query')?.trim() ?? undefined;
 	const sort = url.searchParams.get('sort') ?? undefined;
 	const order = url.searchParams.get('order') ?? undefined;
+
+	const search = query?.split(' ').join(' & ');
 
 	let orderBy: Array<object> = [
 		{
@@ -66,13 +67,12 @@ export const get: RequestHandler = async ({ params, request }) => {
 		}
 	}
 
+	const OR = search ? [{ name: { search } }, { character: { anime_name: { search } } }] : undefined;
+
 	const picks = await Prisma.client.pick.findMany({
 		where: {
 			collabId: collab.id,
-			OR: [
-				{ name: { contains: query, mode: 'insensitive' } },
-				{ character: { anime_name: { contains: query, mode: 'insensitive' } } }
-			]
+			OR: OR
 		},
 		include: {
 			User: true,

@@ -10,15 +10,16 @@ import { deletePick } from './collabs/[id]/picks/[pick_id]';
 
 export const get: RequestHandler = async ({ request }) => {
 	const url = new URL(request.url);
-	const query = url.searchParams.get('search') ?? '';
+	const query = url.searchParams.get('search')?.trim() ?? undefined;
 	const page = parseInt(url.searchParams.get('page') ?? '1');
+
+	const search = query?.split(' ').join(' & ');
+
+	const OR = search ? [{ name: { search } }, { anime_name: { search } }] : undefined;
 
 	const characters = await Prisma.client.animeCharacter.findMany({
 		where: {
-			OR: [
-				{ name: { contains: query, mode: 'insensitive' } },
-				{ anime_name: { contains: query, mode: 'insensitive' } }
-			]
+			OR: OR
 		},
 		include: {
 			Pick: true
@@ -29,10 +30,7 @@ export const get: RequestHandler = async ({ request }) => {
 
 	const count = await Prisma.client.animeCharacter.count({
 		where: {
-			OR: [
-				{ name: { contains: query, mode: 'insensitive' } },
-				{ anime_name: { contains: query, mode: 'insensitive' } }
-			]
+			OR: OR
 		}
 	});
 

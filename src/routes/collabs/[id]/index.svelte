@@ -32,7 +32,7 @@
 
 	let loading = true;
 
-	let cooldown: any | null = null;
+	let cooldown: string | number | undefined;
 
 	async function getPicks() {
 		newBatch = (
@@ -62,10 +62,15 @@
 		if (cooldown) {
 			clearTimeout(cooldown);
 		}
-		cooldown = setTimeout(() => {
+
+		const timeOut = setTimeout(() => {
 			getPicks();
 			clearTimeout(cooldown);
 		}, 1000);
+
+		if (typeof timeOut === 'number' || typeof timeOut === 'string') {
+			cooldown = timeOut;
+		}
 	}
 
 	async function swapFilter() {

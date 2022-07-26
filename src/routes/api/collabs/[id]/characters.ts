@@ -3,7 +3,7 @@ import { Prisma } from '../../../../database/prisma';
 
 export const get: RequestHandler = async ({ params, request }) => {
 	const url = new URL(request.url);
-	const query = url.searchParams.get('search') ?? undefined;
+	const query = url.searchParams.get('search')?.trim() ?? undefined;
 
 	const collab = await Prisma.client.collab.findUnique({
 		where: {
@@ -20,12 +20,13 @@ export const get: RequestHandler = async ({ params, request }) => {
 		};
 	}
 
+	const search = query?.split(' ').join(' & ');
+
+	const OR = search ? [{ name: { search } }, { anime_name: { search } }] : undefined;
+
 	const characters = await Prisma.client.animeCharacter.findMany({
 		where: {
-			OR: [
-				{ name: { contains: query, mode: 'insensitive' } },
-				{ anime_name: { contains: query, mode: 'insensitive' } }
-			]
+			OR: OR
 		},
 		include: {
 			Pick: {
