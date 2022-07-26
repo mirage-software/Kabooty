@@ -21,24 +21,24 @@ export const get: RequestHandler = async ({ params, request }) => {
 	const page = parseInt(url.searchParams.get('page') ?? '1');
 	const query = url.searchParams.get('query')?.trim() ?? undefined;
 	const sort = url.searchParams.get('sort') ?? undefined;
-	const order = url.searchParams.get('order') ?? undefined;
+	const order = url.searchParams.get('order') ?? 'desc';
 
 	const search = query?.split(' ').join(' & ');
 
 	let orderBy: Array<object> = [
 		{
-			original: order ?? 'desc'
+			original: order
 		},
 		{
 			character: {
-				anime_name: (order ?? 'desc') === 'desc' ? 'asc' : 'desc'
+				anime_name: order === 'desc' ? 'asc' : 'desc'
 			}
 		},
 		{
-			name: order ?? 'desc'
+			name: order
 		},
 		{
-			createdAt: order ?? 'desc'
+			createdAt: order
 		}
 	];
 
@@ -48,21 +48,38 @@ export const get: RequestHandler = async ({ params, request }) => {
 			break;
 		}
 		case 'char': {
-			orderBy.push({ name: order });
+			orderBy = [
+				{
+					name: order
+				},
+				{
+					character: {
+						anime_name: order === 'desc' ? 'asc' : 'desc'
+					}
+				}
+			];
 			break;
 		}
 		case 'date': {
-			orderBy.push({
-				createdAt: order
-			});
+			orderBy = [
+				{
+					createdAt: order
+				}
+			];
 			break;
 		}
 		case 'anime': {
-			orderBy.push({
-				character: {
-					anime_name: order
+			orderBy = [
+				{ original: order },
+				{
+					character: {
+						anime_name: order === 'desc' ? 'asc' : 'desc'
+					}
+				},
+				{
+					name: order
 				}
-			});
+			];
 			break;
 		}
 	}
