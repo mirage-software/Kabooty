@@ -32,10 +32,28 @@
 
 	async function searchCharacters() {
 		if (query.length < 2 || !collab?.id) {
+			results = null;
 			return;
 		}
 
 		results = (await axios.get(`/api/collabs/${collab.id}/characters?search=${query}`)).data;
+	}
+
+	let cooldown: string | number | undefined;
+
+	function setSearchTimer() {
+		if (cooldown) {
+			clearTimeout(cooldown);
+		}
+
+		const timeOut = setTimeout(() => {
+			searchCharacters();
+			clearTimeout(cooldown);
+		}, 1000);
+
+		if (typeof timeOut === 'number' || typeof timeOut === 'string') {
+			cooldown = timeOut;
+		}
 	}
 </script>
 
@@ -51,12 +69,7 @@
 				bind:value={query}
 				title={'collabs.registration.character.search'}
 				hint={'Yumiko'}
-			/>
-			<SolidButton
-				click={searchCharacters}
-				color="green"
-				string="collabs.registration.character.search"
-				disabled={query.length < 2}
+				onChanged={setSearchTimer}
 			/>
 			{#if results}
 				<div id="results">

@@ -72,6 +72,24 @@
 		}
 	});
 
+	let cooldown: string | number | undefined;
+
+	function setSearchTimer() {
+		newPage = 1;
+		if (cooldown) {
+			clearTimeout(cooldown);
+		}
+
+		const timeOut = setTimeout(() => {
+			getCharacters();
+			clearTimeout(cooldown);
+		}, 1000);
+
+		if (typeof timeOut === 'number' || typeof timeOut === 'string') {
+			cooldown = timeOut;
+		}
+	}
+
 	function isJSONValid(json: string) {
 		try {
 			const result = JSON.parse(json);
@@ -107,14 +125,7 @@
 					bind:value={query}
 					title={'collabs.registration.character.name'}
 					hint={'Hikari-chan uwu'}
-					onChanged={() => {
-						newPage = 1;
-					}}
-				/>
-				<SolidButton
-					click={getCharacters}
-					color="green"
-					string="collabs.registration.character.search"
+					onChanged={setSearchTimer}
 				/>
 				{#if characters}
 					<Paginator
