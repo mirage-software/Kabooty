@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-intl-precompile';
 
-	export let title = 'title';
+	export let title: string | null = null;
 	export let hint = 'hint';
 
 	export let value: string | null | undefined = '';
@@ -34,23 +34,24 @@
 </script>
 
 <div id="text" style={getMultilineStyle(maxWidth, null)}>
-	<h6>{$t(title)}</h6>
+	{#if title}
+		<h6>{$t(title)}</h6>
+	{/if}
 	{#if multiline}
 		<textarea
-			name={$t(title)}
 			id="input"
 			placeholder={$t(hint)}
 			bind:value
+			on:input={onChanged}
 			style={getMultilineStyle(maxWidth, height)}
 		/>
 	{:else}
 		<input
 			type="text"
 			maxlength={max}
-			name={$t(title)}
 			id="input"
 			placeholder={$t(hint)}
-			on:change={onChanged}
+			on:input={onChanged}
 			bind:value
 		/>
 	{/if}
@@ -91,6 +92,7 @@
 			resize: none;
 
 			width: calc(100% - $margin-s * 2);
+			height: 100%;
 
 			:active {
 				border: 1px solid $dark-overlay;

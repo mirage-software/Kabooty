@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-intl-precompile';
 
-	export let title = 'title';
+	export let title: string | null = null;
 	export let placeholder = 'placeholder';
 
 	export let value: string | null | undefined = '';
@@ -11,7 +11,9 @@
 </script>
 
 <div id="dropdown">
-	<h6>{$t(title)}</h6>
+	{#if title}
+		<h6>{$t(title)}</h6>
+	{/if}
 	<div id="select">
 		<select name="data" bind:value>
 			{#each data as item, index}
@@ -58,7 +60,9 @@
 	#dropdown {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: stretch;
+
+		align-self: stretch;
 
 		position: relative;
 
@@ -72,6 +76,8 @@
 		width: 100%;
 		max-width: 400px;
 
+		height: 100%;
+
 		#select {
 			background-color: $dark-overlay;
 
@@ -80,6 +86,8 @@
 			border-radius: $border-radius-s;
 
 			width: calc(100% - $margin-s);
+
+			height: 100%;
 
 			display: flex;
 			align-items: center;
