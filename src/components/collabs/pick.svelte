@@ -61,7 +61,7 @@
 		}
 
 		const response = _window.prompt(
-			'What would you like to report the pick for?',
+			'What would you like to report the pick for? There\'s no need to report for a missing image, or when the pick is not a duplicate, or not in the character database. Valid reasons are for example, "inappropriate image", "duplicate pick", or something along those lines.',
 			'Duplicate pick'
 		);
 
