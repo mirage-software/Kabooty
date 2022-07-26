@@ -1,5 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { Prisma } from '../../../../../database/prisma';
+import type { Prisma as prisma } from '@prisma/client';
 
 export const get: RequestHandler = async ({ params, request }) => {
 	const collab = await Prisma.client.collab.findUnique({
@@ -23,7 +24,7 @@ export const get: RequestHandler = async ({ params, request }) => {
 	const sort = url.searchParams.get('sort') ?? undefined;
 	const order = url.searchParams.get('order') ?? 'desc';
 
-	const search = query?.split(' ').join(' & ');
+	const search = query?.split(' ');
 
 	let orderBy: Array<object> = [
 		{
@@ -84,7 +85,18 @@ export const get: RequestHandler = async ({ params, request }) => {
 		}
 	}
 
-	const OR = search ? [{ name: { search } }, { character: { anime_name: { search } } }] : undefined;
+	let OR: prisma.Enumerable<prisma.PickWhereInput> | undefined;
+
+	if (search) {
+		OR = [
+			{ AND: search.map((s) => ({ name: { contains: s, mode: 'insensitive' } })) },
+			{
+				AND: search.map((s) => ({
+					character: { anime_name: { contains: s, mode: 'insensitive' } }
+				}))
+			}
+		];
+	}
 
 	const picks = await Prisma.client.pick.findMany({
 		where: {
