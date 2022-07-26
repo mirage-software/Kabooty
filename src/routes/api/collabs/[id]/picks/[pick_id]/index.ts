@@ -2,12 +2,12 @@ import { CollabStatus, type Pick } from '@prisma/client';
 import type { RequestHandler } from '@sveltejs/kit';
 import { existsSync, unlinkSync } from 'fs';
 import path from 'path';
-import { Prisma } from '../../../../../database/prisma';
-import { Env } from '../../../../../env';
+import { Prisma } from '../../../../../../database/prisma';
+import { Env } from '../../../../../../env';
 import cookie from 'cookie';
-import { Jwt } from '../../../../../jwt';
-import { getUser } from '../../../discord/user';
-import { SentryClient } from '../../../../../bot/sentry';
+import { Jwt } from '../../../../../../jwt';
+import { getUser } from '../../../../discord/user';
+import { SentryClient } from '../../../../../../bot/sentry';
 
 export async function deletePick(pick: Pick): Promise<void> {
 	if (!pick) {
