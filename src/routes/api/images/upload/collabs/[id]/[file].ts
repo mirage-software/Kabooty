@@ -7,6 +7,7 @@ import cookie from 'cookie';
 import { Jwt } from '../../../../../../jwt';
 import { getUser } from '../../../../discord/user';
 import imageType from 'image-type';
+import sharp from 'sharp';
 
 export const post: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -69,11 +70,13 @@ export const post: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const buffer = Buffer.from(blob);
+	let buffer = Buffer.from(blob);
 
 	const type = imageType(buffer);
 
-	if (type?.ext !== 'png') {
+	const acceptedExtensions = ['png', 'jpg', 'jpeg', 'webp'];
+
+	if (!type || !acceptedExtensions.includes(type.ext)) {
 		return {
 			status: 400,
 			body: {
@@ -82,7 +85,12 @@ export const post: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const file = params.id + '.' + type.ext;
+	if (type.ext !== 'png') {
+		const image = sharp(buffer);
+		buffer = await image.png().toBuffer();
+	}
+
+	const file = params.id + '.png';
 
 	const filePath = path.join(env['FILE_STORAGE_PATH'], 'collabs', file);
 

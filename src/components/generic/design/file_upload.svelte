@@ -7,7 +7,7 @@
 	export let height = 0;
 	export let maxBytes = 0;
 
-	export let onDataUrl: (dataUrl: string) => void;
+	export let onDataUrl: (dataUrl: string | null) => void;
 	export let onBuffer: (buffer: ArrayBuffer, filename: string) => void;
 
 	const onFileSelected = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
@@ -26,8 +26,13 @@
 			return;
 		}
 
-		if (image.type !== 'image/png') {
-			alert('Only PNG files are supported');
+		if (
+			image.type !== 'image/png' &&
+			image.type !== 'image/jpeg' &&
+			image.type !== 'image/jpg' &&
+			image.type !== 'image/webp'
+		) {
+			alert('Only PNG, WebP, and JPEG files are supported');
 			return;
 		}
 
@@ -55,6 +60,7 @@
 			img.onload = () => {
 				if (img.width < width || img.height < height) {
 					// TODO: make alerts look nice
+					onDataUrl(null);
 					alert('Image is too small');
 					return;
 				}
@@ -71,7 +77,7 @@
 
 <input
 	type="file"
-	accept=".png"
+	accept=".png, .jpeg, .jpg, .webp"
 	on:change={(e) => onFileSelected(e)}
 	bind:this={fileinput}
 	style="display: none;"

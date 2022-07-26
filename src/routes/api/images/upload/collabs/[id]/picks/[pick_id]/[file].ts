@@ -8,6 +8,7 @@ import { Jwt } from '../../../../../../../../jwt';
 import { getUser } from '../../../../../../discord/user';
 import { SentryClient } from '../../../../../../../../bot/sentry';
 import imageType from 'image-type';
+import sharp from 'sharp';
 
 export const post: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -101,11 +102,13 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const buffer = Buffer.from(blob);
+		let buffer = Buffer.from(blob);
 
 		const type = imageType(buffer);
 
-		if (type?.ext !== 'png') {
+		const acceptedExtensions = ['png', 'jpg', 'jpeg', 'webp'];
+
+		if (!type || !acceptedExtensions.includes(type.ext)) {
 			return {
 				status: 400,
 				body: {
@@ -114,7 +117,23 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const file = params['pick_id'] + '.' + type.ext;
+		const image = sharp(buffer);
+		const metadata = await image.metadata();
+
+		if (!metadata || (metadata.width ?? 0) < 900 || (metadata.height ?? 0) < 900) {
+			return {
+				status: 400,
+				body: {
+					message: 'Image too small'
+				}
+			};
+		}
+
+		if (type.ext !== 'png') {
+			buffer = await image.png().toBuffer();
+		}
+
+		const file = params['pick_id'] + '.png';
 
 		const filePath = path.join(env['FILE_STORAGE_PATH'], 'collabs', collab.id, 'picks', file);
 
