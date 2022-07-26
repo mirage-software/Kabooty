@@ -38,7 +38,7 @@
 </script>
 
 {#if error}
-	<Error status={400} type={'osu.' + error} />
+	<Error type={'osu.' + error} />
 {:else}
 	<Loading />
 {/if}

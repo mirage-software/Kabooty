@@ -24,9 +24,22 @@ export const get: RequestHandler = async ({ params, request }) => {
 	const sort = url.searchParams.get('sort') ?? undefined;
 	const order = url.searchParams.get('order') ?? undefined;
 
-	// if original should still always be first add
-	// as default {original: "desc"} here
-	let orderBy: Array<object> = [{ original: "desc" }];
+	let orderBy: Array<object> = [
+		{
+			original: order ?? 'desc'
+		},
+		{
+			character: {
+				anime_name: (order ?? 'desc') === 'desc' ? 'asc' : 'desc'
+			}
+		},
+		{
+			name: order ?? 'desc'
+		},
+		{
+			createdAt: order ?? 'desc'
+		}
+	];
 
 	switch (sort) {
 		case 'original': {
@@ -40,7 +53,7 @@ export const get: RequestHandler = async ({ params, request }) => {
 		case 'date': {
 			orderBy.push({
 				createdAt: order
-			})
+			});
 			break;
 		}
 		case 'anime': {
@@ -51,50 +64,15 @@ export const get: RequestHandler = async ({ params, request }) => {
 			});
 			break;
 		}
-		default: {
-			if (order === "desc") {
-				orderBy = [
-					{
-						original: "desc"
-					},
-					{
-						character: {
-							anime_name: "asc"
-						}
-					},
-					{
-						name: "desc"
-					},
-					{
-						createdAt: "desc"
-					}
-				]
-			} else {
-				orderBy = [
-					{
-						original: "asc"
-					},
-					{
-						character: {
-							anime_name: "desc"
-						}
-					},
-					{
-						name: "asc"
-					},
-					{
-						createdAt: "asc"
-					}
-				]
-			}
-		}
 	}
 
 	const picks = await Prisma.client.pick.findMany({
 		where: {
 			collabId: collab.id,
-			OR: [{ name: { contains: query, mode: "insensitive" } },
-			{ character: { anime_name: { contains: query, mode: "insensitive" } } }]
+			OR: [
+				{ name: { contains: query, mode: 'insensitive' } },
+				{ character: { anime_name: { contains: query, mode: 'insensitive' } } }
+			]
 		},
 		include: {
 			User: true,

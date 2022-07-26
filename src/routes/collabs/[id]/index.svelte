@@ -32,6 +32,8 @@
 
 	let loading = true;
 
+	let cooldown: any | null = null;
+
 	async function getPicks() {
 		newBatch = (
 			await axios.get(
@@ -52,26 +54,27 @@
 		}
 	}
 
+	function setSearchTimer() {
+		pageIndex = 1;
+		data = [];
+		newBatch = [];
+		loading = true;
+		if (cooldown) {
+			clearTimeout(cooldown);
+		}
+		cooldown = setTimeout(() => {
+			getPicks();
+			clearTimeout(cooldown);
+		}, 1000);
+	}
+
 	async function swapFilter() {
 		if (order === 'desc') {
 			order = 'asc';
 		} else {
 			order = 'desc';
 		}
-		await filterPicks();
-	}
-
-	async function filterPicks() {
-		data = [];
-		newBatch = [];
-		await getPicks();
-	}
-
-	async function clearFilter() {
-		filter = 'default';
-		order = 'desc';
-		query = '';
-		await filterPicks();
+		await resetPicks();
 	}
 
 	async function resetPicks() {
@@ -109,33 +112,21 @@
 			</div>
 			<div id="filter">
 				<InputText
-					maxWidth={'100%'}
 					bind:value={query}
-					title={'collabs.registration.character.search'}
-					hint={'Yumiko'}
+					onChanged={setSearchTimer}
+					hint={$t('collabs.registration.character.search')}
 				/>
-				<Dropdown
-					bind:value={filter}
-					data={filtervalues}
-					strings={fiterstrings}
-					title={'Sort'}
-					placeholder={'Default'}
-				/>
-				{#if order === 'desc'}
-					<IconButton icon="la la-angle-down" click={swapFilter} />
-				{:else}
-					<IconButton icon="la la-angle-up" click={swapFilter} />
-				{/if}
-				<SolidButton
-					click={clearFilter}
-					color="blue"
-					string="collabs.registration.character.search_reset"
-				/>
-				<SolidButton
-					click={filterPicks}
-					color="green"
-					string="collabs.registration.character.search"
-				/>
+				<div id="sort">
+					<div id="dropdown">
+						<Dropdown
+							bind:value={filter}
+							data={filtervalues}
+							strings={fiterstrings}
+							placeholder={'Default'}
+						/>
+					</div>
+					<IconButton icon="la la-angle-{order === 'desc' ? 'down' : 'up'}" click={swapFilter} />
+				</div>
 			</div>
 			<div id="picks">
 				{#each data as pick}
@@ -219,17 +210,30 @@
 
 				gap: $margin-s;
 
-				align-items: left;
+				align-items: stretch;
+
+				#sort {
+					display: flex;
+					flex-direction: column;
+					justify-content: flex-start;
+					justify-items: center;
+					align-items: stretch;
+					align-self: stretch;
+					align-content: stretch;
+
+					gap: $margin-s;
+
+					@media (min-width: 400px) {
+						flex-direction: row;
+
+						gap: $margin-xs;
+						align-content: center;
+					}
+				}
 
 				@media (min-width: $breakpoint-m) {
 					flex-direction: row;
-				}
-			}
-
-			// Cant get it to fill screen when it breaks :madge:
-			#dropdown {
-				@media (max-width: $breakpoint-m) {
-					max-width: 100%;
+					justify-content: space-between;
 				}
 			}
 
