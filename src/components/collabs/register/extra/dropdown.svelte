@@ -17,7 +17,7 @@
 		<h6>{$t(title)}</h6>
 	{/if}
 	<div id="select">
-		<select name="data" bind:value on:change={onChanged}>
+		<select name="data" bind:value on:input={onChanged}>
 			{#each data as item, index}
 				<option value={item}>{strings.length > index ? strings[index] : item}</option>
 			{/each}
