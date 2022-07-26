@@ -8,6 +8,8 @@
 
 	export let data: string[] = [];
 	export let strings: string[] = [];
+
+	export let onChanged: (() => void) | null = null;
 </script>
 
 <div id="dropdown">
@@ -15,7 +17,7 @@
 		<h6>{$t(title)}</h6>
 	{/if}
 	<div id="select">
-		<select name="data" bind:value>
+		<select name="data" bind:value on:input={onChanged}>
 			{#each data as item, index}
 				<option value={item}>{strings.length > index ? strings[index] : item}</option>
 			{/each}

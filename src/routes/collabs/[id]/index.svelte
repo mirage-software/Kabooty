@@ -125,6 +125,7 @@
 					<div id="dropdown">
 						<Dropdown
 							bind:value={filter}
+							onChanged={resetPicks}
 							data={filtervalues}
 							strings={fiterstrings}
 							placeholder={'Default'}
