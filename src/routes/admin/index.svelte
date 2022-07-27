@@ -10,6 +10,7 @@
 	import axios from 'axios';
 
 	let subscription: Unsubscriber | null = null;
+	let authorised: Boolean = false
 
 	onMount(async () => {
 		const result = await axios.get('/api/discord/authenticated');
@@ -24,6 +25,7 @@
 				goto('/');
 			}
 		});
+		authorised = true;
 	});
 
 	onDestroy(() => {
@@ -33,17 +35,23 @@
 	});
 </script>
 
+
 <div id="column">
 	<div id="content">
 		<div id="title">
 			<PageTitle string="admin.title" />
 		</div>
+		{#if !authorised }
+			<h2 class="s-O1LqmXjLTMeC">You are not Authorised</h2>
+		{/if}
 		<div id="buttons">
-			<AdminButton
-				onClick={() => goto('/admin/characters')}
-				title="admin.buttons.characters.title"
-				description="admin.buttons.characters.description"
-			/>
+			{#if authorised }
+				<AdminButton
+					onClick={() => goto('/admin/characters')}
+					title="admin.buttons.characters.title"
+					description="admin.buttons.characters.description"
+				/>
+			{/if}
 		</div>
 	</div>
 </div>

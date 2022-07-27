@@ -36,6 +36,7 @@
 	let filter = 'default';
 	let order = 'asc';
 	let total = 0;
+	let authorised: Boolean = false
 
 	async function getCharacters() {
 		const URIQuery = encodeURIComponent(query || '');
@@ -82,6 +83,7 @@
 				}
 			}
 		});
+		authorised = true;
 	});
 
 	onDestroy(() => {
@@ -136,111 +138,116 @@
 		<div id="title">
 			<PageTitle string="admin.buttons.characters.title" />
 		</div>
-		<div id="overview">
-			<h3>{$t('admin.characters.manage')}</h3>
-			<div id="characters">
-				<div id="filter">
-					<InputText
-						bind:value={query}
-						onChanged={setSearchTimer}
-						hint={$t('collabs.registration.character.search')}
-					/>
-					<div id="sort">
-						<div id="dropdown">
-							<Dropdown
-								bind:value={filter}
-								onChanged={getCharacters}
-								data={filtervalues}
-								strings={fiterstrings}
-								placeholder={'Default'}
-							/>
+		{#if !authorised }
+		<h2 class="s-O1LqmXjLTMeC">You are not Authorised</h2>
+		{/if}
+		{#if authorised }
+			<div id="overview">
+				<h3>{$t('admin.characters.manage')}</h3>
+				<div id="characters">
+					<div id="filter">
+						<InputText
+							bind:value={query}
+							onChanged={setSearchTimer}
+							hint={$t('collabs.registration.character.search')}
+						/>
+						<div id="sort">
+							<div id="dropdown">
+								<Dropdown
+									bind:value={filter}
+									onChanged={getCharacters}
+									data={filtervalues}
+									strings={fiterstrings}
+									placeholder={'Default'}
+								/>
+							</div>
+							<IconButton icon="la la-angle-{order === 'desc' ? 'up' : 'down'}" click={swapFilter} />
 						</div>
-						<IconButton icon="la la-angle-{order === 'desc' ? 'up' : 'down'}" click={swapFilter} />
 					</div>
+					{#if characters}
+						<Paginator
+							pageCount={Math.ceil(total / 50)}
+							updatePage={(_) => {
+								page = _;
+								getCharacters();
+							}}
+						/>
+						<div id="results">
+							{#each characters as result}
+								<AdminCharacter character={result} onDelete={getCharacters} />
+							{/each}
+						</div>
+					{/if}
 				</div>
-				{#if characters}
-					<Paginator
-						pageCount={Math.ceil(total / 50)}
-						updatePage={(_) => {
-							page = _;
-							getCharacters();
+			</div>
+			<div id="add">
+				<h3>{$t('admin.characters.add_single')}</h3>
+				<div id="single">
+					<div id="input">
+						<InputText
+							bind:value={newName}
+							title={'collabs.registration.character.name'}
+							hint={'Ozen'}
+						/>
+						<InputText
+							bind:value={newAnime}
+							title={'admin.characters.source'}
+							hint={'Stay! Stay! DPRK!'}
+						/>
+					</div>
+					<SolidButton
+						click={async () => {
+							await axios.post('/api/characters', [
+								{
+									name: newName,
+									anime: newAnime
+								}
+							]);
+
+							newName = '';
+							newAnime = '';
 						}}
+						color="green"
+						string="admin.characters.add"
+						disabled={!newName || !newAnime || newName.length < 2 || newAnime.length < 2}
 					/>
-					<div id="results">
-						{#each characters as result}
-							<AdminCharacter character={result} onDelete={getCharacters} />
-						{/each}
+				</div>
+			</div>
+			<div id="add">
+				<h3>{$t('admin.characters.add_bulk')}</h3>
+				<div id="bulk">
+					<div id="input">
+						<InputText
+							bind:value={json}
+							title={'admin.characters.multiline'}
+							hint={`[
+		{
+			"name": "Hikari-chan",
+			"anime_name": "Stay! Stay! DPRK!"
+		},
+		{
+			"name": "XegC",
+			"anime_name": "UwU in the disco"
+		}
+	]`}
+							multiline={true}
+							maxWidth={'100%'}
+							height={'600px'}
+						/>
 					</div>
-				{/if}
-			</div>
-		</div>
-		<div id="add">
-			<h3>{$t('admin.characters.add_single')}</h3>
-			<div id="single">
-				<div id="input">
-					<InputText
-						bind:value={newName}
-						title={'collabs.registration.character.name'}
-						hint={'Ozen'}
-					/>
-					<InputText
-						bind:value={newAnime}
-						title={'admin.characters.source'}
-						hint={'Stay! Stay! DPRK!'}
+					<SolidButton
+						click={async () => {
+							await axios.post('/api/characters', JSON.parse(json));
+
+							json = '';
+						}}
+						color="green"
+						string="admin.characters.add"
+						disabled={!isJSONValid(json)}
 					/>
 				</div>
-				<SolidButton
-					click={async () => {
-						await axios.post('/api/characters', [
-							{
-								name: newName,
-								anime: newAnime
-							}
-						]);
-
-						newName = '';
-						newAnime = '';
-					}}
-					color="green"
-					string="admin.characters.add"
-					disabled={!newName || !newAnime || newName.length < 2 || newAnime.length < 2}
-				/>
 			</div>
-		</div>
-		<div id="add">
-			<h3>{$t('admin.characters.add_bulk')}</h3>
-			<div id="bulk">
-				<div id="input">
-					<InputText
-						bind:value={json}
-						title={'admin.characters.multiline'}
-						hint={`[
-    {
-        "name": "Hikari-chan",
-        "anime_name": "Stay! Stay! DPRK!"
-    },
-    {
-        "name": "XegC",
-        "anime_name": "UwU in the disco"
-    }
-]`}
-						multiline={true}
-						maxWidth={'100%'}
-						height={'600px'}
-					/>
-				</div>
-				<SolidButton
-					click={async () => {
-						await axios.post('/api/characters', JSON.parse(json));
-
-						json = '';
-					}}
-					color="green"
-					string="admin.characters.add"
-					disabled={!isJSONValid(json)}
-				/>
-			</div>
-		</div>
+		{/if}
 	</div>
 </div>
 
