@@ -33,8 +33,8 @@
 	let page = 1;
 	let newPage: number | null = null;
 	let query: string | undefined;
-	let filter: string = 'default';
-	let order: string = 'asc';
+	let filter = 'default';
+	let order = 'asc';
 	let total = 0;
 
 	async function getCharacters() {
