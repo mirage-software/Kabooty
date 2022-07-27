@@ -1,20 +1,82 @@
-import { CollabStatus, type Pick } from '@prisma/client';
+import { CollabStatus, type Pick , type User} from '@prisma/client';
 import type { RequestHandler } from '@sveltejs/kit';
 import { existsSync, unlinkSync } from 'fs';
+import { DiscordBot } from '../../../../../../bot/discord';
 import path from 'path';
 import { Prisma } from '../../../../../../database/prisma';
 import { Env } from '../../../../../../env';
 import cookie from 'cookie';
 import { Jwt } from '../../../../../../jwt';
-import { getUser } from '../../../../discord/user';
+import { getUpdatedDiscordUser, getUser } from '../../../../discord/user';
 import { SentryClient } from '../../../../../../bot/sentry';
+import { MessageEmbed } from 'discord.js';
+import type { IDiscordUser } from 'src/database/discord_user';
 
-export async function deletePick(pick: Pick): Promise<void> {
+
+async function sendEmbedToDiscord(data: {
+	pick:Pick,
+	user: IDiscordUser,
+}) {
+	const env = Env.load();
+	const serverId = env['DISCORD_SERVER_ID'];
+	const channelId = env['DISCORD_DELETIONS_CHANNEL_ID'];
+
+	const embed: MessageEmbed = new MessageEmbed({
+		title: `Character Deletion from **${data.user.username}#${data.user.discriminator}**`,
+		color: 0xff0000,
+		fields: [
+			{
+				name: 'Pick ID',
+				value: data.pick.id,
+				inline: true
+			},
+			{
+				name: 'Pick Character',
+				value: data.pick.name,
+				inline: true
+			},
+			{
+				name: 'Pick User',
+				value: `<@${data.pick.userId}>`,
+				inline: false
+			},
+			{
+				name: 'Deletor',
+				value: `<@${data.user.id}>`,
+				inline: true
+			},
+			{
+				name: 'Pick User ID',
+				value: `${data.pick.userId}`,
+				inline: false
+			},
+			{
+				name: 'Deletor ID',
+				value: `${data.user.id}`,
+				inline: true
+			},
+			{
+				name: 'Original:',
+				value: "**"+ data.pick.original.toString() + "**",
+				inline: false
+			},
+		]
+	});
+
+	const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
+	const channel = guild.channels.cache.get(channelId);
+	if (channel && channel.type === 'GUILD_TEXT') {
+		const msg = await channel.send({ embeds: [embed] });
+	}
+}
+
+export async function deletePick(pick: Pick, user: IDiscordUser): Promise<void> {
 	if (!pick) {
 		throw new Error('Pick not found');
 	}
-
 	const env = Env.load();
+
+	sendEmbedToDiscord({pick, user})
 
 	if (pick.image) {
 		const filePath = path.join(
@@ -195,7 +257,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 					}
 				});
 
-				await deletePick(pick);
+				await deletePick(pick, user);
 
 				return {
 					status: 200
@@ -211,7 +273,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 				pick.collab.status === CollabStatus.OPEN ||
 				pick.collab.status === CollabStatus.EARLY_ACCESS
 			) {
-				await deletePick(pick);
+				await deletePick(pick, user);
 
 				return {
 					status: 200

@@ -199,7 +199,7 @@ export const del: RequestHandler = async ({ request }) => {
 
 		if (character.Pick.length > 0) {
 			for (let i = 0; i < character.Pick.length; i++) {
-				await deletePick(character.Pick[i]);
+				await deletePick(character.Pick[i], user);
 			}
 		}
 
