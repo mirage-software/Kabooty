@@ -3,7 +3,7 @@
 	import Card from '../generic/design/card.svelte';
 	import { t } from 'svelte-intl-precompile';
 	import SolidButton from '../generic/design/solid_button.svelte';
-	import { CollabStatus, type Collab } from '@prisma/client';
+	import type { Collab } from '@prisma/client';
 	import axios from 'axios';
 	import InputText from '../generic/design/input_text.svelte';
 	import FileUpload from '../generic/design/file_upload.svelte';
@@ -21,7 +21,7 @@
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
 
-	let statusOptions = Object.keys(CollabStatus);
+	let statusOptions = ['OPEN', 'BUMP', 'RELEASE', 'CLOSED', 'EARLY_ACCESS', 'DESIGN'];
 	let statusStrings = statusOptions.map((status) => $t(`collabs.status.${status}`));
 
 	async function onSave() {
