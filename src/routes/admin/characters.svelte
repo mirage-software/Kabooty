@@ -14,6 +14,8 @@
 	import { onDestroy, onMount } from 'svelte';
 	import type { Unsubscriber } from 'svelte/store';
 	import Paginator from '../../components/generic/design/paginator.svelte';
+	import Dropdown from '../../components/collabs/register/extra/dropdown.svelte';
+	import IconButton from '../../components/collabs/icon_button.svelte';
 
 	let subscription: Unsubscriber | null = null;
 	let initialized = false;
@@ -22,12 +24,17 @@
 	let newAnime = '';
 	let json = '';
 
+	let filtervalues: Array<string> = ['default', 'char', 'anime'];
+	let fiterstrings: Array<string> = filtervalues.map((filter) => $t(`collabs.filter.${filter}`));
+
 	let characters: (AnimeCharacter & {
 		Pick: Pick[];
 	})[];
 	let page = 1;
 	let newPage: number | null = null;
 	let query: string | undefined;
+	let filter = 'default';
+	let order = 'asc';
 	let total = 0;
 
 	async function getCharacters() {
@@ -39,11 +46,22 @@
 		}
 
 		const response = await axios.get(
-			query ? `/api/characters?search=${URIQuery}&page=${page}` : `/api/characters?page=${page}`
+			query
+				? `/api/characters?search=${URIQuery}&sort=${filter}&order=${order}&page=${page}`
+				: `/api/characters?page=${page}&sort=${filter}&order=${order}`
 		);
 
 		characters = response.data.characters;
 		total = response.data.count;
+	}
+
+	async function swapFilter() {
+		if (order === 'desc') {
+			order = 'asc';
+		} else {
+			order = 'desc';
+		}
+		await getCharacters();
 	}
 
 	onMount(async () => {
@@ -121,12 +139,25 @@
 		<div id="overview">
 			<h3>{$t('admin.characters.manage')}</h3>
 			<div id="characters">
-				<InputText
-					bind:value={query}
-					title={'collabs.registration.character.name'}
-					hint={'Hikari-chan uwu'}
-					onChanged={setSearchTimer}
-				/>
+				<div id="filter">
+					<InputText
+						bind:value={query}
+						onChanged={setSearchTimer}
+						hint={$t('collabs.registration.character.search')}
+					/>
+					<div id="sort">
+						<div id="dropdown">
+							<Dropdown
+								bind:value={filter}
+								onChanged={getCharacters}
+								data={filtervalues}
+								strings={fiterstrings}
+								placeholder={'Default'}
+							/>
+						</div>
+						<IconButton icon="la la-angle-{order === 'desc' ? 'up' : 'down'}" click={swapFilter} />
+					</div>
+				</div>
 				{#if characters}
 					<Paginator
 						pageCount={Math.ceil(total / 50)}
@@ -231,6 +262,44 @@
 
 		@media (min-width: 400px) {
 			flex-direction: row;
+		}
+	}
+
+	#filter {
+		display: flex;
+		flex-direction: column;
+
+		align-self: stretch;
+
+		padding-top: $margin-s;
+		padding-bottom: 0;
+
+		gap: $margin-s;
+
+		align-items: stretch;
+
+		#sort {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			justify-items: center;
+			align-items: stretch;
+			align-self: stretch;
+			align-content: stretch;
+
+			gap: $margin-s;
+
+			@media (min-width: 400px) {
+				flex-direction: row;
+
+				gap: $margin-xs;
+				align-content: center;
+			}
+		}
+
+		@media (min-width: $breakpoint-m) {
+			flex-direction: row;
+			justify-content: space-between;
 		}
 	}
 

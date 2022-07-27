@@ -13,6 +13,8 @@ export const get: RequestHandler = async ({ request }) => {
 	const url = new URL(request.url);
 	const query = url.searchParams.get('search')?.trim() ?? undefined;
 	const page = parseInt(url.searchParams.get('page') ?? '1');
+	const sort = url.searchParams.get('sort') ?? undefined;
+	const order = url.searchParams.get('order') ?? 'desc';
 
 	const search = query?.split(' ');
 
@@ -25,6 +27,30 @@ export const get: RequestHandler = async ({ request }) => {
 		];
 	}
 
+	let orderBy: Array<object> = [{ id: order }];
+
+	switch (sort) {
+		case 'char': {
+			orderBy = [
+				{
+					name: order
+				}
+			];
+			break;
+		}
+		case 'anime': {
+			orderBy = [
+				{
+					anime_name: order === 'desc' ? 'asc' : 'desc'
+				},
+				{
+					name: order
+				}
+			];
+			break;
+		}
+	}
+
 	const characters = await Prisma.client.animeCharacter.findMany({
 		where: {
 			OR: OR
@@ -32,6 +58,7 @@ export const get: RequestHandler = async ({ request }) => {
 		include: {
 			Pick: true
 		},
+		orderBy: orderBy,
 		take: 50,
 		skip: 50 * (page - 1)
 	});
