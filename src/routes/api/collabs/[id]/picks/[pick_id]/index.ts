@@ -38,7 +38,7 @@ async function sendEmbedToDiscord(data: {
 			{
 				name: 'Pick User',
 				value: `<@${data.pick.userId}>`,
-				inline: false
+				inline: true
 			},
 			{
 				name: 'Deletor',
@@ -48,7 +48,7 @@ async function sendEmbedToDiscord(data: {
 			{
 				name: 'Pick User ID',
 				value: `${data.pick.userId}`,
-				inline: false
+				inline: true
 			},
 			{
 				name: 'Deletor ID',
