@@ -9,6 +9,7 @@
 	import { selected } from './character/selected_store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import Paginator from '../../../components/generic/design/paginator.svelte';
 
 	export let collab: Collab;
 
@@ -19,8 +20,13 @@
 
 	let results: (AnimeCharacter & { Pick: Pick[] })[] | null = null;
 
+	let newPage: number | null = null;
+
 	let query = '';
 	let customName = '';
+
+	let total = 0;
+	let page = 1;
 
 	onMount(async () => {
 		try {
@@ -36,7 +42,17 @@
 			return;
 		}
 
-		results = (await axios.get(`/api/collabs/${collab.id}/characters?search=${query}`)).data;
+		if (newPage) {
+			page = newPage;
+			newPage = null;
+		}
+
+		const response = await axios.get(
+			`/api/collabs/${collab.id}/characters?search=${query}&page=${page}`
+		);
+
+		total = response.data.count;
+		results = response.data.characters;
 	}
 
 	let cooldown: string | number | undefined;
@@ -72,6 +88,13 @@
 				onChanged={setSearchTimer}
 			/>
 			{#if results}
+				<Paginator
+					pageCount={Math.ceil(total / 50)}
+					updatePage={(_) => {
+						page = _;
+						searchCharacters();
+					}}
+				/>
 				<div id="results">
 					{#each results as result}
 						<Character
