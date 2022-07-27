@@ -82,8 +82,10 @@
 					getCharacters();
 				}
 			}
+			if (user?.admin == true){
+				authorised = true;
+			}
 		});
-		authorised = true;
 	});
 
 	onDestroy(() => {

@@ -24,8 +24,10 @@
 			if (user && !user.admin) {
 				goto('/');
 			}
+			if (user?.admin == true){
+				authorised = true;
+			}
 		});
-		authorised = true;
 	});
 
 	onDestroy(() => {
