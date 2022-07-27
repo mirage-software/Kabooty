@@ -27,16 +27,14 @@ export const get: RequestHandler = async ({ request }) => {
 		];
 	}
 
-	let orderBy: Array<object> = [
-		{ id: order },
-	];
+	let orderBy: Array<object> = [{ id: order }];
 
 	switch (sort) {
 		case 'char': {
 			orderBy = [
 				{
 					name: order
-				},
+				}
 			];
 			break;
 		}
