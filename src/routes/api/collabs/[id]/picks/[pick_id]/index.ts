@@ -58,15 +58,11 @@ async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason
 
 export async function deletePick(
 	pick: Pick,
-	user: IDiscordUser,
-	reason: string | null
 ): Promise<void> {
 	if (!pick) {
 		throw new Error('Pick not found');
 	}
 	const env = Env.load();
-
-	sendEmbedToDiscord({ pick, user, reason });
 
 	if (pick.image) {
 		const filePath = path.join(
@@ -250,7 +246,8 @@ export const del: RequestHandler = async ({ request, params }) => {
 					}
 				});
 
-				await deletePick(pick, user, reason);
+				await deletePick(pick);
+				sendEmbedToDiscord({ pick, user, reason });
 
 				return {
 					status: 200
@@ -266,7 +263,8 @@ export const del: RequestHandler = async ({ request, params }) => {
 				pick.collab.status === CollabStatus.OPEN ||
 				pick.collab.status === CollabStatus.EARLY_ACCESS
 			) {
-				await deletePick(pick, user, reason);
+				await deletePick(pick);
+				sendEmbedToDiscord({ pick, user, reason });
 
 				return {
 					status: 200
