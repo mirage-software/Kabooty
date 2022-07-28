@@ -18,12 +18,6 @@
 			upperBoundary--;
 		}
 
-		console.log(lowerBoundary, upperBoundary);
-
-		if (upperBoundary === lowerBoundary) {
-			return [];
-		}
-
 		for (let i = lowerBoundary; i <= upperBoundary; i++) {
 			pages.push(i);
 		}
