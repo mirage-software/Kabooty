@@ -27,11 +27,11 @@
 			return;
 		}
 
-		const response = _window.confirm($t('collabs.delete_pick_confirm'));
+		const reasonResponse = _window.prompt('Whats the reason for the deletion?', 'Duplicate Pick');
 
-		if (response) {
-			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id);
-
+		if (reasonResponse) {
+			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id + "?reason=" + reasonResponse);
+			_window.alert('Pick Deleted');
 			onChange();
 		}
 	}

@@ -16,13 +16,19 @@ import type { IDiscordUser } from 'src/database/discord_user';
 async function sendEmbedToDiscord(data: {
 	pick:Pick,
 	user: IDiscordUser,
+	reason: String | null,
 }) {
 	const env = Env.load();
 	const serverId = env['DISCORD_SERVER_ID'];
 	const channelId = env['DISCORD_DELETIONS_CHANNEL_ID'];
 
+	if (!data.reason) {
+		data.reason = "No Reason Given"
+	}
+
 	const embed: MessageEmbed = new MessageEmbed({
 		title: `Character Deletion from **${data.user.username}#${data.user.discriminator}**`,
+		description: `Reason: **${data.reason}**`,
 		color: 0xff0000,
 		fields: [
 			{
@@ -70,13 +76,13 @@ async function sendEmbedToDiscord(data: {
 	}
 }
 
-export async function deletePick(pick: Pick, user: IDiscordUser): Promise<void> {
+export async function deletePick(pick: Pick, user: IDiscordUser, reason: String | null): Promise<void> {
 	if (!pick) {
 		throw new Error('Pick not found');
 	}
 	const env = Env.load();
 
-	sendEmbedToDiscord({pick, user})
+	sendEmbedToDiscord({pick, user, reason})
 
 	if (pick.image) {
 		const filePath = path.join(
@@ -215,6 +221,9 @@ export const del: RequestHandler = async ({ request, params }) => {
 	const decodedUser = Jwt.decode(cookies['user_id']);
 	const userId = decodedUser['user_id'] as string;
 
+	const urlParams = new URLSearchParams(request.url.split('?')[1]);
+	const reason = urlParams.get('reason')
+
 	if (!token) {
 		return {
 			status: 401
@@ -257,7 +266,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 					}
 				});
 
-				await deletePick(pick, user);
+				await deletePick(pick, user, reason);
 
 				return {
 					status: 200
@@ -273,7 +282,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 				pick.collab.status === CollabStatus.OPEN ||
 				pick.collab.status === CollabStatus.EARLY_ACCESS
 			) {
-				await deletePick(pick, user);
+				await deletePick(pick, user, reason);
 
 				return {
 					status: 200
