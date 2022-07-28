@@ -72,7 +72,8 @@ async function sendEmbedToDiscord(data: {
 	const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
 	const channel = guild.channels.cache.get(channelId);
 	if (channel && channel.type === 'GUILD_TEXT') {
-		const msg = await channel.send({ embeds: [embed] });
+		channel.send(`<@${data.pick.userId}>`);
+		channel.send({ embeds: [embed] });
 	}
 }
 
