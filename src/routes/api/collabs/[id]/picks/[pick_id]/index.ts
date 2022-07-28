@@ -1,4 +1,4 @@
-import { CollabStatus, type Pick , type User} from '@prisma/client';
+import { CollabStatus, type Pick, type User } from '@prisma/client';
 import type { RequestHandler } from '@sveltejs/kit';
 import { existsSync, unlinkSync } from 'fs';
 import { DiscordBot } from '../../../../../../bot/discord';
@@ -12,18 +12,13 @@ import { SentryClient } from '../../../../../../bot/sentry';
 import { MessageEmbed } from 'discord.js';
 import type { IDiscordUser } from 'src/database/discord_user';
 
-
-async function sendEmbedToDiscord(data: {
-	pick: Pick,
-	user: IDiscordUser,
-	reason: string | null,
-}) {
+async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason: string | null }) {
 	const env = Env.load();
 	const serverId = env['DISCORD_SERVER_ID'];
 	const channelId = env['DISCORD_DELETIONS_CHANNEL_ID'];
 
 	if (!data.reason) {
-		data.reason = "No Reason Given"
+		data.reason = 'No Reason Given';
 	}
 
 	const embed: MessageEmbed = new MessageEmbed({
@@ -43,13 +38,13 @@ async function sendEmbedToDiscord(data: {
 			},
 			{
 				name: 'Deleted by',
-				value: `<@${data.user.id}>`,
+				value: `<@${data.user.id}>`
 			},
 			{
 				name: 'Pick ID',
 				value: data.pick.id,
 				inline: true
-			},
+			}
 		]
 	});
 
@@ -61,13 +56,17 @@ async function sendEmbedToDiscord(data: {
 	}
 }
 
-export async function deletePick(pick: Pick, user: IDiscordUser, reason: string | null): Promise<void> {
+export async function deletePick(
+	pick: Pick,
+	user: IDiscordUser,
+	reason: string | null
+): Promise<void> {
 	if (!pick) {
 		throw new Error('Pick not found');
 	}
 	const env = Env.load();
 
-	sendEmbedToDiscord({ pick, user, reason })
+	sendEmbedToDiscord({ pick, user, reason });
 
 	if (pick.image) {
 		const filePath = path.join(
@@ -207,7 +206,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 	const userId = decodedUser['user_id'] as string;
 
 	const urlParams = new URLSearchParams(request.url.split('?')[1]);
-	const reason = urlParams.get('reason')
+	const reason = urlParams.get('reason');
 
 	if (!token) {
 		return {
