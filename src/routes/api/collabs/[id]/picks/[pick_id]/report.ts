@@ -69,22 +69,19 @@ async function sendEmbedToDiscord(
 	const channel = guild.channels.cache.get(channelId);
 
 	if (channel && channel.type === 'GUILD_TEXT') {
-
 		const msg = await channel.send({ embeds: [embed] });
 
 		const row = new MessageActionRow();
 
 		const close = new MessageButton()
 			.setCustomId(`closereport_${msg.id}`)
-			.setLabel("Close Report")
+			.setLabel('Close Report')
 			.setDisabled(false)
-			.setStyle("DANGER");
+			.setStyle('DANGER');
 
-		row.addComponents([close])
+		row.addComponents([close]);
 
 		await msg.edit({ embeds: [embed], components: [row] });
-
-
 	}
 }
 

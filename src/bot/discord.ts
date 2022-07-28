@@ -11,14 +11,12 @@ export abstract class DiscordBot {
 			DiscordBot._client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 			DiscordBot._client.login(env['DISCORD_BOT_TOKEN']);
 
-			DiscordBot._client.once('ready', c => {
+			DiscordBot._client.once('ready', (c) => {
 				c.on('interactionCreate', (interaction) => {
 					handleInteraction(interaction, c);
 				});
 			});
 		}
-
 		return DiscordBot._client;
 	}
-
 }
