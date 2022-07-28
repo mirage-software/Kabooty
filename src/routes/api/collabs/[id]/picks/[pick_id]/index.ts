@@ -14,9 +14,9 @@ import type { IDiscordUser } from 'src/database/discord_user';
 
 
 async function sendEmbedToDiscord(data: {
-	pick:Pick,
+	pick: Pick,
 	user: IDiscordUser,
-	reason: String | null,
+	reason: string | null,
 }) {
 	const env = Env.load();
 	const serverId = env['DISCORD_SERVER_ID'];
@@ -27,33 +27,27 @@ async function sendEmbedToDiscord(data: {
 	}
 
 	const embed: MessageEmbed = new MessageEmbed({
-		title: `Character Deletion from **${data.user.username}#${data.user.discriminator}**`,
-		description: `Reason: **${data.reason}**`,
+		title: `**Deletion Notification**`,
+		description: `Your character has been deleted for the following reason:\n**${data.reason}**`,
 		color: 0xff0000,
 		fields: [
 			{
-				name: 'Pick ID',
-				value: data.pick.id,
-				inline: true
-			},
-			{
-				name: 'Pick Character',
+				name: 'Picked Character',
 				value: data.pick.name,
 				inline: true
 			},
 			{
-				name: 'Pick User',
+				name: 'Picked by',
 				value: `<@${data.pick.userId}>`,
 				inline: true
 			},
 			{
-				name: 'Deletor',
+				name: 'Deleted by',
 				value: `<@${data.user.id}>`,
-				inline: true
 			},
 			{
-				name: 'Pick User ID',
-				value: `${data.pick.userId}`,
+				name: 'Pick ID',
+				value: data.pick.id,
 				inline: true
 			},
 			{
@@ -61,29 +55,24 @@ async function sendEmbedToDiscord(data: {
 				value: `${data.user.id}`,
 				inline: true
 			},
-			{
-				name: 'Original:',
-				value: "**"+ data.pick.original.toString() + "**",
-				inline: false
-			},
 		]
 	});
 
 	const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
 	const channel = guild.channels.cache.get(channelId);
 	if (channel && channel.type === 'GUILD_TEXT') {
-		channel.send(`<@${data.pick.userId}>`);
-		channel.send({ embeds: [embed] });
+		const msg = await channel.send(`<@${data.pick.userId}>`);
+		msg.reply({ embeds: [embed] });
 	}
 }
 
-export async function deletePick(pick: Pick, user: IDiscordUser, reason: String | null): Promise<void> {
+export async function deletePick(pick: Pick, user: IDiscordUser, reason: string | null): Promise<void> {
 	if (!pick) {
 		throw new Error('Pick not found');
 	}
 	const env = Env.load();
 
-	sendEmbedToDiscord({pick, user, reason})
+	sendEmbedToDiscord({ pick, user, reason })
 
 	if (pick.image) {
 		const filePath = path.join(
