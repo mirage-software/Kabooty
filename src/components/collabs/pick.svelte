@@ -73,6 +73,20 @@
 			_window.alert('Pick reported');
 		}
 	}
+
+	async function deleteImage() {
+		if (!_window) {
+			return;
+		}
+
+		const response = _window.confirm($t('collabs.delete_image_confirm'));
+
+		if (response) {
+			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id + '/delimage', {});
+
+			onChange();
+		}
+	}
 </script>
 
 <div id="card">
@@ -123,6 +137,9 @@
 							{#if $discord?.admin || profile}
 								<div id="admin">
 									<IconButton icon="la la-trash" click={deletePick} />
+								</div>
+								<div id="admin">
+									<IconButton icon="la la-image" click={deleteImage} />
 								</div>
 							{/if}
 							{#if $discord?.admin}
