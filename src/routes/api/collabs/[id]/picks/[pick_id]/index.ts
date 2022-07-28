@@ -56,9 +56,7 @@ async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason
 	}
 }
 
-export async function deletePick(
-	pick: Pick,
-): Promise<void> {
+export async function deletePick(pick: Pick): Promise<void> {
 	if (!pick) {
 		throw new Error('Pick not found');
 	}
