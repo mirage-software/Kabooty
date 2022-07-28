@@ -194,7 +194,7 @@
 						await axios.post('/api/characters', [
 							{
 								name: newName,
-								anime: newAnime
+								anime_name: newAnime
 							}
 						]);
 
