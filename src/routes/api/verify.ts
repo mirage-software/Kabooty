@@ -6,7 +6,6 @@ import cookie from 'cookie';
 import { Jwt } from '../../jwt';
 import OAuth from 'discord-oauth2';
 import { Prisma } from '../../database/prisma';
-import axios from 'axios';
 import { getUpdatedDiscordUser } from './discord/user';
 import { getUpdatedOsuUser } from './osu/access';
 import type { Osu, OsuMode } from '@prisma/client';
@@ -119,7 +118,7 @@ async function sendEmbedToDiscord(data: {
 			},
 			{
 				name: 'VPN Factor',
-				value: vpnMessage,
+				value: data.vpnFactor === -1 ? 'VPN detection disabled' : vpnMessage,
 				inline: true
 			}
 		]
@@ -216,16 +215,17 @@ export const get: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		const ip = request.headers.get('CF-Connecting-IP');
-		let vpnFactor = 0;
+		// TODO: implement alternative verification
+		// const ip = request.headers.get('CF-Connecting-IP');
+		const vpnFactor = -1;
 
-		if (ip) {
-			vpnFactor = (
-				await axios.get(
-					`http://check.getipintel.net/check.php?ip=${ip}&flags=m&contact=${env['IP_INTEL_CONTACT']}`
-				)
-			).data;
-		}
+		// if (ip) {
+		// 	vpnFactor = (
+		// 		await axios.get(
+		// 			`http://check.getipintel.net/check.php?ip=${ip}&flags=m&contact=${env['IP_INTEL_CONTACT']}`
+		// 		)
+		// 	).data;
+		// }
 
 		// !! honestly this is probably the shittiest code I have written in years
 
@@ -286,31 +286,20 @@ export const get: RequestHandler = async ({ request }) => {
 			sendEmbedToDiscord(data);
 		}
 
-		console.log('test');
-
 		const unverifiedRole = env['DISCORD_UNVERIFIED_ROLE_ID'];
 
 		const guildMember = await guild.members.fetch(user.id);
 
-		console.log('test2');
-
 		guildMember.roles.add(roleId);
-
-		console.log('test3');
 		guildMember.roles.remove(unverifiedRole);
 
-		console.log('test4');
 		// because xeg is too lazy to have another bot do it
 		// TODO: implement dynamic way of setting roles
 		const roles = guildMember.roles.valueOf();
 
-		console.log('test5');
-
 		if (!roles.has('739111062682730507') && !roles.has('739111130034733108')) {
 			guildMember.roles.add('630980373374828544');
 		}
-
-		console.log('test6');
 
 		await Prisma.client.user.update({
 			where: {
@@ -320,8 +309,6 @@ export const get: RequestHandler = async ({ request }) => {
 				verified: true
 			}
 		});
-
-		console.log('test7');
 
 		return {
 			status: 200
