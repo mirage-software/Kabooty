@@ -1,5 +1,5 @@
 import polka from 'polka';
-import { handler } from './build/handler';
+import { handler } from './build/handler.js';
 
 const app = polka();
 
