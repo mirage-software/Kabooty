@@ -286,18 +286,31 @@ export const get: RequestHandler = async ({ request }) => {
 			sendEmbedToDiscord(data);
 		}
 
+		console.log('test');
+
 		const unverifiedRole = env['DISCORD_UNVERIFIED_ROLE_ID'];
 
 		const guildMember = await guild.members.fetch(user.id);
+
+		console.log('test2');
+
 		guildMember.roles.add(roleId);
+
+		console.log('test3');
 		guildMember.roles.remove(unverifiedRole);
+
+		console.log('test4');
 		// because xeg is too lazy to have another bot do it
 		// TODO: implement dynamic way of setting roles
 		const roles = guildMember.roles.valueOf();
 
+		console.log('test5');
+
 		if (!roles.has('739111062682730507') && !roles.has('739111130034733108')) {
 			guildMember.roles.add('630980373374828544');
 		}
+
+		console.log('test6');
 
 		await Prisma.client.user.update({
 			where: {
@@ -308,10 +321,13 @@ export const get: RequestHandler = async ({ request }) => {
 			}
 		});
 
+		console.log('test7');
+
 		return {
 			status: 200
 		};
 	} catch (error) {
+		console.log(error);
 		SentryClient.log(error);
 
 		return {
