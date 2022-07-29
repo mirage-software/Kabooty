@@ -3,10 +3,6 @@ import { handler } from './build/handler.js';
 
 const app = polka();
 
-app.get('/healthy', (req, res) => {
-	res.sendStatus(200);
-});
-
 app.use(handler);
 
 app.listen(3000, () => {

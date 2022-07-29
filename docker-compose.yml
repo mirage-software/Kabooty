@@ -2,7 +2,7 @@ version: '3.9' # optional since v1.27.0
 services:
   kabooty:
     build: .
-    image: kabooty/42 ## !! TODO: build version, triggers a deployment
+    image: kabooty/43 ## !! TODO: build version, triggers a deployment
     ports:
       - '3000:3000'
     restart: unless-stopped
@@ -10,11 +10,11 @@ services:
       mode: replicated
       replicas: 1 ## !! TODO: implement replicas for extra redundancy
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/healthy']
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/healthy']
       interval: 5m
       timeout: 30s
       retries: 3
-      start_period: 1m
+      start_period: 15s
     volumes:
       - data:/kabooty
     env_file:
