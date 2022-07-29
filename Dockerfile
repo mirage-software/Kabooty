@@ -12,6 +12,7 @@ WORKDIR /app
 COPY --from=core /app/node_modules ./node_modules
 COPY --from=core /app/.svelte-kit ./.svelte-kit
 COPY --from=core /app/build ./build
+COPY --from=core /app/server.js ./
 COPY --from=core /app/prisma ./prisma
 COPY --from=core /app/package-lock.json ./package-lock.json
 COPY --from=core /app/package.json ./package.json

@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"dev:host": "svelte-kit dev --host",
-		"prod:start": "prisma migrate deploy && node build/index.js",
+		"prod:start": "prisma migrate deploy && node server.js",
 		"build": "npm run clean && svelte-kit build",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
@@ -60,6 +60,7 @@
 		"image-type": "^4.1.0",
 		"jsonwebtoken": "^8.5.1",
 		"mime-types": "^2.1.35",
+		"polka": "^0.5.2",
 		"sharp": "^0.30.7",
 		"svelte-infinite-scroll": "^2.0.1",
 		"svelte-intl-precompile": "^0.8.1",
