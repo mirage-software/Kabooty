@@ -1,6 +1,9 @@
 # long files that don't need checking
 src/database/characters.json
 
+# files that will fail without compilation
+server.js
+
 # from .gitignore
 .DS_Store
 node_modules
