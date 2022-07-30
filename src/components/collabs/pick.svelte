@@ -27,7 +27,7 @@
 			return;
 		}
 
-		let confirmed: boolean = false;
+		let confirmed = false;
 		let reason: string | null;
 
 		if ($discord?.admin && pick.userId !== $discord?.id) {
