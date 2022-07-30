@@ -30,14 +30,14 @@
 		let confirmed: boolean = false;
 		let reason: string | null;
 
-		if ($discord?.admin && pick.userId !== $discord?.id){
+		if ($discord?.admin && pick.userId !== $discord?.id) {
 			reason = _window.prompt('Whats the reason for the deletion?', 'Duplicate Pick');
-			if (reason){
-				confirmed = true
+			if (reason) {
+				confirmed = true;
 			}
 		} else {
 			confirmed = _window.confirm($t('collabs.delete_pick_confirm'));
-			reason = ""
+			reason = '';
 		}
 
 		if (confirmed) {
