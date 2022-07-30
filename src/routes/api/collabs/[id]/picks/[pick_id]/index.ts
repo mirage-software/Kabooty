@@ -199,7 +199,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 	const decodedUser = Jwt.decode(cookies['user_id']);
 	const userId = decodedUser['user_id'] as string;
 
-	const requestJson = await request.json()
+	const requestJson = await request.json();
 	const reason = requestJson.reason;
 
 	if (!token) {
