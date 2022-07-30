@@ -28,7 +28,7 @@
 		}
 
 		let confirmed = false;
-		let reason: string | null = "";
+		let reason: string | null = '';
 
 		if ($discord?.admin && pick.userId !== $discord?.id) {
 			reason = _window.prompt('Whats the reason for the deletion?', 'Duplicate Pick');
