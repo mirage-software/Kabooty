@@ -199,8 +199,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 	const decodedUser = Jwt.decode(cookies['user_id']);
 	const userId = decodedUser['user_id'] as string;
 
-	const urlParams = new URLSearchParams(request.url.split('?')[1]);
-	const reason = urlParams.get('reason');
+	const reason = request.headers.get('Reason');
 
 	if (!token) {
 		return {
@@ -262,7 +261,6 @@ export const del: RequestHandler = async ({ request, params }) => {
 				pick.collab.status === CollabStatus.EARLY_ACCESS
 			) {
 				await deletePick(pick);
-				sendEmbedToDiscord({ pick, user, reason });
 
 				return {
 					status: 200
