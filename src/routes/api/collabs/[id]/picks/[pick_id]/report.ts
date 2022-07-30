@@ -8,7 +8,7 @@ import { Prisma } from '../../../../../../database/prisma';
 import { DiscordBot } from '../../../../../../bot/discord';
 import { Env } from '../../../../../../env';
 import { SentryClient } from '../../../../../../bot/sentry';
-import { MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 
 async function sendEmbedToDiscord(
 	pick: Pick & { User: User | null; collab: Collab },
@@ -67,10 +67,21 @@ async function sendEmbedToDiscord(
 
 	const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
 	const channel = guild.channels.cache.get(channelId);
+
 	if (channel && channel.type === 'GUILD_TEXT') {
 		const msg = await channel.send({ embeds: [embed] });
-		await msg.react('✅');
-		await msg.react('❌');
+
+		const row = new MessageActionRow();
+
+		const close = new MessageButton()
+			.setCustomId(`closereport_${msg.id}`)
+			.setLabel('Close Report')
+			.setDisabled(false)
+			.setStyle('DANGER');
+
+		row.addComponents([close]);
+
+		await msg.edit({ embeds: [embed], components: [row] });
 	}
 }
 
