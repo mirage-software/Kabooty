@@ -28,22 +28,21 @@
 		}
 
 		let confirmed = false;
-		let reason: string | null;
+		let reason: string | null = "";
 
 		if ($discord?.admin && pick.userId !== $discord?.id) {
 			reason = _window.prompt('Whats the reason for the deletion?', 'Duplicate Pick');
 			if (reason) {
 				confirmed = true;
 			}
-		} else {
+		} else if (pick.userId === $discord?.id) {
 			confirmed = _window.confirm($t('collabs.delete_pick_confirm'));
-			reason = '';
 		}
 
 		if (confirmed) {
 			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id, {
 				data: {
-					Reason: reason
+					reason: reason
 				}
 			});
 			_window.alert('Pick Deleted');
