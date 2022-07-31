@@ -1,7 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
 
 import cookie from 'cookie';
-import { CollabStatus, type Pick } from '@prisma/client';
+import { type Pick } from '@prisma/client';
 import { Jwt } from '../../../../../../jwt';
 import { getUser } from '../../../../discord/user';
 import { Prisma } from '../../../../../../database/prisma';
@@ -80,42 +80,24 @@ export const del: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		if (pick.userId !== user.id) {
-			if (user.admin) {
-				await Prisma.client.log.create({
-					data: {
-						action: 'admin_delete_pick_image',
-						userId: user.id,
-						data: JSON.stringify(pick)
-					}
-				});
+		if (user.admin) {
+			await Prisma.client.log.create({
+				data: {
+					action: 'admin_delete_pick_image',
+					userId: user.id,
+					data: JSON.stringify(pick)
+				}
+			});
 
-				await deleteImage(pick);
+			await deleteImage(pick);
 
-				return {
-					status: 200
-				};
-			} else {
-				return {
-					status: 403
-				};
-			}
+			return {
+				status: 200
+			};
 		} else {
-			if (
-				pick.collab.status === CollabStatus.BUMP ||
-				pick.collab.status === CollabStatus.OPEN ||
-				pick.collab.status === CollabStatus.EARLY_ACCESS
-			) {
-				await deleteImage(pick);
-
-				return {
-					status: 200
-				};
-			} else {
-				return {
-					status: 403
-				};
-			}
+			return {
+				status: 403
+			};
 		}
 	} catch (error) {
 		console.log(error);
