@@ -79,11 +79,23 @@
 			return;
 		}
 
-		const response = _window.confirm($t('collabs.delete_image_confirm'));
+		let confirmed = false;
+		let reason: string | null = '';
 
-		if (response) {
-			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id + '/delimage', {});
+		if ($discord?.admin) {
+			reason = _window.prompt('Whats the reason for the deletion?', 'Duplicate Pick');
+			if (reason) {
+				confirmed = true;
+			}
+		}
 
+		if (confirmed) {
+			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id + '/image', {
+				data: {
+					reason: reason
+				}
+			});
+			_window.alert('Pick Deleted');
 			onChange();
 		}
 	}
