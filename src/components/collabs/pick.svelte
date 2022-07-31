@@ -35,7 +35,9 @@
 			if (reason) {
 				confirmed = true;
 			}
-		} else if (pick.userId === $discord?.id) {
+		} 
+		
+		if (pick.userId === $discord?.id) {
 			confirmed = _window.confirm($t('collabs.delete_pick_confirm'));
 		}
 
