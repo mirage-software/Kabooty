@@ -23,7 +23,7 @@ async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason
 
 	const embed: MessageEmbed = new MessageEmbed({
 		title: `**Deletion Notification**`,
-		description: `Your character has been deleted for the following reason\n**${data.reason}**`,
+		description: `Your **pick** has been deleted for the following reason\n**${data.reason}**`,
 		color: 0xff0000,
 		fields: [
 			{
