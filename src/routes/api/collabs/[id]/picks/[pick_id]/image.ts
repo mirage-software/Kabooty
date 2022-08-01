@@ -107,7 +107,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 	try {
 		const user = await getUser(token, userId);
 
-		if (!user || user.admin) {
+		if (!user && user.admin) {
 			const pickId = params['pick_id'];
 
 			const pick = await Prisma.client.pick.findUnique({
