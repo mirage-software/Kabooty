@@ -166,11 +166,11 @@
 								<div id="admin">
 									<IconButton icon="la la-trash" click={deletePick} />
 								</div>
+							{/if}
+							{#if $discord?.admin}
 								<div id="admin">
 									<IconButton icon="la la-image" click={deleteImage} />
 								</div>
-							{/if}
-							{#if $discord?.admin}
 								<div id="admin">
 									<IconButton icon="la la-link" click={linkPick} />
 								</div>
