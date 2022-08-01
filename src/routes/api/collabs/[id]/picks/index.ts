@@ -94,6 +94,16 @@ export const get: RequestHandler = async ({ params, request }) => {
 				AND: search.map((s) => ({
 					character: { anime_name: { contains: s, mode: 'insensitive' } }
 				}))
+			},
+			{
+				AND: search.map((s) => ({
+					User: { username: { contains: s, mode: 'insensitive' } }
+				}))
+			},
+			{
+				AND: search.map((s) => ({
+					User: { discordId: { contains: s, mode: 'insensitive' } }
+				}))
 			}
 		];
 	}
