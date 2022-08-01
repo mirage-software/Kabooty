@@ -1,19 +1,65 @@
-import { CollabStatus, type Pick } from '@prisma/client';
+import { CollabStatus, type Pick, type User } from '@prisma/client';
 import type { RequestHandler } from '@sveltejs/kit';
 import { existsSync, unlinkSync } from 'fs';
+import { DiscordBot } from '../../../../../../bot/discord';
 import path from 'path';
 import { Prisma } from '../../../../../../database/prisma';
 import { Env } from '../../../../../../env';
 import cookie from 'cookie';
 import { Jwt } from '../../../../../../jwt';
-import { getUser } from '../../../../discord/user';
+import { getUpdatedDiscordUser, getUser } from '../../../../discord/user';
 import { SentryClient } from '../../../../../../bot/sentry';
+import { MessageEmbed } from 'discord.js';
+import type { IDiscordUser } from 'src/database/discord_user';
+
+async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason: string | null }) {
+	const env = Env.load();
+	const serverId = env['DISCORD_SERVER_ID'];
+	const channelId = env['DISCORD_DELETIONS_CHANNEL_ID'];
+
+	if (!data.reason) {
+		data.reason = 'No Reason Given';
+	}
+
+	const embed: MessageEmbed = new MessageEmbed({
+		title: `**Deletion Notification**`,
+		description: `Your character has been deleted for the following reason\n**${data.reason}**`,
+		color: 0xff0000,
+		fields: [
+			{
+				name: 'Picked Character',
+				value: data.pick.name,
+				inline: true
+			},
+			{
+				name: 'Picked by',
+				value: `<@${data.pick.userId}>`,
+				inline: true
+			},
+			{
+				name: 'Deleted by',
+				value: `<@${data.user.id}>`
+			},
+			{
+				name: 'Pick ID',
+				value: data.pick.id,
+				inline: true
+			}
+		]
+	});
+
+	const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
+	const channel = guild.channels.cache.get(channelId);
+	if (channel && channel.type === 'GUILD_TEXT') {
+		const msg = await channel.send(`<@${data.pick.userId}>`);
+		msg.reply({ embeds: [embed] });
+	}
+}
 
 export async function deletePick(pick: Pick): Promise<void> {
 	if (!pick) {
 		throw new Error('Pick not found');
 	}
-
 	const env = Env.load();
 
 	if (pick.image) {
@@ -153,6 +199,9 @@ export const del: RequestHandler = async ({ request, params }) => {
 	const decodedUser = Jwt.decode(cookies['user_id']);
 	const userId = decodedUser['user_id'] as string;
 
+	const requestJson = await request.json();
+	const reason = requestJson.reason;
+
 	if (!token) {
 		return {
 			status: 401
@@ -196,6 +245,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 				});
 
 				await deletePick(pick);
+				sendEmbedToDiscord({ pick, user, reason });
 
 				return {
 					status: 200
