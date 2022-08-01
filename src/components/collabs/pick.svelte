@@ -89,6 +89,32 @@
 			_window.alert('Pick reported');
 		}
 	}
+
+	async function deleteImage() {
+		if (!_window) {
+			return;
+		}
+
+		let confirmed = false;
+		let reason: string | null = '';
+
+		if ($discord?.admin) {
+			reason = _window.prompt('Whats the reason for the deletion?', 'Duplicate Pick');
+			if (reason) {
+				confirmed = true;
+			}
+		}
+
+		if (confirmed) {
+			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id + '/image', {
+				data: {
+					reason: reason
+				}
+			});
+			_window.alert('Pick Deleted');
+			onChange();
+		}
+	}
 </script>
 
 <div id="card">
@@ -139,6 +165,9 @@
 							{#if $discord?.admin || profile}
 								<div id="admin">
 									<IconButton icon="la la-trash" click={deletePick} />
+								</div>
+								<div id="admin">
+									<IconButton icon="la la-image" click={deleteImage} />
 								</div>
 							{/if}
 							{#if $discord?.admin}
