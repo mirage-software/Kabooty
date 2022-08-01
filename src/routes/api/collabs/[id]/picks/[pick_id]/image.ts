@@ -107,44 +107,44 @@ export const del: RequestHandler = async ({ request, params }) => {
 	try {
 		const user = await getUser(token, userId);
 
-		if (!user && user.admin) {
-			const pickId = params['pick_id'];
-
-			const pick = await Prisma.client.pick.findUnique({
-				where: {
-					id: pickId
-				},
-				include: {
-					collab: true
-				}
-			});
-
-			if (!pick) {
-				return {
-					status: 404
-				};
-			}
-
-			await Prisma.client.log.create({
-				data: {
-					action: 'admin_delete_pick_image',
-					userId: user.id,
-					data: JSON.stringify(pick)
-				}
-			});
-
-			await deleteImage(pick);
-
-			await sendEmbedToDiscord({ pick, user, reason });
-
-			return {
-				status: 200
-			};
-		} else {
+		if (!user || !user.admin) {
 			return {
 				status: 403
 			};
 		}
+
+		const pickId = params['pick_id'];
+
+		const pick = await Prisma.client.pick.findUnique({
+			where: {
+				id: pickId
+			},
+			include: {
+				collab: true
+			}
+		});
+
+		if (!pick) {
+			return {
+				status: 404
+			};
+		}
+
+		await Prisma.client.log.create({
+			data: {
+				action: 'admin_delete_pick_image',
+				userId: user.id,
+				data: JSON.stringify(pick)
+			}
+		});
+
+		await deleteImage(pick);
+
+		await sendEmbedToDiscord({ pick, user, reason });
+
+		return {
+			status: 200
+		};
 	} catch (error) {
 		console.log(error);
 		SentryClient.log(error);
