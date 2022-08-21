@@ -56,7 +56,7 @@
 						<div id="image">
 							<ImageContainer>
 								<!-- svelte-ignore a11y-missing-attribute -->
-								<img src={dataUrl ? dataUrl : '/api/images/collabs/' + collab?.logo} />
+								<img src={dataUrl ? dataUrl : '/api/assets/collabs/' + collab?.logo} />
 							</ImageContainer>
 						</div>
 					{/if}

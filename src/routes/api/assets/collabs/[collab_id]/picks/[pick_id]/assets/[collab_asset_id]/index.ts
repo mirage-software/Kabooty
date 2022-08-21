@@ -1,14 +1,14 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
 import path from 'path';
-import { Prisma } from '../../../../../../../../database/prisma';
-import { Env } from '../../../../../../../../env';
+import { Prisma } from '../../../../../../../../../database/prisma';
 import cookie from 'cookie';
-import { Jwt } from '../../../../../../../../jwt';
-import { getUser } from '../../../../../../discord/user';
-import { SentryClient } from '../../../../../../../../bot/sentry';
+import { Jwt } from '../../../../../../../../../jwt';
+import { getUser } from '../../../../../../../discord/user';
+import { SentryClient } from '../../../../../../../../../bot/sentry';
 import imageType from 'image-type';
 import sharp from 'sharp';
+import { ServerPaths } from '../../../../../../../../../utils/paths/server';
 
 export const post: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -34,59 +34,37 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const collabId = params.id;
+		const collabAssetId = params['collab_asset_id'];
 		const pickId = params['pick_id'];
 
-		const env = Env.load();
-
-		const collab = await Prisma.client.collab.findUnique({
+		const collabAsset = await Prisma.client.collabAsset.findUnique({
 			where: {
-				id: collabId
+				id: collabAssetId
 			}
 		});
 
-		if (!collab) {
+		if (!collabAsset) {
 			return {
 				status: 404,
 				body: {
-					message: 'Collab not found'
+					message: 'Collab asset not found'
 				}
 			};
 		}
 
-		const pick = await Prisma.client.pick.findUnique({
+		const asset = await Prisma.client.asset.findUnique({
 			where: {
-				id: pickId
+				pickId_collabAssetId: {
+					pickId,
+					collabAssetId
+				}
 			}
 		});
 
-		if (!pick) {
-			return {
-				status: 404,
-				body: {
-					message: 'Pick not found'
-				}
-			};
-		}
-
-		if (pick.userId !== userId) {
+		if (asset && asset.userId !== userId) {
 			return {
 				status: 403
 			};
-		}
-
-		if (pick.image) {
-			const originalFile = path.join(
-				env['FILE_STORAGE_PATH'],
-				'collabs',
-				collab.id,
-				'picks',
-				pick.image
-			);
-
-			if (existsSync(originalFile)) {
-				unlinkSync(originalFile);
-			}
 		}
 
 		const blob = await request.arrayBuffer();
@@ -120,7 +98,11 @@ export const post: RequestHandler = async ({ request, params }) => {
 		const image = sharp(buffer);
 		const metadata = await image.metadata();
 
-		if (!metadata || (metadata.width ?? 0) < 900 || (metadata.height ?? 0) < 900) {
+		if (
+			!metadata ||
+			(metadata.width ?? 0) < collabAsset.assetWidth ||
+			(metadata.height ?? 0) < collabAsset.assetHeight
+		) {
 			return {
 				status: 400,
 				body: {
@@ -129,28 +111,53 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
+		if (asset) {
+			const originalFile = path.join(
+				ServerPaths.asset(asset.collabId, pickId, collabAssetId),
+				asset.image
+			);
+
+			if (existsSync(originalFile)) {
+				unlinkSync(originalFile);
+			}
+		}
+
 		if (type.ext !== 'png') {
 			buffer = await image.png().toBuffer();
 		}
 
-		const file = params['pick_id'] + '.png';
+		const file =
+			ServerPaths.generateAssetName(pickId, collabAssetId, collabAsset.assetType) + '.png';
 
-		const filePath = path.join(env['FILE_STORAGE_PATH'], 'collabs', collab.id, 'picks', file);
+		const filePath = path.join(
+			ServerPaths.asset(collabAsset.collabId, pickId, collabAssetId),
+			file
+		);
 
 		mkdirSync(path.dirname(filePath), { recursive: true });
 
 		writeFileSync(filePath, buffer);
 
-		pick.image = file;
-
-		await Prisma.client.pick.update({
-			where: {
-				id: pickId
-			},
-			data: {
-				image: file
-			}
-		});
+		if (!asset) {
+			await Prisma.client.asset.create({
+				data: {
+					collabId: collabAsset.collabId,
+					pickId,
+					collabAssetId,
+					image: file,
+					userId: userId
+				}
+			});
+		} else {
+			await Prisma.client.asset.update({
+				where: {
+					id: asset.id
+				},
+				data: {
+					image: file
+				}
+			});
+		}
 
 		return {
 			status: 200

@@ -7,7 +7,7 @@
 	import { osu } from '../../../stores/osu';
 
 	import axios from 'axios';
-	import type { AnimeCharacter, Collab } from '@prisma/client';
+	import type { AnimeCharacter, Collab, CollabAsset } from '@prisma/client';
 	import LoadingSpinner from '../../../components/generic/design/loading_spinner.svelte';
 	import Info from '../../../components/collabs/register/info.svelte';
 	import Discord from '../../../components/collabs/register/discord.svelte';
@@ -18,7 +18,7 @@
 	import Image from '../../../components/collabs/register/image.svelte';
 	import Extra from '../../../components/collabs/register/extra.svelte';
 
-	let collab: Collab | null = null;
+	let collab: (Collab & { collabAssets: CollabAsset[] }) | null = null;
 
 	let rulesAgreed = false;
 
@@ -67,9 +67,10 @@
 						imageBuffer = buffer;
 						filename = name;
 					}}
+					collabAsset={collab.collabAssets[0]}
 				/>
 			{:else}
-				<Extra {collab} {imageBuffer} {filename} {character} />
+				<Extra {collab} {imageBuffer} {character} />
 			{/if}
 		</div>
 	</div>

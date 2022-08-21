@@ -6,6 +6,11 @@
 	import { t } from 'svelte-intl-precompile';
 	import Card from '../../generic/design/card.svelte';
 	import SolidButton from '../../generic/design/solid_button.svelte';
+	import type { Asset, CollabAsset } from '@prisma/client';
+	import { ClientPaths } from '../../../utils/paths/client';
+
+	export let collabAsset: CollabAsset;
+	export let asset: Asset | null = null;
 
 	let image: string | null = null;
 	let imageBuffer: ArrayBuffer;
@@ -14,23 +19,42 @@
 	export let submit: (image: ArrayBuffer, filename: string) => Promise<void>;
 </script>
 
-<h3>{$t('collabs.registration.image.title')}</h3>
+<h3>
+	{$t('collabs.registration.asset.title', {
+		values: { asset: collabAsset.assetName.toLowerCase() }
+	})}
+</h3>
 <div id="character">
 	<Card>
 		<div id="content">
-			{#if image}
+			{#if image || asset}
 				<div id="image">
 					<ImageContainer>
-						<!-- svelte-ignore a11y-missing-attribute -->
-						<img src={image} />
+						{#if image}
+							<!-- svelte-ignore a11y-missing-attribute -->
+							<img src={image} />
+						{/if}
+						{#if asset && !image}
+							<!-- svelte-ignore a11y-missing-attribute -->
+							<img
+								src={ClientPaths.asset(
+									collabAsset.collabId,
+									asset.pickId,
+									collabAsset.id,
+									asset.image
+								)}
+							/>
+						{/if}
 					</ImageContainer>
 				</div>
 			{/if}
 			<FileUpload
-				string="collabs.registration.image.title"
+				string={$t('collabs.registration.asset.title', {
+					values: { asset: collabAsset.assetName.toLowerCase() }
+				})}
 				maxBytes={5120 * 1024}
-				width={900}
-				height={900}
+				width={collabAsset.assetWidth}
+				height={collabAsset.assetHeight}
 				onDataUrl={(data) => (image = data)}
 				onBuffer={(buffer, _) => {
 					imageBuffer = buffer;
@@ -39,7 +63,11 @@
 			/>
 			<div id="reqs">
 				<h4>{$t('collabs.registration.character.duplicate')}</h4>
-				<p id="filereqs">{$t('collabs.registration.image.filereqs')}</p>
+				<p id="filereqs">
+					{$t('collabs.registration.asset.filereqs', {
+						values: { width: collabAsset.assetWidth, height: collabAsset.assetHeight }
+					})}
+				</p>
 			</div>
 			{#if image}
 				<SolidButton

@@ -9,7 +9,7 @@
 	import { discord } from '../../../stores/discord';
 
 	import axios from 'axios';
-	import type { AnimeCharacter, Collab, Pick, User } from '@prisma/client';
+	import type { AnimeCharacter, Asset, Collab, CollabAsset, Pick, User } from '@prisma/client';
 	import LoadingSpinner from '../../../components/generic/design/loading_spinner.svelte';
 	import PageTitle from '../../../components/generic/design/page_title.svelte';
 	import SolidButton from '../../../components/generic/design/solid_button.svelte';
@@ -20,8 +20,16 @@
 	import IconButton from '../../../components/collabs/icon_button.svelte';
 
 	let pageIndex = 1;
-	let data: (Pick & { User: User; character: AnimeCharacter })[] = [];
-	let newBatch: (Pick & { User: User; character: AnimeCharacter })[] = [];
+	let data: (Pick & {
+		user: User;
+		character: AnimeCharacter;
+		assets: (Asset & { collabAsset: CollabAsset })[];
+	})[] = [];
+	let newBatch: (Pick & {
+		user: User;
+		character: AnimeCharacter;
+		assets: (Asset & { collabAsset: CollabAsset })[];
+	})[] = [];
 
 	let filtervalues: Array<string> = ['default', 'original', 'char', 'date', 'anime'];
 	let fiterstrings: Array<string> = filtervalues.map((filter) => $t(`collabs.filter.${filter}`));

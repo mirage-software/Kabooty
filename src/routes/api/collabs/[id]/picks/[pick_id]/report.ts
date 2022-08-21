@@ -11,11 +11,11 @@ import { SentryClient } from '../../../../../../bot/sentry';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 
 async function sendEmbedToDiscord(
-	pick: Pick & { User: User | null; collab: Collab },
+	pick: Pick & { user: User | null; collab: Collab },
 	reporter: User,
 	report: string
 ) {
-	if (!pick.User) {
+	if (!pick.user) {
 		return;
 	}
 
@@ -24,7 +24,7 @@ async function sendEmbedToDiscord(
 	const serverId = env['DISCORD_SERVER_ID'];
 	const channelId = env['DISCORD_REPORTS_CHANNEL_ID'];
 
-	const mention = `<@${pick.User.discordId}>`;
+	const mention = `<@${pick.user.discordId}>`;
 	const reporterMention = `<@${reporter.discordId}>`;
 
 	const embed: MessageEmbed = new MessageEmbed({
@@ -44,7 +44,7 @@ async function sendEmbedToDiscord(
 			},
 			{
 				name: 'Pick user ID',
-				value: `${pick.User.discordId}`,
+				value: `${pick.user.discordId}`,
 				inline: true
 			},
 			{
@@ -74,7 +74,7 @@ async function sendEmbedToDiscord(
 		const row = new MessageActionRow();
 
 		const close = new MessageButton()
-			.setCustomId(`closereport_${msg.id}`)
+			.setCustomId(`report_close`)
 			.setLabel('Close Report')
 			.setDisabled(false)
 			.setStyle('DANGER');
@@ -145,7 +145,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 				id: pickId
 			},
 			include: {
-				User: true,
+				user: true,
 				collab: true
 			}
 		});

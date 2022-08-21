@@ -10,6 +10,9 @@ export const get: RequestHandler = async ({ params }) => {
 	const collab = await Prisma.client.collab.findUnique({
 		where: {
 			id: params.id
+		},
+		include: {
+			collabAssets: true
 		}
 	});
 
@@ -51,21 +54,6 @@ export const put: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			id: params.id
-		}
-	});
-
-	if (!collab) {
-		return {
-			status: 404,
-			body: {
-				message: 'Collab not found'
-			}
-		};
-	}
-
 	const body: Collab = await request.json();
 
 	try {
@@ -78,6 +66,9 @@ export const put: RequestHandler = async ({ request, params }) => {
 				topic: body.topic,
 				title: body.title,
 				rules: body.rules === '' ? null : body.rules
+			},
+			include: {
+				collabAssets: true
 			}
 		});
 
@@ -116,21 +107,6 @@ export const del: RequestHandler = async ({ request, params }) => {
 	if (!user || !user.admin) {
 		return {
 			status: 403
-		};
-	}
-
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			id: params.id
-		}
-	});
-
-	if (!collab) {
-		return {
-			status: 404,
-			body: {
-				message: 'Collab not found'
-			}
 		};
 	}
 

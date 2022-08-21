@@ -34,9 +34,14 @@ export const get: RequestHandler = async ({ request }) => {
 				userId: user.id
 			},
 			include: {
-				User: true,
+				user: true,
 				character: true,
-				collab: true
+				collab: true,
+				assets: {
+					include: {
+						collabAsset: true
+					}
+				}
 			}
 		});
 

@@ -56,7 +56,7 @@ export const get: RequestHandler = async ({ request }) => {
 			OR: OR
 		},
 		include: {
-			Pick: true
+			picks: true
 		},
 		orderBy: orderBy,
 		take: 50,
@@ -181,11 +181,14 @@ export const del: RequestHandler = async ({ request }) => {
 				id: parseInt(id)
 			},
 			include: {
-				Pick: {
+				picks: {
 					where: {
 						collab: {
 							OR: [{ status: CollabStatus.OPEN }, { status: CollabStatus.EARLY_ACCESS }]
 						}
+					},
+					include: {
+						assets: true
 					}
 				}
 			}
@@ -197,9 +200,9 @@ export const del: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		if (character.Pick.length > 0) {
-			for (let i = 0; i < character.Pick.length; i++) {
-				await deletePick(character.Pick[i]);
+		if (character.picks.length > 0) {
+			for (let i = 0; i < character.picks.length; i++) {
+				await deletePick(character.picks[i]);
 			}
 		}
 

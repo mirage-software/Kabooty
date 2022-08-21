@@ -2,15 +2,15 @@
 	import { t } from 'svelte-intl-precompile';
 	import SolidButton from '../../generic/design/solid_button.svelte';
 	import Card from '../../generic/design/card.svelte';
-	import type { AnimeCharacter, Collab, Pick } from '@prisma/client';
+	import type { AnimeCharacter, Collab, CollabAsset, Pick } from '@prisma/client';
 	import axios, { AxiosError } from 'axios';
 	import InputText from '../../generic/design/input_text.svelte';
 	import { goto } from '$app/navigation';
 	import Dropdown from './extra/dropdown.svelte';
+	import { ClientPaths } from '../../../utils/paths/client';
 
-	export let collab: Collab;
+	export let collab: Collab & { collabAssets: CollabAsset[] };
 	export let imageBuffer: ArrayBuffer;
-	export let filename: string;
 	export let character: AnimeCharacter;
 
 	let specialties = [
@@ -60,17 +60,19 @@
 				// !! may fail if the user isn't in the discord
 			}
 
+			const mainAsset = collab.collabAssets.find((asset) => asset.mainAsset);
+
+			if (!mainAsset) {
+				throw new Error('No main asset found');
+			}
+
 			const pick: Pick = (await axios.post(`/api/collabs/${collab.id}/register`, requestData)).data;
 
-			await axios.post(
-				`/api/images/upload/collabs/${collab.id}/picks/${pick.id}/${filename}`,
-				imageBuffer,
-				{
-					headers: {
-						'Content-Type': 'application/octet-stream'
-					}
+			await axios.post(ClientPaths.asset(collab.id, pick.id, mainAsset.id), imageBuffer, {
+				headers: {
+					'Content-Type': 'application/octet-stream'
 				}
-			);
+			});
 
 			goto(`/collabs/${collab.id}/registered`);
 		} catch (error) {

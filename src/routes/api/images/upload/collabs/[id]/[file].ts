@@ -9,6 +9,8 @@ import { getUser } from '../../../../discord/user';
 import imageType from 'image-type';
 import sharp from 'sharp';
 
+// TODO: move the collab images to the new asset system
+
 export const post: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
@@ -97,8 +99,6 @@ export const post: RequestHandler = async ({ request, params }) => {
 	mkdirSync(path.dirname(filePath), { recursive: true });
 
 	writeFileSync(filePath, buffer);
-
-	collab.logo = file;
 
 	await Prisma.client.collab.update({
 		where: {

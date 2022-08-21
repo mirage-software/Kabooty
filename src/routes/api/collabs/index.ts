@@ -8,7 +8,11 @@ import { SentryClient } from '../../../bot/sentry';
 
 export const get: RequestHandler = async () => {
 	// !! TODO: this call needs to be paginated in the future
-	const collabs = await Prisma.client.collab.findMany();
+	const collabs = await Prisma.client.collab.findMany({
+		include: {
+			collabAssets: true
+		}
+	});
 
 	return {
 		status: 200,

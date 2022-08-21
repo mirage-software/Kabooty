@@ -6,7 +6,7 @@
 	import IconButton from '../../collabs/icon_button.svelte';
 
 	export let character: AnimeCharacter & {
-		Pick: Pick[];
+		picks: Pick[];
 	};
 
 	export let onDelete: () => void;
@@ -18,7 +18,7 @@
 </script>
 
 <div id="character">
-	{#if character.Pick.length > 0}
+	{#if character.picks.length > 0}
 		<p id="status">
 			{$t('admin.characters.in_use')}
 		</p>

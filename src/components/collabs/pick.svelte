@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Collab, User, Pick, AnimeCharacter } from '@prisma/client';
+	import type { Collab, User, Pick, AnimeCharacter, Asset, CollabAsset } from '@prisma/client';
 	import Card from '../generic/design/card.svelte';
 	import { t } from 'svelte-intl-precompile';
 
@@ -9,15 +9,22 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 	import SolidButton from '../generic/design/solid_button.svelte';
+	import { ClientPaths } from '../../utils/paths/client';
 
-	export let pick: Pick & { User: User; character: AnimeCharacter };
+	export let pick: Pick & {
+		user: User;
+		character: AnimeCharacter;
+		assets: (Asset & { collabAsset: CollabAsset })[];
+	};
 	export let collab: Collab;
 	export let profile = false;
 
 	let _window: Window | undefined;
+	let asset: Asset | undefined;
 
 	onMount(() => {
 		_window = window;
+		asset = pick.assets.find((asset) => asset.collabAsset.mainAsset);
 	});
 
 	export let onChange: () => void;
@@ -99,19 +106,28 @@
 		let reason: string | null = '';
 
 		if ($discord?.admin) {
-			reason = _window.prompt('Whats the reason for the deletion?', 'Duplicate Pick');
+			reason = _window.prompt(
+				'Whats the reason for the deletion? (this will only delete the primary asset)',
+				'Inappropriate image'
+			);
 			if (reason) {
 				confirmed = true;
 			}
 		}
 
+		const asset = pick.assets.find((asset) => asset.collabAsset.mainAsset);
+
+		if (!asset) {
+			throw new Error('No main asset found');
+		}
+
 		if (confirmed) {
-			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id + '/image', {
+			await axios.delete(ClientPaths.deleteAsset(asset.id), {
 				data: {
 					reason: reason
 				}
 			});
-			_window.alert('Pick Deleted');
+			_window.alert('Asset deleted');
 			onChange();
 		}
 	}
@@ -121,15 +137,12 @@
 	<Card>
 		<div id="container">
 			<div>
-				{#if pick.image}
+				{#if asset}
 					<div id="image">
 						<ImageContainer>
 							<!-- svelte-ignore a11y-missing-attribute -->
 							<img
-								src={'/api/images/collabs/' +
-									collab.id +
-									'/picks/' +
-									pick.image +
+								src={ClientPaths.asset(collab.id, pick.id, asset.collabAssetId, asset.image) +
 									'?width=200&height=200'}
 							/>
 						</ImageContainer>
@@ -149,8 +162,8 @@
 					{/if}
 					<h4>{pick.name}</h4>
 					<h6 style="margin: 0;">Picked by</h6>
-					<h5>{pick.User.username + '#' + pick.User.discriminator}</h5>
-					<h6 id="discord-id">{pick.User.discordId}</h6>
+					<h5>{pick.user.username + '#' + pick.user.discriminator}</h5>
+					<h6 id="discord-id">{pick.user.discordId}</h6>
 					<h6 style="margin: 0;">Picked at</h6>
 					<h5>{getFormattedDate(pick.createdAt.toString(), true)}</h5>
 				</div>

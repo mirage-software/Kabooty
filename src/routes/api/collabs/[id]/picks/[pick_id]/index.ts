@@ -1,4 +1,4 @@
-import { CollabStatus, type Pick, type User } from '@prisma/client';
+import { CollabStatus, type Asset, type Pick } from '@prisma/client';
 import type { RequestHandler } from '@sveltejs/kit';
 import { existsSync, unlinkSync } from 'fs';
 import { DiscordBot } from '../../../../../../bot/discord';
@@ -7,10 +7,11 @@ import { Prisma } from '../../../../../../database/prisma';
 import { Env } from '../../../../../../env';
 import cookie from 'cookie';
 import { Jwt } from '../../../../../../jwt';
-import { getUpdatedDiscordUser, getUser } from '../../../../discord/user';
+import { getUser } from '../../../../discord/user';
 import { SentryClient } from '../../../../../../bot/sentry';
 import { MessageEmbed } from 'discord.js';
 import type { IDiscordUser } from 'src/database/discord_user';
+import { ServerPaths } from '../../../../../../utils/paths/server';
 
 async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason: string | null }) {
 	const env = Env.load();
@@ -56,19 +57,17 @@ async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason
 	}
 }
 
-export async function deletePick(pick: Pick): Promise<void> {
+export async function deletePick(pick: Pick & { assets: Asset[] }): Promise<void> {
 	if (!pick) {
 		throw new Error('Pick not found');
 	}
-	const env = Env.load();
 
-	if (pick.image) {
+	for (let i = 0; i < pick.assets.length; i++) {
+		const asset = pick.assets[i];
+
 		const filePath = path.join(
-			env['FILE_STORAGE_PATH'],
-			'collabs',
-			pick.collabId,
-			'picks',
-			pick.image
+			ServerPaths.asset(pick.collabId, pick.id, asset.collabAssetId),
+			asset.image
 		);
 
 		if (existsSync(filePath)) {
@@ -182,7 +181,6 @@ export const patch: RequestHandler = async ({ request, params }) => {
 		};
 	} catch (error) {
 		SentryClient.log(error);
-		console.log(error);
 
 		return {
 			status: 500
@@ -224,7 +222,8 @@ export const del: RequestHandler = async ({ request, params }) => {
 				id: pickId
 			},
 			include: {
-				collab: true
+				collab: true,
+				assets: true
 			}
 		});
 

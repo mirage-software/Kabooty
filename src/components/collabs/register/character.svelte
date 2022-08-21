@@ -2,7 +2,7 @@
 	import { t } from 'svelte-intl-precompile';
 	import SolidButton from '../../generic/design/solid_button.svelte';
 	import Card from '../../generic/design/card.svelte';
-	import type { AnimeCharacter, Collab, Pick } from '@prisma/client';
+	import type { AnimeCharacter, Collab, CollabAsset, Pick } from '@prisma/client';
 	import axios from 'axios';
 	import InputText from '../../generic/design/input_text.svelte';
 	import Character from './character/character.svelte';
@@ -10,15 +10,16 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Paginator from '../../../components/generic/design/paginator.svelte';
+	import Asset from '../asset.svelte';
 
-	export let collab: Collab;
+	export let collab: Collab & { collabAssets: CollabAsset[] };
 
 	export let submit: (
 		data: AnimeCharacter | null | undefined,
 		name: string | null | undefined
 	) => Promise<void>;
 
-	let results: (AnimeCharacter & { Pick: Pick[] })[] | null = null;
+	let results: (AnimeCharacter & { picks: Pick[] })[] | null = null;
 
 	let newPage: number | null = null;
 
@@ -52,7 +53,7 @@
 		);
 
 		total = response.data.count;
-		results = response.data.characters;
+		results = response.data.characters as (AnimeCharacter & { picks: Pick[] })[];
 	}
 
 	let cooldown: string | number | undefined;
@@ -77,6 +78,14 @@
 <div id="character">
 	<Card>
 		<div id="content">
+			<div id="title">
+				<h4>{$t('collabs.registration.required_assets')}</h4>
+			</div>
+			<div id="assets">
+				{#each collab.collabAssets as collabAsset}
+					<Asset {collabAsset} />
+				{/each}
+			</div>
 			<div id="title">
 				<h4>{$t('collabs.registration.character.search_title')}</h4>
 				<h5>{$t('collabs.registration.character.search_subtitle')}</h5>
@@ -113,7 +122,7 @@
 							name: $t('collabs.registration.character.custom'),
 							anime_name: $t('collabs.registration.character.original'),
 							id: -1,
-							Pick: []
+							picks: []
 						}}
 						onClick={(_) => {
 							selected.update({
@@ -179,6 +188,14 @@
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
+			}
+
+			#assets {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				width: 100%;
+				gap: $margin-xs;
 			}
 
 			#results {

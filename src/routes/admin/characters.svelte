@@ -28,7 +28,7 @@
 	let fiterstrings: Array<string> = filtervalues.map((filter) => $t(`collabs.filter.${filter}`));
 
 	let characters: (AnimeCharacter & {
-		Pick: Pick[];
+		picks: Pick[];
 	})[];
 	let page = 1;
 	let newPage: number | null = null;

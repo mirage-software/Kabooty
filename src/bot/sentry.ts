@@ -30,6 +30,8 @@ export abstract class SentryClient {
 			return;
 		}
 
+		console.error(e);
+
 		Sentry.captureException(e, {
 			contexts: {
 				data: data ?? {}
