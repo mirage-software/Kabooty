@@ -102,7 +102,9 @@
 			},
 			"asset": {
 				"title": "Upload {asset}",
-				"filereqs": "Note, a maximum file size of 5MB is allowed. Minimum dimensions are {width}x{height} pixels."
+				"filereqs": "Note, a maximum file size of 5MB is allowed. Minimum dimensions are {width}x{height} pixels.",
+				"upload": "Upload",
+				"cancel": "Cancel"
 			},
 			"submit": "Submit",
 			"register": "Register",

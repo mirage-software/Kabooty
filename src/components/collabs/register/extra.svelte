@@ -7,11 +7,11 @@
 	import InputText from '../../generic/design/input_text.svelte';
 	import { goto } from '$app/navigation';
 	import Dropdown from './extra/dropdown.svelte';
-	import { ClientPaths } from '../../../utils/paths/client';
 
 	export let collab: Collab & { collabAssets: CollabAsset[] };
-	export let imageBuffer: ArrayBuffer;
 	export let character: AnimeCharacter;
+
+	export let onRegister: (pick: Pick) => void;
 
 	let specialties = [
 		'Aim',
@@ -68,13 +68,7 @@
 
 			const pick: Pick = (await axios.post(`/api/collabs/${collab.id}/register`, requestData)).data;
 
-			await axios.post(ClientPaths.asset(collab.id, pick.id, mainAsset.id), imageBuffer, {
-				headers: {
-					'Content-Type': 'application/octet-stream'
-				}
-			});
-
-			goto(`/collabs/${collab.id}/registered`);
+			onRegister(pick);
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				goto(
@@ -202,7 +196,6 @@
 		flex-direction: column;
 		gap: calc($margin-xs / 4);
 
-		// max-width: 500px;
 		width: calc(100% - $margin-s * 2);
 
 		background-color: $dark-overlay;

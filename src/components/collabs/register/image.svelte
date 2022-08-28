@@ -8,6 +8,8 @@
 	import SolidButton from '../../generic/design/solid_button.svelte';
 	import type { Asset, CollabAsset } from '@prisma/client';
 	import { ClientPaths } from '../../../utils/paths/client';
+	import Crop from '../../generic/design/crop.svelte';
+	import { modal } from '../../../stores/modal';
 
 	export let collabAsset: CollabAsset;
 	export let asset: Asset | null = null;
@@ -16,7 +18,35 @@
 	let imageBuffer: ArrayBuffer;
 	let filename: string;
 
-	export let submit: (image: ArrayBuffer, filename: string) => Promise<void>;
+	export let submit: (
+		image: ArrayBuffer,
+		filename: string,
+		pixels:
+			| {
+					width: number;
+					height: number;
+					x: number;
+					y: number;
+			  }
+			| undefined
+	) => Promise<void>;
+
+	export let next: () => void;
+
+	function cropImage(_image: string) {
+		modal.open(Crop, {
+			image: _image,
+			width: collabAsset.assetWidth,
+			height: collabAsset.assetHeight,
+			upload: (_pixels: { width: number; height: number; x: number; y: number }) => {
+				if (_pixels.height && _pixels.width && _pixels.x && _pixels.y) {
+					submit(imageBuffer, filename, _pixels);
+				} else {
+					submit(imageBuffer, filename, undefined);
+				}
+			}
+		});
+	}
 </script>
 
 <h3>
@@ -55,7 +85,11 @@
 				maxBytes={5120 * 1024}
 				width={collabAsset.assetWidth}
 				height={collabAsset.assetHeight}
-				onDataUrl={(data) => (image = data)}
+				onDataUrl={(data) => {
+					if (data) {
+						cropImage(data);
+					}
+				}}
 				onBuffer={(buffer, _) => {
 					imageBuffer = buffer;
 					filename = _;
@@ -69,10 +103,10 @@
 					})}
 				</p>
 			</div>
-			{#if image}
+			{#if asset || image}
 				<SolidButton
 					click={async () => {
-						submit(imageBuffer, filename);
+						next();
 					}}
 					color="green"
 					string="collabs.registration.submit"

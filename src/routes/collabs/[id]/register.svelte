@@ -7,7 +7,7 @@
 	import { osu } from '../../../stores/osu';
 
 	import axios from 'axios';
-	import type { AnimeCharacter, Collab, CollabAsset } from '@prisma/client';
+	import type { AnimeCharacter, Collab, CollabAsset, Pick, Asset } from '@prisma/client';
 	import LoadingSpinner from '../../../components/generic/design/loading_spinner.svelte';
 	import Info from '../../../components/collabs/register/info.svelte';
 	import Discord from '../../../components/collabs/register/discord.svelte';
@@ -17,14 +17,20 @@
 	import { selected } from '../../../components/collabs/register/character/selected_store';
 	import Image from '../../../components/collabs/register/image.svelte';
 	import Extra from '../../../components/collabs/register/extra.svelte';
+	import { goto } from '$app/navigation';
+	import { ClientPaths } from '../../../utils/paths/client';
 
 	let collab: (Collab & { collabAssets: CollabAsset[] }) | null = null;
+	let assets: {
+		[key: number]: Asset;
+	} = {};
 
 	let rulesAgreed = false;
 
 	let character: AnimeCharacter | undefined | null = null;
-	let imageBuffer: ArrayBuffer | null = null;
-	let filename: string | null = null;
+
+	let currentImage = 0;
+	let pick: Pick;
 
 	onMount(async () => {
 		const collabId = $page.params['id'];
@@ -61,16 +67,50 @@
 						selected.update(null);
 					}}
 				/>
-			{:else if !imageBuffer || !filename}
-				<Image
-					submit={async (buffer, name) => {
-						imageBuffer = buffer;
-						filename = name;
+			{:else if !pick}
+				<Extra
+					{collab}
+					{character}
+					onRegister={(_pick) => {
+						pick = _pick;
 					}}
-					collabAsset={collab.collabAssets[0]}
 				/>
-			{:else}
-				<Extra {collab} {imageBuffer} {character} />
+			{:else if collab && currentImage < collab.collabAssets.length}
+				<Image
+					submit={async (buffer, name, pixels) => {
+						if (!collab) {
+							return;
+						}
+
+						const mainAsset = collab.collabAssets[currentImage];
+
+						const asset = (
+							await axios.post(ClientPaths.asset(collab.id, pick.id, mainAsset.id), buffer, {
+								headers: {
+									'Content-Type': 'application/octet-stream'
+								},
+								params: pixels
+							})
+						).data;
+
+						assets[currentImage] = asset;
+					}}
+					collabAsset={collab.collabAssets[currentImage]}
+					asset={assets[currentImage]}
+					next={() => {
+						if (!collab) {
+							return;
+						}
+
+						const nextAsset = collab.collabAssets[currentImage + 1];
+
+						if (!nextAsset) {
+							goto(`/collabs/${collab.id}/registered`);
+						} else {
+							currentImage++;
+						}
+					}}
+				/>
 			{/if}
 		</div>
 	</div>

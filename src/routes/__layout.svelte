@@ -38,9 +38,11 @@
 	import '../app.scss';
 
 	import Header from '../components/generic/header/header.svelte';
+	import Modal from 'svelte-simple-modal';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { osu } from '../stores/osu';
+	import { modal } from '../stores/modal';
 </script>
 
 <svelte:head>
@@ -53,6 +55,16 @@
 <div id="content">
 	<slot />
 </div>
+{#if browser}
+	<Modal
+		show={$modal}
+		styleWindow={{ background: '#773632' }}
+		styleContent={{
+			height: '100%'
+		}}
+		closeButton={false}
+	/>
+{/if}
 
 <style lang="scss">
 	#content {

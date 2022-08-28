@@ -19,6 +19,13 @@ export const post: RequestHandler = async ({ request, params }) => {
 	const decodedUser = Jwt.decode(cookies['user_id']);
 	const userId = decodedUser['user_id'] as string;
 
+	const url = new URL(request.url);
+
+	const width = parseInt(url.searchParams.get('width') ?? '0');
+	const height = parseInt(url.searchParams.get('height') ?? '0');
+	const x = parseInt(url.searchParams.get('x') ?? '0');
+	const y = parseInt(url.searchParams.get('y') ?? '0');
+
 	try {
 		if (!token) {
 			return {
@@ -52,7 +59,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const asset = await Prisma.client.asset.findUnique({
+		let asset = await Prisma.client.asset.findUnique({
 			where: {
 				pickId_collabAssetId: {
 					pickId,
@@ -95,7 +102,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const image = sharp(buffer);
+		let image = sharp(buffer);
 		const metadata = await image.metadata();
 
 		if (
@@ -111,6 +118,17 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
+		if (width && height && x && y) {
+			image = image.extract({
+				width: width,
+				height: height,
+				left: x,
+				top: y
+			});
+		}
+
+		image = image.resize(collabAsset.assetWidth, collabAsset.assetHeight);
+
 		if (asset) {
 			const originalFile = path.join(
 				ServerPaths.asset(asset.collabId, pickId, collabAssetId),
@@ -122,9 +140,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 			}
 		}
 
-		if (type.ext !== 'png') {
-			buffer = await image.png().toBuffer();
-		}
+		buffer = await image.png().toBuffer();
 
 		const file =
 			ServerPaths.generateAssetName(pickId, collabAssetId, collabAsset.assetType) + '.png';
@@ -139,7 +155,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 		writeFileSync(filePath, buffer);
 
 		if (!asset) {
-			await Prisma.client.asset.create({
+			asset = await Prisma.client.asset.create({
 				data: {
 					collabId: collabAsset.collabId,
 					pickId,
@@ -149,7 +165,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 				}
 			});
 		} else {
-			await Prisma.client.asset.update({
+			asset = await Prisma.client.asset.update({
 				where: {
 					id: asset.id
 				},
@@ -160,7 +176,8 @@ export const post: RequestHandler = async ({ request, params }) => {
 		}
 
 		return {
-			status: 200
+			status: 200,
+			body: asset
 		};
 	} catch (error) {
 		SentryClient.log(error);
