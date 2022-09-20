@@ -64,7 +64,12 @@
 				<div id="info">
 					<div class="info">
 						{#if collab.status}
-							<h6>{$t('collabs.status.' + collab.status)}</h6>
+							{#if collab.bumpStatus === 'ENABLED'}
+								<h6 style="margin-bottom: 0;">{$t('collabs.status.' + collab.status)}</h6>
+								<h6 id="bump">{$t('collabs.bump_status.' + collab.bumpStatus)}</h6>
+							{:else}
+								<h6>{$t('collabs.status.' + collab.status)}</h6>
+							{/if}
 						{/if}
 						<h4>{collab.title}</h4>
 						<h5>{collab.topic}</h5>
@@ -194,6 +199,11 @@
 				font-weight: 700;
 				color: white;
 				font-style: italic;
+
+				&#bump {
+					color: rgba($color: white, $alpha: 0.5);
+					font-style: normal;
+				}
 			}
 
 			#buttons {

@@ -120,6 +120,7 @@
 			"delete": "Delete",
 			"rules": "Rules (optional)",
 			"status": "Collab Status",
+			"bump_status": "Bump Status",
 			"assets": {
 				"reqs": "You must have at least one asset defined, and one of the defined assets must be the main asset, set using the checkbox, which will be used for the pick card.",
 				"add": "Add asset"
@@ -129,9 +130,12 @@
 			"EARLY_ACCESS": "Early Access",
 			"DESIGN": "Design in Progress",
 			"OPEN": "Registration Open",
-			"BUMP": "Bump Period",
 			"RELEASE": "Released",
 			"CLOSED": "Closed"
+		},
+		"bump_status": {
+			"ENABLED": "Bumps Running",
+			"DISABLED": "Bumps Disabled"
 		},
 		"filter": {
 			"default": "Default",

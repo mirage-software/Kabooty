@@ -26,8 +26,11 @@
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
 
-	let statusOptions = ['OPEN', 'BUMP', 'RELEASE', 'CLOSED', 'EARLY_ACCESS', 'DESIGN'];
+	let statusOptions = ['OPEN', 'RELEASE', 'CLOSED', 'EARLY_ACCESS', 'DESIGN'];
 	let statusStrings = statusOptions.map((status) => $t(`collabs.status.${status}`));
+
+	let bumpStatusOptions = ['ENABLED', 'DISABLED'];
+	let bumpStatusStrings = bumpStatusOptions.map((status) => $t(`collabs.bump_status.${status}`));
 
 	let _window: Window | null = null;
 
@@ -191,6 +194,13 @@
 					strings={statusStrings}
 					placeholder={'collabs.manage.status'}
 				/>
+				<Dropdown
+					bind:value={collab.bumpStatus}
+					title={'collabs.manage.bump_status'}
+					data={bumpStatusOptions}
+					strings={bumpStatusStrings}
+					placeholder={'collabs.manage.bump_status'}
+				/>
 				<div id="logo">
 					{#if (collab && collab.logo) || image}
 						<div id="image">
@@ -263,6 +273,7 @@
 				disabled={!collab.title ||
 					!collab.topic ||
 					!collab.status ||
+					!collab.bumpStatus ||
 					!collab.collabAssets ||
 					collab.title.length < 5 ||
 					collab.topic.length < 4 ||

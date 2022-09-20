@@ -256,7 +256,6 @@ export const del: RequestHandler = async ({ request, params }) => {
 			}
 		} else {
 			if (
-				pick.collab.status === CollabStatus.BUMP ||
 				pick.collab.status === CollabStatus.OPEN ||
 				pick.collab.status === CollabStatus.EARLY_ACCESS
 			) {

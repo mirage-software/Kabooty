@@ -90,6 +90,7 @@ model Collab {
   rules        String?
   type         CollabType
   status       CollabStatus
+  bumpStatus   BumpStatus    @default(DISABLED)
   picks        Pick[]
   participants Participant[]
   collabAssets CollabAsset[]
@@ -119,9 +120,13 @@ enum CollabStatus {
   DESIGN
   EARLY_ACCESS
   OPEN
-  BUMP
   RELEASE
   CLOSED
+}
+
+enum BumpStatus {
+  ENABLED
+  DISABLED
 }
 
 model Pick {
