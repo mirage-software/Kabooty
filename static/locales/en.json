@@ -21,7 +21,8 @@
 			"no_code": "Something went wrong while signing in. The code provided by osu! is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us.",
 			"authentication_failed": "Failed to authenticate with osu!<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us."
 		},
-		"404": "This page does not exist, uwu."
+		"404": "This page does not exist, uwu.",
+		"text_too_long": "The entered text is too long, >~<"
 	},
 	"server": {
 		"verify": "Verify your account",
@@ -88,10 +89,13 @@
 			},
 			"extra": {
 				"title": "Now just some extra information",
-				"avatar": "Which name will we show on your avatar? (optional, 11 characters max, your username will be used instead)",
+				"avatar": "Which name will we show on your avatar?",
 				"card": {
-					"name": "Which name will we show on your card? (optional, 15 characters max, your username will be used instead)",
-					"quote": "Add a quote to your card? (optional, 55 characters max)"
+					"name": "Which name will we show on your card?",
+					"quote": "Add a quote to your card? (optional)"
+				},
+				"banner": {
+					"quote": "Add a quote to your banner? (optional)"
 				},
 				"osu": {
 					"stamina": "Stamina",

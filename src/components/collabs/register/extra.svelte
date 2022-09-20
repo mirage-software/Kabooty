@@ -7,6 +7,8 @@
 	import InputText from '../../generic/design/input_text.svelte';
 	import { goto } from '$app/navigation';
 	import Dropdown from './extra/dropdown.svelte';
+	import { onMount } from 'svelte';
+	import { osu } from '../../../stores/osu';
 
 	export let collab: Collab & { collabAssets: CollabAsset[] };
 	export let character: AnimeCharacter;
@@ -44,9 +46,19 @@
 		agility: ''
 	};
 	let gameSpecialty = '';
-	let avatarText = '';
-	let cardName = '';
+
+	let avatarText = $osu?.username ?? 'Unknown';
+	let avatarValid: boolean;
+
+	let bannerQuote = '';
+	let bannerValid: boolean;
+
+	let cardName = $osu?.username ?? 'Unknown';
+	let cardNameValid: boolean;
+
 	let cardQuote = '';
+	let cardQuoteValid: boolean;
+
 	let favMod = '';
 
 	async function register() {
@@ -59,7 +71,10 @@
 					name: cardName,
 					quote: cardQuote
 				},
-				mod: favMod
+				mod: favMod,
+				banner: {
+					quote: bannerQuote
+				}
 			};
 
 			try {
@@ -151,24 +166,36 @@
 				/>
 			</div>
 
+			<!-- TODO: set accurate calculations based on data provided by host -->
 			<InputText
 				bind:value={avatarText}
+				bind:valid={avatarValid}
 				title={'collabs.registration.extra.avatar'}
 				hint={'Tayo'}
-				max={11}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 48.64, width: 244 }}
+			/>
+			<InputText
+				bind:value={bannerQuote}
+				bind:valid={bannerValid}
+				title={'collabs.registration.extra.banner.quote'}
+				hint={"If you follow the herd, you'll be stepping in poop all day."}
+				multiline={true}
+				calculation={{ font: 'Montserrat', weight: 300, italic: true, size: 16, width: 558 }}
 			/>
 			<InputText
 				bind:value={cardName}
+				bind:valid={cardNameValid}
 				title={'collabs.registration.extra.card.name'}
 				hint={'Tayou-kun Queso'}
-				max={15}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 11.5, width: 310 }}
 			/>
 			<InputText
 				bind:value={cardQuote}
+				bind:valid={cardQuoteValid}
 				title={'collabs.registration.extra.card.quote'}
 				hint={"If you follow the herd, you'll be stepping in poop all day."}
 				multiline={true}
-				max={55}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 11.5, width: 310 }}
 			/>
 			<Dropdown
 				bind:value={gameSpecialty}
@@ -211,7 +238,11 @@
 					skills.reaction.length > 0 &&
 					skills.agility.length > 0 &&
 					gameSpecialty.length > 0 &&
-					favMod.length === 2
+					favMod.length === 2 &&
+					avatarValid !== false &&
+					bannerValid !== false &&
+					cardNameValid !== false &&
+					cardQuoteValid !== false
 				)}
 			/>
 		</div>
