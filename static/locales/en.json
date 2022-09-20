@@ -88,7 +88,11 @@
 			},
 			"extra": {
 				"title": "Now just some extra information",
-				"avatar": "Add some text to your avatar (optional, 11 characters max)",
+				"avatar": "Which name will we show on your avatar? (optional, 11 characters max, your username will be used instead)",
+				"card": {
+					"name": "Which name will we show on your card? (optional, 15 characters max, your username will be used instead)",
+					"quote": "Add a quote to your card? (optional, 55 characters max)"
+				},
 				"osu": {
 					"stamina": "Stamina",
 					"tenacity": "Tenacity",
@@ -96,7 +100,8 @@
 					"accuracy": "Accuracy",
 					"reaction": "Reaction",
 					"agility": "Agility",
-					"specialty": "Select your specialty"
+					"specialty": "Select your specialty",
+					"mod": "Favorite Mod"
 				},
 				"card_title": "These options will be used for the collab",
 				"card_subtitle": "You may grade yourself however you want, but we suggest you try to stick to realistic values"

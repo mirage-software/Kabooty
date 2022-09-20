@@ -45,13 +45,21 @@
 	};
 	let gameSpecialty = '';
 	let avatarText = '';
+	let cardName = '';
+	let cardQuote = '';
+	let favMod = '';
 
 	async function register() {
 		try {
 			requestData.extra = {
 				skills: skills,
 				specialty: gameSpecialty,
-				avatar: avatarText
+				avatar: avatarText,
+				card: {
+					name: cardName,
+					quote: cardQuote
+				},
+				mod: favMod
 			};
 
 			try {
@@ -146,14 +154,49 @@
 			<InputText
 				bind:value={avatarText}
 				title={'collabs.registration.extra.avatar'}
-				hint={'Wowzers'}
+				hint={'Tayo'}
 				max={11}
+			/>
+			<InputText
+				bind:value={cardName}
+				title={'collabs.registration.extra.card.name'}
+				hint={'Tayou-kun Queso'}
+				max={15}
+			/>
+			<InputText
+				bind:value={cardQuote}
+				title={'collabs.registration.extra.card.quote'}
+				hint={"If you follow the herd, you'll be stepping in poop all day."}
+				multiline={true}
+				max={55}
 			/>
 			<Dropdown
 				bind:value={gameSpecialty}
 				title="collabs.registration.extra.osu.specialty"
 				placeholder="collabs.registration.extra.osu.specialty"
 				data={specialties}
+			/>
+			<Dropdown
+				bind:value={favMod}
+				title="collabs.registration.extra.osu.mod"
+				placeholder="collabs.registration.extra.osu.mod"
+				data={['EZ', 'NF', 'HT', 'HR', 'SD', 'PF', 'DT', 'NC', 'HD', 'FI', 'FL', 'RL', 'AP', 'SO']}
+				strings={[
+					'Easy (EZ)',
+					'No Fail (NF)',
+					'Half Time (HT)',
+					'Hard Rock (HR)',
+					'Sudden Death (SD)',
+					'Perfect (PF)',
+					'Double Time (DT)',
+					'Nightcore (NC)',
+					'Hidden (HD)',
+					'Fade In (FI)',
+					'Flashlight (FL)',
+					'Relax (RL)',
+					'Autopilot (AP)',
+					'Spun Out (SO)'
+				]}
 			/>
 
 			<SolidButton
@@ -167,7 +210,8 @@
 					skills.precision.length > 0 &&
 					skills.reaction.length > 0 &&
 					skills.agility.length > 0 &&
-					gameSpecialty.length > 0
+					gameSpecialty.length > 0 &&
+					favMod.length === 2
 				)}
 			/>
 		</div>
