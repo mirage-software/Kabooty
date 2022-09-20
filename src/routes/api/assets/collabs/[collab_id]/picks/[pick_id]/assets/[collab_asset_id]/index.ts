@@ -161,7 +161,8 @@ export const post: RequestHandler = async ({ request, params }) => {
 					pickId,
 					collabAssetId,
 					image: file,
-					userId: userId
+					userId: userId,
+					valid: true
 				}
 			});
 		} else {
@@ -170,7 +171,8 @@ export const post: RequestHandler = async ({ request, params }) => {
 					id: asset.id
 				},
 				data: {
-					image: file
+					image: file,
+					valid: true
 				}
 			});
 		}

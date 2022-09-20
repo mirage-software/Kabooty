@@ -144,6 +144,7 @@ model Pick {
   userId       String
   participants Participant[]
   assets       Asset[]
+  valid        Boolean         @default(false)
 
   @@unique([collabId, characterId])
 }
@@ -160,6 +161,7 @@ model Asset {
   pickId        String
   collabAsset   CollabAsset @relation(fields: [collabAssetId], references: [id], onDelete: Cascade)
   collabAssetId String
+  valid         Boolean     @default(false)
 
   @@unique([pickId, collabAssetId])
 }

@@ -107,7 +107,8 @@ export const post: RequestHandler = async ({ request, params }) => {
 				characterId: body.characterId,
 				extra: body.extra ?? undefined,
 				name: body.name,
-				original: body.characterId ? false : true
+				original: body.characterId ? false : true,
+				valid: true
 			}
 		});
 
