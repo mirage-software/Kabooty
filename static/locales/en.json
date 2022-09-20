@@ -38,7 +38,8 @@
 		"connect": "Connect osu!",
 		"update": "Update",
 		"unranked": "Unranked",
-		"no_time": "No time set"
+		"no_time": "No time set",
+		"note": "Note, there's a {days} day delay after updating you osu! data before you can update again."
 	},
 	"file": {
 		"upload": "Upload file"
