@@ -90,12 +90,13 @@
 			"extra": {
 				"title": "Extra information",
 				"avatar": "Which name will we show on your avatar?",
+				"banner": {
+					"name": "Which name will we show on your banner?",
+					"quote": "Add a quote to your banner? (optional)"
+				},
 				"card": {
 					"name": "Which name will we show on your card?",
 					"quote": "Add a quote to your card? (optional)"
-				},
-				"banner": {
-					"quote": "Add a quote to your banner? (optional)"
 				},
 				"osu": {
 					"stamina": "Stamina",

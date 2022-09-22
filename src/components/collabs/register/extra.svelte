@@ -25,7 +25,7 @@
 		avatar: string;
 		card: { name: string; quote: string };
 		mod: string;
-		banner: { quote: string };
+		banner: { name: string; quote: string };
 	}) => void;
 
 	let specialties = [
@@ -57,8 +57,11 @@
 	let avatarText = (pick?.extra as any)?.avatar ?? $osu?.username ?? 'Unknown';
 	let avatarValid: boolean;
 
+	let bannerName = (pick?.extra as any)?.banner?.name ?? $osu?.username ?? 'Unknown';
+	let bannerNameValid: boolean;
+
 	let bannerQuote = (pick?.extra as any)?.banner?.quote ?? '';
-	let bannerValid: boolean;
+	let bannerQuoteValid: boolean;
 
 	let cardName = (pick?.extra as any)?.card?.name ?? $osu?.username ?? 'Unknown';
 	let cardNameValid: boolean;
@@ -79,6 +82,7 @@
 			},
 			mod: favMod,
 			banner: {
+				name: bannerName,
 				quote: bannerQuote
 			}
 		});
@@ -151,23 +155,30 @@
 				bind:valid={avatarValid}
 				title={'collabs.registration.extra.avatar'}
 				hint={'Tayo'}
-				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 48.64, width: 244 }}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 36, width: 250 }}
+			/>
+			<InputText
+				bind:value={bannerName}
+				bind:valid={bannerNameValid}
+				title={'collabs.registration.extra.banner.name'}
+				hint={'Tayo'}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 54, width: 415 }}
 			/>
 			<InputText
 				bind:value={bannerQuote}
-				bind:valid={bannerValid}
+				bind:valid={bannerQuoteValid}
 				title={'collabs.registration.extra.banner.quote'}
 				hint={"If you follow the herd, you'll be stepping in poop all day."}
 				multiline={true}
 				height="54px"
-				calculation={{ font: 'Montserrat', weight: 300, italic: true, size: 16, width: 558 }}
+				calculation={{ font: 'Montserrat', weight: 300, italic: true, size: 12, width: 550 }}
 			/>
 			<InputText
 				bind:value={cardName}
 				bind:valid={cardNameValid}
 				title={'collabs.registration.extra.card.name'}
 				hint={'Tayou-kun Queso'}
-				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 11.5, width: 310 }}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 36, width: 300 }}
 			/>
 			<InputText
 				bind:value={cardQuote}
@@ -176,7 +187,7 @@
 				hint={"I don't really know any quotes honestly."}
 				multiline={true}
 				height="54px"
-				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 11.5, width: 310 }}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 8, width: 320 }}
 			/>
 			<Dropdown
 				bind:value={gameSpecialty}
@@ -221,8 +232,12 @@
 					gameSpecialty.length > 0 &&
 					favMod.length === 2 &&
 					avatarValid !== false &&
-					bannerValid !== false &&
+					avatarText.length > 0 &&
+					bannerNameValid !== false &&
+					bannerName.length > 0 &&
+					bannerQuoteValid !== false &&
 					cardNameValid !== false &&
+					cardName.length > 0 &&
 					cardQuoteValid !== false
 				)}
 			/>
