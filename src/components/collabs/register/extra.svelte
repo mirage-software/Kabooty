@@ -149,7 +149,6 @@
 				/>
 			</div>
 
-			<!-- TODO: set accurate calculations based on data provided by host -->
 			<InputText
 				bind:value={avatarText}
 				bind:valid={avatarValid}

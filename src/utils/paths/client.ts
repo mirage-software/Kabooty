@@ -11,6 +11,10 @@ export abstract class ClientPaths {
 		return [this.collabs(), collabId].join('/');
 	}
 
+	static collabAsset(collabId: string, collabAssetId: string) {
+		return [this.collab(collabId), collabAssetId + '.png'].join('/');
+	}
+
 	static picks(collabId: string) {
 		return [this.collab(collabId), 'picks'].join('/');
 	}

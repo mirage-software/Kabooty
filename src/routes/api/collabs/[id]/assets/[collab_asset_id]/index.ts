@@ -4,11 +4,12 @@ import cookie from 'cookie';
 import { existsSync, unlinkSync } from 'fs';
 import path from 'path';
 import type { Asset, CollabAsset } from '@prisma/client';
-import { SentryClient } from '../../../../../bot/sentry';
-import { Jwt } from '../../../../../jwt';
-import { ServerPaths } from '../../../../../utils/paths/server';
-import { getUser } from '../../../discord/user';
-import { Prisma } from '../../../../../database/prisma';
+import { SentryClient } from '../../../../../../bot/sentry';
+import { Jwt } from '../../../../../../jwt';
+import { ServerPaths } from '../../../../../../utils/paths/server';
+import { getUser } from '../../../../discord/user';
+import { Prisma } from '../../../../../../database/prisma';
+import { deleteExample } from './example';
 
 export const put: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -180,6 +181,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 		});
 
 		await deleteImages(collabAssetId);
+		await deleteExample(asset);
 
 		await Prisma.client.collabAsset.delete({
 			where: {

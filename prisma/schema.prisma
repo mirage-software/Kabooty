@@ -107,6 +107,9 @@ model CollabAsset {
   assetWidth  Int
   assetHeight Int
   mainAsset   Boolean  @default(false)
+  example     Boolean  @default(false)
+  exampleX    Int?
+  exampleY    Int?
   assets      Asset[]
 }
 

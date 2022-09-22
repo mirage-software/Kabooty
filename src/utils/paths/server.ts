@@ -16,6 +16,10 @@ export abstract class ServerPaths {
 		return path.join(this.collabs(), collabId);
 	}
 
+	static collabAsset(collabId: string, collabAssetId: string) {
+		return path.join(this.collab(collabId), collabAssetId + '.png');
+	}
+
 	static picks(collabId: string) {
 		return path.join(this.collab(collabId), 'picks');
 	}
