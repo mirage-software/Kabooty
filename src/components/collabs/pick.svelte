@@ -10,6 +10,7 @@
 	import axios from 'axios';
 	import SolidButton from '../generic/design/solid_button.svelte';
 	import { ClientPaths } from '../../utils/paths/client';
+	import { goto } from '$app/navigation';
 
 	export let pick: Pick & {
 		user: User;
@@ -49,85 +50,12 @@
 		}
 
 		if (confirmed) {
-			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id, {
+			await axios.delete('/api/picks/' + pick.id, {
 				data: {
 					reason: reason
 				}
 			});
 			_window.alert('Pick Deleted');
-			onChange();
-		}
-	}
-
-	async function linkPick() {
-		if (!_window) {
-			return;
-		}
-
-		const response = _window.prompt('Link the pick to anime character ID:', '123456');
-
-		if (response) {
-			try {
-				await axios.patch('/api/collabs/' + collab.id + '/picks/' + pick.id, {
-					characterId: response
-				});
-				onChange();
-			} catch (error) {
-				_window.alert('Failed to assign character');
-			}
-		}
-	}
-
-	async function reportPick() {
-		if (!_window) {
-			return;
-		}
-
-		const response = _window.prompt(
-			'What would you like to report the pick for? There\'s no need to report for a missing image, or when the pick is not a duplicate, or not in the character database. Valid reasons are for example, "inappropriate image", "duplicate pick", or something along those lines.',
-			'Duplicate pick'
-		);
-
-		if (response) {
-			await axios.post('/api/collabs/' + collab.id + '/picks/' + pick.id + '/report', {
-				report: response
-			});
-
-			_window.alert('Pick reported');
-		}
-	}
-
-	async function deleteImage() {
-		if (!_window) {
-			return;
-		}
-
-		let confirmed = false;
-		let reason: string | null = '';
-
-		if ($discord?.admin) {
-			reason = _window.prompt(
-				'Whats the reason for the deletion? (this will only delete the primary asset)',
-				'Inappropriate image'
-			);
-			if (reason) {
-				confirmed = true;
-			}
-		}
-
-		const asset = pick.assets.find((asset) => asset.collabAsset.mainAsset);
-
-		if (!asset) {
-			throw new Error('No main asset found');
-		}
-
-		if (confirmed) {
-			await axios.delete(ClientPaths.deleteAsset(asset.id), {
-				data: {
-					reason: reason
-				}
-			});
-			_window.alert('Asset deleted');
 			onChange();
 		}
 	}
@@ -142,8 +70,13 @@
 						<ImageContainer>
 							<!-- svelte-ignore a11y-missing-attribute -->
 							<img
-								src={ClientPaths.asset(collab.id, pick.id, asset.collabAssetId, asset.image) +
-									'?width=200&height=200'}
+								src={ClientPaths.storedAsset(
+									collab.id,
+									pick.id,
+									asset.collabAssetId,
+									asset.image,
+									asset.createdAt
+								) + '&width=200&height=200'}
 							/>
 						</ImageContainer>
 					</div>
@@ -170,7 +103,23 @@
 
 				<div id="buttons">
 					<div id="report">
-						<SolidButton click={reportPick} string={'picks.report'} color="red" />
+						{#if profile}
+							<SolidButton
+								click={async () => {
+									goto('/collabs/' + pick.collabId + '/picks/' + pick.id + '/edit');
+								}}
+								string={'picks.edit'}
+								color="green"
+							/>
+						{:else}
+							<SolidButton
+								click={async () => {
+									goto('/collabs/' + pick.collabId + '/picks/' + pick.id);
+								}}
+								string={'picks.view'}
+								color="green"
+							/>
+						{/if}
 					</div>
 
 					{#if $discord?.admin || profile}
@@ -178,14 +127,6 @@
 							{#if $discord?.admin || profile}
 								<div id="admin">
 									<IconButton icon="la la-trash" click={deletePick} />
-								</div>
-							{/if}
-							{#if $discord?.admin}
-								<div id="admin">
-									<IconButton icon="la la-image" click={deleteImage} />
-								</div>
-								<div id="admin">
-									<IconButton icon="la la-link" click={linkPick} />
 								</div>
 							{/if}
 						</div>

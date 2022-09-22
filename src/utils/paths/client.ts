@@ -23,17 +23,22 @@ export abstract class ClientPaths {
 		return [this.pick(collabId, pickId), 'assets'].join('/');
 	}
 
-	static asset(
+	static asset(collabId: string, pickId: string, collabAssetId: string) {
+		return [this.assets(collabId, pickId), collabAssetId].join('/');
+	}
+
+	static storedAsset(
 		collabId: string,
 		pickId: string,
 		collabAssetId: string,
-		file: string | undefined = undefined
+		file: string,
+		creationDate: Date
 	) {
-		if (!file) {
-			return [this.assets(collabId, pickId), collabAssetId].join('/');
-		}
-
-		return [this.assets(collabId, pickId), collabAssetId, file].join('/');
+		return (
+			[this.asset(collabId, pickId, collabAssetId), file].join('/') +
+			'?d=' +
+			encodeURIComponent(creationDate.toString())
+		);
 	}
 
 	static deleteAsset(assetId: string) {

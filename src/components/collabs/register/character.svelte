@@ -13,6 +13,7 @@
 	import Asset from '../asset.svelte';
 
 	export let collab: Collab & { collabAssets: CollabAsset[] };
+	export let pick: Pick | undefined = undefined;
 
 	export let submit: (
 		data: AnimeCharacter | null | undefined,
@@ -78,14 +79,21 @@
 <div id="character">
 	<Card>
 		<div id="content">
-			<div id="title">
-				<h4>{$t('collabs.registration.required_assets')}</h4>
-			</div>
-			<div id="assets">
-				{#each collab.collabAssets as collabAsset}
-					<Asset {collabAsset} />
-				{/each}
-			</div>
+			{#if !pick}
+				<div id="title">
+					<h4>{$t('collabs.registration.required_assets')}</h4>
+				</div>
+				<div id="assets">
+					{#each collab.collabAssets as collabAsset}
+						<Asset {collabAsset} />
+					{/each}
+				</div>
+			{:else}
+				<div id="title">
+					<h4>{$t('picks.current.name')}</h4>
+					<h3 style="margin: 0;">{pick.name}</h3>
+				</div>
+			{/if}
 			<div id="title">
 				<h4>{$t('collabs.registration.character.search_title')}</h4>
 				<h5>{$t('collabs.registration.character.search_subtitle')}</h5>
@@ -143,7 +151,11 @@
 			{/if}
 			{#if $selected && ($selected.id !== -1 || ($selected.id === -1 && customName.length > 2))}
 				<SolidButton
-					click={async () => submit($selected, customName)}
+					click={async () => {
+						query = '';
+						results = null;
+						submit($selected, customName);
+					}}
 					color="green"
 					string="collabs.registration.submit"
 				/>

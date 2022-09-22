@@ -2,12 +2,12 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 import cookie from 'cookie';
 import type { Collab, Pick, User } from '@prisma/client';
-import { Jwt } from '../../../../../../jwt';
-import { getUser } from '../../../../discord/user';
-import { Prisma } from '../../../../../../database/prisma';
-import { DiscordBot } from '../../../../../../bot/discord';
-import { Env } from '../../../../../../env';
-import { SentryClient } from '../../../../../../bot/sentry';
+import { Jwt } from '../../../../jwt';
+import { getUser } from '../../discord/user';
+import { Prisma } from '../../../../database/prisma';
+import { DiscordBot } from '../../../../bot/discord';
+import { Env } from '../../../../env';
+import { SentryClient } from '../../../../bot/sentry';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 
 async function sendEmbedToDiscord(
@@ -138,11 +138,9 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const pickId = params.pick_id;
-
 		const pick = await Prisma.client.pick.findUnique({
 			where: {
-				id: pickId
+				id: params.id
 			},
 			include: {
 				user: true,

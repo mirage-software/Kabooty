@@ -10,10 +10,23 @@
 	import { onMount } from 'svelte';
 	import { osu } from '../../../stores/osu';
 
-	export let collab: Collab & { collabAssets: CollabAsset[] };
-	export let character: AnimeCharacter;
+	export let pick: Pick | undefined = undefined;
 
-	export let onRegister: (pick: Pick) => void;
+	export let onSubmit: (data: {
+		skills: {
+			stamina: string;
+			tenacity: string;
+			accuracy: string;
+			precision: string;
+			reaction: string;
+			agility: string;
+		};
+		specialty: string;
+		avatar: string;
+		card: { name: string; quote: string };
+		mod: string;
+		banner: { quote: string };
+	}) => void;
 
 	let specialties = [
 		'Aim',
@@ -31,13 +44,7 @@
 		'Low AR'
 	];
 
-	const requestData: Partial<Pick> = {
-		characterId: character.id !== -1 ? character.id : undefined,
-		name: character.name,
-		extra: {}
-	};
-
-	let skills = {
+	let skills = (pick?.extra as any)?.skills ?? {
 		stamina: '',
 		tenacity: '',
 		accuracy: '',
@@ -45,64 +52,36 @@
 		reaction: '',
 		agility: ''
 	};
-	let gameSpecialty = '';
+	let gameSpecialty = (pick?.extra as any)?.specialty ?? '';
 
-	let avatarText = $osu?.username ?? 'Unknown';
+	let avatarText = (pick?.extra as any)?.avatar ?? $osu?.username ?? 'Unknown';
 	let avatarValid: boolean;
 
-	let bannerQuote = '';
+	let bannerQuote = (pick?.extra as any)?.banner?.quote ?? '';
 	let bannerValid: boolean;
 
-	let cardName = $osu?.username ?? 'Unknown';
+	let cardName = (pick?.extra as any)?.card?.name ?? $osu?.username ?? 'Unknown';
 	let cardNameValid: boolean;
 
-	let cardQuote = '';
+	let cardQuote = (pick?.extra as any)?.card?.quote ?? '';
 	let cardQuoteValid: boolean;
 
-	let favMod = '';
+	let favMod = (pick?.extra as any)?.mod ?? '';
 
-	async function register() {
-		try {
-			requestData.extra = {
-				skills: skills,
-				specialty: gameSpecialty,
-				avatar: avatarText,
-				card: {
-					name: cardName,
-					quote: cardQuote
-				},
-				mod: favMod,
-				banner: {
-					quote: bannerQuote
-				}
-			};
-
-			try {
-				await axios.get('/api/verify');
-			} catch (error) {
-				// !! may fail if the user isn't in the discord
+	async function submit() {
+		onSubmit({
+			skills: skills,
+			specialty: gameSpecialty,
+			avatar: avatarText,
+			card: {
+				name: cardName,
+				quote: cardQuote
+			},
+			mod: favMod,
+			banner: {
+				quote: bannerQuote
 			}
-
-			const mainAsset = collab.collabAssets.find((asset) => asset.mainAsset);
-
-			if (!mainAsset) {
-				throw new Error('No main asset found');
-			}
-
-			const pick: Pick = (await axios.post(`/api/collabs/${collab.id}/register`, requestData)).data;
-
-			onRegister(pick);
-		} catch (error) {
-			if (error instanceof AxiosError) {
-				goto(
-					`/collabs/${collab.id}/error?error=${encodeURIComponent(
-						error.response?.data['message'] ?? 'errors.unknown'
-					)}`
-				);
-			} else {
-				goto(`/collabs/${collab.id}/error?error=${encodeURIComponent('errors.unknown')}`);
-			}
-		}
+		});
 	}
 </script>
 
@@ -180,6 +159,7 @@
 				title={'collabs.registration.extra.banner.quote'}
 				hint={"If you follow the herd, you'll be stepping in poop all day."}
 				multiline={true}
+				height="54px"
 				calculation={{ font: 'Montserrat', weight: 300, italic: true, size: 16, width: 558 }}
 			/>
 			<InputText
@@ -193,8 +173,9 @@
 				bind:value={cardQuote}
 				bind:valid={cardQuoteValid}
 				title={'collabs.registration.extra.card.quote'}
-				hint={"If you follow the herd, you'll be stepping in poop all day."}
+				hint={"I don't really know any quotes honestly."}
 				multiline={true}
+				height="54px"
 				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 11.5, width: 310 }}
 			/>
 			<Dropdown
@@ -227,9 +208,9 @@
 			/>
 
 			<SolidButton
-				click={register}
+				click={submit}
 				color="green"
-				string="collabs.registration.register"
+				string={pick ? 'collabs.registration.submit' : 'collabs.registration.register'}
 				disabled={!(
 					skills.stamina.length > 0 &&
 					skills.tenacity.length > 0 &&

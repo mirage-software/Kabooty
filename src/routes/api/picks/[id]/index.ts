@@ -1,17 +1,17 @@
-import { CollabStatus, type Asset, type Pick } from '@prisma/client';
+import { CollabStatus, type AnimeCharacter, type Asset, type Pick } from '@prisma/client';
 import type { RequestHandler } from '@sveltejs/kit';
 import { existsSync, unlinkSync } from 'fs';
-import { DiscordBot } from '../../../../../../bot/discord';
+import { DiscordBot } from '../../../../bot/discord';
 import path from 'path';
-import { Prisma } from '../../../../../../database/prisma';
-import { Env } from '../../../../../../env';
+import { Prisma } from '../../../../database/prisma';
+import { Env } from '../../../../env';
 import cookie from 'cookie';
-import { Jwt } from '../../../../../../jwt';
-import { getUser } from '../../../../discord/user';
-import { SentryClient } from '../../../../../../bot/sentry';
+import { Jwt } from '../../../../jwt';
+import { getUser } from '../../discord/user';
+import { SentryClient } from '../../../../bot/sentry';
 import { MessageEmbed } from 'discord.js';
 import type { IDiscordUser } from 'src/database/discord_user';
-import { ServerPaths } from '../../../../../../utils/paths/server';
+import { ServerPaths } from '../../../../utils/paths/server';
 
 async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason: string | null }) {
 	const env = Env.load();
@@ -82,7 +82,44 @@ export async function deletePick(pick: Pick & { assets: Asset[] }): Promise<void
 	});
 }
 
-export const patch: RequestHandler = async ({ request, params }) => {
+export const get: RequestHandler = async ({ params }) => {
+	const pick = await Prisma.client.pick.findUnique({
+		where: {
+			id: params.id
+		},
+		include: {
+			assets: {
+				include: {
+					collabAsset: true
+				}
+			},
+			character: true,
+			collab: {
+				include: {
+					collabAssets: true
+				}
+			},
+			user: true
+		}
+	});
+
+	if (!pick) {
+		return {
+			status: 404,
+			body: {
+				message: 'Pick not found'
+			}
+		};
+	}
+
+	return {
+		status: 200,
+		body: pick
+	};
+};
+
+export const put: RequestHandler = async ({ request, params }) => {
+	// TODO: extend for larger modifications
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);
@@ -100,39 +137,23 @@ export const patch: RequestHandler = async ({ request, params }) => {
 	try {
 		const user = await getUser(token, userId);
 
-		if (!user || !user.admin) {
+		if (!user) {
 			return {
 				status: 403
 			};
 		}
 
-		const body = await request.json();
+		const body: Partial<Pick> = await request.json();
 
-		if (!body.characterId) {
+		if (!body.characterId && !body.extra && !body.name) {
 			return {
 				status: 400
 			};
 		}
 
-		const characterId = parseInt(body.characterId);
-
-		const character = await Prisma.client.animeCharacter.findUnique({
-			where: {
-				id: characterId
-			}
-		});
-
-		if (!character) {
-			return {
-				status: 404
-			};
-		}
-
-		const pickId = params['pick_id'];
-
 		const pick = await Prisma.client.pick.findUnique({
 			where: {
-				id: pickId
+				id: params.id
 			}
 		});
 
@@ -142,37 +163,80 @@ export const patch: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const pickedCharacter = await Prisma.client.pick.findUnique({
-			where: {
-				collabId_characterId: {
-					collabId: pick.collabId,
-					characterId: characterId
-				}
-			}
-		});
-
-		if (pickedCharacter) {
+		if (user.id !== pick.userId || !user.admin) {
 			return {
-				status: 400
+				status: 403
 			};
 		}
 
-		await Prisma.client.log.create({
-			data: {
-				action: 'admin_link_pick',
-				userId: user.id,
-				data: { id: pickId, characterId: characterId }
+		let characterId: number | undefined;
+		let character: AnimeCharacter | null = null;
+		let original: boolean | undefined;
+
+		if (body.characterId) {
+			character = await Prisma.client.animeCharacter.findUnique({
+				where: {
+					id: body.characterId
+				}
+			});
+
+			if (character) {
+				characterId = character.id;
 			}
-		});
+		}
+
+		if (body.original) {
+			original = body.original;
+		}
+
+		const update: Partial<Pick> = pick;
+
+		if (!original && characterId && characterId !== pick.characterId && character) {
+			const pickedCharacter = await Prisma.client.pick.findUnique({
+				where: {
+					collabId_characterId: {
+						collabId: pick.collabId,
+						characterId: characterId
+					}
+				}
+			});
+
+			if (pickedCharacter) {
+				return {
+					status: 400
+				};
+			}
+
+			if (user.admin) {
+				await Prisma.client.log.create({
+					data: {
+						action: 'admin_link_pick',
+						userId: user.id,
+						data: { id: pick.id, characterId: characterId }
+					}
+				});
+			}
+
+			update.characterId = character.id;
+			update.original = false;
+			update.name = character.name;
+		}
+
+		if (original && body.name) {
+			update.characterId = null;
+			update.original = true;
+			update.name = body.name;
+		}
 
 		await Prisma.client.pick.update({
 			where: {
-				id: pickId
+				id: pick.id
 			},
 			data: {
-				characterId: characterId,
-				original: false,
-				name: character.name
+				characterId: update.characterId,
+				original: update.original,
+				extra: body.extra ?? undefined,
+				name: update.name
 			}
 		});
 

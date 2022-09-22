@@ -5,14 +5,23 @@
 
 	import { t } from 'svelte-intl-precompile';
 	import Card from '../../generic/design/card.svelte';
-	import SolidButton from '../../generic/design/solid_button.svelte';
 	import type { Asset, CollabAsset } from '@prisma/client';
 	import { ClientPaths } from '../../../utils/paths/client';
 	import Crop from '../../generic/design/crop.svelte';
 	import { modal } from '../../../stores/modal';
+	import { discord } from '../../../stores/discord';
+	import axios from 'axios';
+	import { onMount } from 'svelte';
+	import IconButton from '../icon_button.svelte';
 
 	export let collabAsset: CollabAsset;
 	export let asset: Asset | null = null;
+
+	let _window: Window | undefined;
+
+	onMount(() => {
+		_window = window;
+	});
 
 	let image: string | null = null;
 	let imageBuffer: ArrayBuffer;
@@ -31,9 +40,9 @@
 			| undefined
 	) => Promise<void>;
 
-	export let next: () => void;
+	export let imageDeleted: () => void;
 
-	export let editing = false;
+	export let editable = false;
 
 	function cropImage(_image: string) {
 		modal.open(Crop, {
@@ -49,15 +58,41 @@
 			}
 		});
 	}
+
+	async function deleteImage() {
+		if (!_window || !asset) {
+			return;
+		}
+
+		let confirmed = false;
+		let reason: string | null = '';
+
+		if ($discord?.admin) {
+			reason = _window.prompt('Whats the reason for the deletion?', 'Inappropriate image');
+			if (reason) {
+				confirmed = true;
+			}
+		}
+
+		if (confirmed) {
+			await axios.delete(ClientPaths.deleteAsset(asset.id), {
+				data: {
+					reason: reason
+				}
+			});
+			_window.alert('Asset deleted');
+			imageDeleted();
+		}
+	}
 </script>
 
-<h3>
-	{$t('collabs.registration.asset.title', {
-		values: { asset: collabAsset.assetName.toLowerCase() }
-	})}
-</h3>
 <div id="character">
 	<Card>
+		{#if !editable}
+			<h3>
+				{collabAsset.assetName}
+			</h3>
+		{/if}
 		<div id="content">
 			{#if image || asset}
 				<div id="image">
@@ -81,39 +116,39 @@
 					</ImageContainer>
 				</div>
 			{/if}
-			<FileUpload
-				string={$t('collabs.registration.asset.title', {
-					values: { asset: collabAsset.assetName.toLowerCase() }
-				})}
-				maxBytes={5120 * 1024}
-				width={collabAsset.assetWidth}
-				height={collabAsset.assetHeight}
-				onDataUrl={(data) => {
-					if (data) {
-						cropImage(data);
-					}
-				}}
-				onBuffer={(buffer, _) => {
-					imageBuffer = buffer;
-					filename = _;
-				}}
-			/>
-			<div id="reqs">
-				<h4 class={editing ? 'editing' : ''}>{$t('collabs.registration.character.duplicate')}</h4>
-				<p class={editing ? 'editing' : ''} id="filereqs">
-					{$t('collabs.registration.asset.filereqs', {
-						values: { width: collabAsset.assetWidth, height: collabAsset.assetHeight }
-					})}
-				</p>
-			</div>
-			{#if asset || image}
-				<SolidButton
-					click={async () => {
-						next();
-					}}
-					color="green"
-					string="collabs.registration.submit"
-				/>
+			{#if editable}
+				<div id="bottom">
+					<FileUpload
+						string={$t('collabs.registration.asset.title', {
+							values: { asset: collabAsset.assetName.toLowerCase() }
+						})}
+						maxBytes={5120 * 1024}
+						width={collabAsset.assetWidth}
+						height={collabAsset.assetHeight}
+						onDataUrl={(data) => {
+							if (data) {
+								cropImage(data);
+							}
+						}}
+						onBuffer={(buffer, _) => {
+							imageBuffer = buffer;
+							filename = _;
+						}}
+					/>
+					<div id="reqs">
+						<h4>{$t('collabs.registration.character.duplicate')}</h4>
+						<p id="filereqs">
+							{$t('collabs.registration.asset.filereqs', {
+								values: { width: collabAsset.assetWidth, height: collabAsset.assetHeight }
+							})}
+						</p>
+					</div>
+				</div>
+			{/if}
+			{#if $discord?.admin}
+				<div id="admin">
+					<IconButton icon="la la-trash-alt" click={deleteImage} />
+				</div>
 			{/if}
 		</div>
 	</Card>
@@ -127,19 +162,20 @@
 
 	h4 {
 		margin: 0;
+
+		color: rgba(white, 0.5);
 	}
 
 	p {
 		margin: 0;
+
+		color: rgba(white, 0.5);
 	}
 
 	#character {
 		margin: $margin-m;
-		margin-top: 0;
-		margin-bottom: $margin-m;
 
-		width: 100%;
-		max-width: calc(100% - $margin-m * 2);
+		max-width: 500px;
 
 		#content {
 			padding: $margin-m;
@@ -147,7 +183,18 @@
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
+			justify-content: space-between;
 			gap: $margin-m;
+
+			height: 100%;
+
+			#bottom {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+
+				gap: $margin-m;
+			}
 
 			#reqs {
 				display: flex;
@@ -158,10 +205,11 @@
 			#image {
 				width: 100%;
 
-				max-width: 500px;
-
 				img {
 					width: 100%;
+					height: 100%;
+
+					max-height: 400px;
 					object-fit: contain;
 				}
 			}

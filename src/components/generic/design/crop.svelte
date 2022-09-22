@@ -58,6 +58,13 @@
 </div>
 <div id="buttons">
 	<SolidButton
+		color={'red'}
+		string={'collabs.registration.asset.cancel'}
+		click={async () => {
+			modal.close();
+		}}
+	/>
+	<SolidButton
 		color={'green'}
 		string={'collabs.registration.asset.upload'}
 		click={async () => {
@@ -65,13 +72,6 @@
 				upload(pixels);
 			}
 
-			modal.close();
-		}}
-	/>
-	<SolidButton
-		color={'red'}
-		string={'collabs.registration.asset.cancel'}
-		click={async () => {
 			modal.close();
 		}}
 	/>

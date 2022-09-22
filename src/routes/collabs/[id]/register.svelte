@@ -6,7 +6,7 @@
 	import { discord } from '../../../stores/discord';
 	import { osu } from '../../../stores/osu';
 
-	import axios from 'axios';
+	import axios, { AxiosError } from 'axios';
 	import type { AnimeCharacter, Collab, CollabAsset, Pick, Asset } from '@prisma/client';
 	import LoadingSpinner from '../../../components/generic/design/loading_spinner.svelte';
 	import Info from '../../../components/collabs/register/info.svelte';
@@ -69,10 +69,42 @@
 				/>
 			{:else if !pick}
 				<Extra
-					{collab}
-					{character}
-					onRegister={(_pick) => {
-						pick = _pick;
+					onSubmit={async (data) => {
+						if (!collab || !character) {
+							return;
+						}
+
+						try {
+							const requestData = {
+								characterId: character.id !== -1 ? character.id : undefined,
+								name: character.name,
+								extra: data
+							};
+
+							try {
+								await axios.get('/api/verify');
+							} catch (error) {
+								// !! may fail if the user isn't in the discord
+							}
+
+							const mainAsset = collab.collabAssets.find((asset) => asset.mainAsset);
+
+							if (!mainAsset) {
+								throw new Error('No main asset found');
+							}
+
+							pick = (await axios.post(`/api/collabs/${collab.id}/register`, requestData)).data;
+						} catch (error) {
+							if (error instanceof AxiosError) {
+								goto(
+									`/collabs/${collab.id}/error?error=${encodeURIComponent(
+										error.response?.data['message'] ?? 'errors.unknown'
+									)}`
+								);
+							} else {
+								goto(`/collabs/${collab.id}/error?error=${encodeURIComponent('errors.unknown')}`);
+							}
+						}
 					}}
 				/>
 			{:else if collab && currentImage < collab.collabAssets.length}

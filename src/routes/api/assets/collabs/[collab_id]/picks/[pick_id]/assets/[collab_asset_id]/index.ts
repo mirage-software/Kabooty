@@ -172,7 +172,8 @@ export const post: RequestHandler = async ({ request, params }) => {
 				},
 				data: {
 					image: file,
-					valid: true
+					valid: true,
+					createdAt: new Date()
 				}
 			});
 		}

@@ -88,7 +88,7 @@
 				"name": "Character name"
 			},
 			"extra": {
-				"title": "Now just some extra information",
+				"title": "Extra information",
 				"avatar": "Which name will we show on your avatar?",
 				"card": {
 					"name": "Which name will we show on your card?",
@@ -182,6 +182,11 @@
 		}
 	},
 	"picks": {
-		"report": "Report"
+		"report": "Report",
+		"view": "View",
+		"edit": "Edit",
+		"current": {
+			"name": "Your current character name"
+		}
 	}
 }

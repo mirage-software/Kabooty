@@ -18,7 +18,7 @@
 	});
 
 	async function getPicks() {
-		picks = (await axios.get('/api/picks')).data;
+		picks = (await axios.get('/api/profile/picks')).data;
 	}
 </script>
 
