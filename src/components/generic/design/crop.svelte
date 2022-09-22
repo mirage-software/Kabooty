@@ -9,6 +9,7 @@
 	export let image;
 	export let width;
 	export let height;
+	export let exampleUrl = undefined;
 	let crop = { x: 0, y: 0 };
 	let zoom = 1;
 	let maxZoom = 1;
@@ -54,6 +55,7 @@
 		bind:crop
 		bind:zoom
 		on:cropcomplete={(e) => (pixels = e.detail.pixels)}
+		--example-image={exampleUrl ? 'url(' + exampleUrl + ')' : null}
 	/>
 </div>
 <div id="buttons">
@@ -87,6 +89,12 @@
 		position: relative;
 
 		background-color: rgba(0, 0, 0, 0.2);
+
+		:global(.cropperArea) {
+			background-image: var(--example-image);
+			background-repeat: no-repeat;
+			background-size: cover;
+		}
 	}
 
 	#buttons {

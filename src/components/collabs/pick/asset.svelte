@@ -45,7 +45,7 @@
 	export let editable = false;
 
 	function cropImage(_image: string) {
-		modal.open(Crop, {
+		const params: any = {
 			image: _image,
 			width: collabAsset.assetWidth,
 			height: collabAsset.assetHeight,
@@ -56,7 +56,13 @@
 					submit(imageBuffer, filename, undefined);
 				}
 			}
-		});
+		};
+
+		if (collabAsset.example) {
+			params['exampleUrl'] = ClientPaths.collabAsset(collabAsset.collabId, collabAsset.id);
+		}
+
+		modal.open(Crop, params);
 	}
 
 	async function deleteImage() {

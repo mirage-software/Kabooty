@@ -96,7 +96,15 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const image = sharp(buffer);
+		let image = sharp(buffer);
+
+		image = image.extract({
+			width: collabAsset.assetWidth,
+			height: collabAsset.assetHeight,
+			left: x,
+			top: y
+		});
+
 		buffer = await image.png().toBuffer();
 
 		const file = ServerPaths.collabAsset(collabAsset.collabId, collabAsset.id);
