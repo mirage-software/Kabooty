@@ -118,7 +118,16 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		if (width && height && x && y) {
+		if (
+			width !== null &&
+			width !== undefined &&
+			height !== null &&
+			height !== undefined &&
+			x !== null &&
+			x !== undefined &&
+			y !== null &&
+			y !== undefined
+		) {
 			image = image.extract({
 				width: width,
 				height: height,

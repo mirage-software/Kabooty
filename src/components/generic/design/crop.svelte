@@ -54,7 +54,9 @@
 		zoomSpeed={0.2}
 		bind:crop
 		bind:zoom
-		on:cropcomplete={(e) => (pixels = e.detail.pixels)}
+		on:cropcomplete={(e) => {
+			pixels = e.detail.pixels;
+		}}
 		--example-image={exampleUrl ? 'url(' + exampleUrl + ')' : null}
 	/>
 </div>
@@ -71,6 +73,7 @@
 		string={'collabs.registration.asset.upload'}
 		click={async () => {
 			if (upload) {
+				console.log(pixels);
 				upload(pixels);
 			}
 

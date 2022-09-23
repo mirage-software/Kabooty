@@ -41,11 +41,7 @@
 			width: collabAsset.assetWidth,
 			height: collabAsset.assetHeight,
 			upload: (_pixels: { width: number; height: number; x: number; y: number }) => {
-				if (_pixels.height && _pixels.width && _pixels.x && _pixels.y) {
-					submit(imageBuffer, filename, _pixels);
-				} else {
-					submit(imageBuffer, filename, undefined);
-				}
+				submit(imageBuffer, filename, _pixels);
 			}
 		};
 
