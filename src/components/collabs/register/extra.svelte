@@ -217,11 +217,31 @@
 				bind:value={favMod}
 				title="collabs.registration.extra.osu.mod"
 				placeholder="collabs.registration.extra.osu.mod"
-				data={['EZ', 'NF', 'HT', 'HR', 'SD', 'PF', 'DT', 'NC', 'HD', 'FI', 'FL', 'RL', 'AP', 'SO']}
+				data={[
+					'NM',
+					'EZ',
+					'NF',
+					'HT',
+					'DC',
+					'HR',
+					'SD',
+					'PF',
+					'DT',
+					'NC',
+					'HD',
+					'FI',
+					'FL',
+					'RL',
+					'AP',
+					'SO',
+					'DA'
+				]}
 				strings={[
+					'No Mod (NM)',
 					'Easy (EZ)',
 					'No Fail (NF)',
 					'Half Time (HT)',
+					'Daycore (DC)',
 					'Hard Rock (HR)',
 					'Sudden Death (SD)',
 					'Perfect (PF)',
@@ -232,7 +252,8 @@
 					'Flashlight (FL)',
 					'Relax (RL)',
 					'Autopilot (AP)',
-					'Spun Out (SO)'
+					'Spun Out (SO)',
+					'Difficulty Adjust (DA)'
 				]}
 			/>
 
