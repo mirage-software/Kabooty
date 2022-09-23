@@ -76,7 +76,7 @@
 			"rules_accept": "I accept the rules",
 			"character": {
 				"pick": "Pick a character",
-				"duplicate": "Please note, using already used characters or art will result in a ban",
+				"duplicate": "Using characters or art used by other participants will result in a ban",
 				"custom": "Custom character",
 				"original": "Use a character that's not present in our database, or use your own art",
 				"available": "Available",

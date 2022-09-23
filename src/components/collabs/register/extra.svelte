@@ -72,6 +72,20 @@
 	let favMod = (pick?.extra as any)?.mod ?? '';
 
 	async function submit() {
+		osu.subscribe((osuUser) => {
+			if (avatarText === 'Unknown' && osuUser?.username) {
+				avatarText = osuUser?.username;
+			}
+
+			if (bannerName === 'Unknown' && osuUser?.username) {
+				bannerName = osuUser?.username;
+			}
+
+			if (cardName === 'Unknown' && osuUser?.username) {
+				cardName = osuUser?.username;
+			}
+		});
+
 		await onSubmit({
 			skills: skills,
 			specialty: gameSpecialty,
