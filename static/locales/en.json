@@ -115,11 +115,13 @@
 				"title": "Upload {asset}",
 				"filereqs": "Note, a maximum file size of 5MB is allowed. Minimum dimensions are {width}x{height} pixels.",
 				"upload": "Upload",
-				"cancel": "Cancel"
+				"cancel": "Cancel",
+				"invalid": "This asset is invalid. Please upload a new asset to make your registration valid."
 			},
 			"submit": "Submit",
 			"register": "Register",
-			"required_assets": "You'll need the following images to register for the collab"
+			"required_assets": "You'll need the following images to register for the collab",
+			"invalid": "Your registration is invalid. Please update your pick data to make your registration valid."
 		},
 		"rules": "Rules",
 		"manage": {

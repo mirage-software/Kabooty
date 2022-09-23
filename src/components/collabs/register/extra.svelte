@@ -107,6 +107,11 @@
 <div id="character">
 	<Card>
 		<div id="content">
+			{#if pick && !pick.valid}
+				<h4 style="margin: 0;">
+					{$t('collabs.registration.invalid')}
+				</h4>
+			{/if}
 			<div id="title">
 				<h4>{$t('collabs.registration.extra.card_title')}</h4>
 				<h5>{$t('collabs.registration.extra.card_subtitle')}</h5>

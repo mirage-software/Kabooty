@@ -96,6 +96,11 @@
 			</h3>
 		{/if}
 		<div id="content">
+			{#if asset && !asset.valid}
+				<h5 style="margin: 0;">
+					{$t('collabs.registration.asset.invalid')}
+				</h5>
+			{/if}
 			{#if image || asset}
 				<div id="image">
 					<ImageContainer>
