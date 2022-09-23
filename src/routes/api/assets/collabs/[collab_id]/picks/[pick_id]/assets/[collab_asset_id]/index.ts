@@ -129,8 +129,8 @@ export const post: RequestHandler = async ({ request, params }) => {
 			y !== undefined
 		) {
 			image = image.extract({
-				width: width,
-				height: height,
+				width: width ?? metadata.width,
+				height: height ?? metadata.height,
 				left: x,
 				top: y
 			});
