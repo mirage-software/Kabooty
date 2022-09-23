@@ -165,7 +165,8 @@
 					pick.extra = data;
 
 					await updatePick({
-						extra: pick.extra
+						extra: pick.extra,
+						valid: true
 					});
 				}}
 			/>
