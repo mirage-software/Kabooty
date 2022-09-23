@@ -31,7 +31,7 @@ export const get: RequestHandler = async ({ request }) => {
 
 		const picks = await Prisma.client.pick.findMany({
 			where: {
-				userId: user.id
+				userId: userId
 			},
 			include: {
 				user: true,

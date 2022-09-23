@@ -137,7 +137,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 		await Prisma.client.log.create({
 			data: {
 				action: 'admin_delete_asset_image',
-				userId: user.id,
+				userId: userId,
 				data: JSON.stringify(asset)
 			}
 		});

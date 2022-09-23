@@ -203,7 +203,6 @@ export const get: RequestHandler = async ({ request }) => {
 		const userId = decodedUser['user_id'] as string;
 
 		if (!token) {
-			SentryClient.log(new Error('No token found'));
 			return {
 				status: 401
 			};

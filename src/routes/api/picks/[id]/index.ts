@@ -58,7 +58,7 @@ async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason
 }
 
 export async function deletePick(pick: Pick & { assets: Asset[] }): Promise<void> {
-	if (!pick) {
+	if (!pick || !pick.id || !pick.collabId || !pick.assets) {
 		throw new Error('Pick not found');
 	}
 
@@ -83,6 +83,10 @@ export async function deletePick(pick: Pick & { assets: Asset[] }): Promise<void
 }
 
 export const get: RequestHandler = async ({ params }) => {
+	if (!params.id) {
+		throw new Error('No ID parameter provided');
+	}
+
 	const pick = await Prisma.client.pick.findUnique({
 		where: {
 			id: params.id
@@ -119,7 +123,6 @@ export const get: RequestHandler = async ({ params }) => {
 };
 
 export const put: RequestHandler = async ({ request, params }) => {
-	// TODO: extend for larger modifications
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);
@@ -132,6 +135,10 @@ export const put: RequestHandler = async ({ request, params }) => {
 		return {
 			status: 401
 		};
+	}
+
+	if (!params.id) {
+		throw new Error('No ID parameter provided');
 	}
 
 	try {
@@ -163,10 +170,12 @@ export const put: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		if (user.id !== pick.userId || !user.admin) {
-			return {
-				status: 403
-			};
+		if (userId !== pick.userId) {
+			if (!user.admin) {
+				return {
+					status: 403
+				};
+			}
 		}
 
 		let characterId: number | undefined;
@@ -211,8 +220,8 @@ export const put: RequestHandler = async ({ request, params }) => {
 				await Prisma.client.log.create({
 					data: {
 						action: 'admin_link_pick',
-						userId: user.id,
-						data: { id: pick.id, characterId: characterId }
+						userId: userId,
+						data: { id: params.id, characterId: characterId }
 					}
 				});
 			}
@@ -230,13 +239,14 @@ export const put: RequestHandler = async ({ request, params }) => {
 
 		await Prisma.client.pick.update({
 			where: {
-				id: pick.id
+				id: params.id
 			},
 			data: {
 				characterId: update.characterId,
 				original: update.original,
 				extra: body.extra ?? undefined,
-				name: update.name
+				name: update.name,
+				valid: body.valid
 			}
 		});
 
@@ -279,11 +289,13 @@ export const del: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const pickId = params['pick_id'];
+		if (!params.id) {
+			throw new Error('No ID parameter provided');
+		}
 
 		const pick = await Prisma.client.pick.findUnique({
 			where: {
-				id: pickId
+				id: params.id
 			},
 			include: {
 				collab: true,
@@ -297,12 +309,12 @@ export const del: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		if (pick.userId !== user.id) {
+		if (pick.userId !== userId) {
 			if (user.admin) {
 				await Prisma.client.log.create({
 					data: {
 						action: 'admin_delete_pick',
-						userId: user.id,
+						userId: userId,
 						data: JSON.stringify(pick)
 					}
 				});

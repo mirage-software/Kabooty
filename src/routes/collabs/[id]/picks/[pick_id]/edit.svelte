@@ -42,15 +42,10 @@
 		});
 	}
 
-	async function updatePick() {
+	async function updatePick(data: Partial<Pick>) {
 		const pickId = $page.params['pick_id'];
 
-		await axios.put('/api/picks/' + pickId, {
-			extra: pick.extra,
-			name: pick.name,
-			characterId: pick.characterId,
-			original: pick.original
-		});
+		await axios.put('/api/picks/' + pickId, data);
 
 		pick = (await axios.get('/api/picks/' + pickId)).data;
 	}
@@ -156,16 +151,22 @@
 					}
 					selected.update(null);
 
-					updatePick();
+					updatePick({
+						name: pick.name,
+						characterId: pick.characterId,
+						original: pick.original
+					});
 				}}
 				{pick}
 			/>
 			<Extra
 				{pick}
-				onSubmit={(data) => {
+				onSubmit={async (data) => {
 					pick.extra = data;
 
-					updatePick();
+					await updatePick({
+						extra: pick.extra
+					});
 				}}
 			/>
 		</div>

@@ -26,7 +26,7 @@
 		card: { name: string; quote: string };
 		mod: string;
 		banner: { name: string; quote: string };
-	}) => void;
+	}) => Promise<void>;
 
 	let specialties = [
 		'Aim',
@@ -72,7 +72,7 @@
 	let favMod = (pick?.extra as any)?.mod ?? '';
 
 	async function submit() {
-		onSubmit({
+		await onSubmit({
 			skills: skills,
 			specialty: gameSpecialty,
 			avatar: avatarText,
