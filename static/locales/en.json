@@ -191,5 +191,6 @@
 		"current": {
 			"name": "Your current character name"
 		}
-	}
+	},
+	"bump": "Bump all open"
 }

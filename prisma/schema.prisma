@@ -27,6 +27,7 @@ model User {
   verified      Boolean       @default(false)
   logs          Log[]
   assets        Asset[]
+  bumps         Bump[]
 }
 
 model UserRole {
@@ -148,6 +149,7 @@ model Pick {
   participants Participant[]
   assets       Asset[]
   valid        Boolean         @default(false)
+  bumps        Bump[]
 
   @@unique([collabId, characterId])
 }
@@ -197,4 +199,22 @@ model Log {
   user      User?    @relation(fields: [userId], references: [discordId])
   userId    String
   data      Json?
+}
+
+enum BumpState {
+  OPEN
+  MISSED
+  CLOSED
+}
+
+model Bump {
+  id        String    @id @default(cuid())
+  createdAt DateTime
+  state     BumpState @default(OPEN)
+  pick      Pick      @relation(fields: [pickId], references: [id], onDelete: Cascade)
+  pickId    String
+  user      User      @relation(fields: [userId], references: [discordId], onDelete: Cascade)
+  userId    String
+
+  @@index([createdAt])
 }

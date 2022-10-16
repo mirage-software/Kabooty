@@ -1,16 +1,13 @@
+import { CronJob } from 'cron';
 import { lstat, readdir, rmdir } from 'fs/promises';
 import path from 'path';
 import { ServerPaths } from '../utils/paths/server';
 
 export abstract class Assets {
-	static readonly loopInterval = 1000 * 60 * 60 * 12; // 12 hours
+	static async start() {
+		await Assets.clean();
 
-	static async setupLoop() {
-		Assets.clean();
-
-		setInterval(() => {
-			Assets.clean();
-		}, Assets.loopInterval);
+		new CronJob('0 */12 * * *', Assets.clean, null, true);
 	}
 
 	static async clean(directory: string = ServerPaths.root()) {

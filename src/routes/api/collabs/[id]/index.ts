@@ -65,7 +65,8 @@ export const put: RequestHandler = async ({ request, params }) => {
 				status: body.status,
 				topic: body.topic,
 				title: body.title,
-				rules: body.rules === '' ? null : body.rules
+				rules: body.rules === '' ? null : body.rules,
+				bumpStatus: body.bumpStatus
 			},
 			include: {
 				collabAssets: true

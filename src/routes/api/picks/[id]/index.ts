@@ -13,7 +13,11 @@ import { ServerPaths } from '../../../../utils/paths/server';
 import type { IDiscordUser } from '../../../../utils/discord/interfaces/user';
 import { DiscordUser } from '../../../../utils/discord/user';
 
-async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason: string | null }) {
+export async function sendEmbedToDiscord(data: {
+	pick: Pick;
+	user: IDiscordUser;
+	reason: string | null;
+}) {
 	const env = Env.load();
 	const serverId = env['DISCORD_SERVER_ID'];
 	const channelId = env['DISCORD_DELETIONS_CHANNEL_ID'];
@@ -22,9 +26,11 @@ async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason
 		data.reason = 'No Reason Given';
 	}
 
+	const message = `<@${data.pick.userId}>, your pick **${data.pick.name}** has been deleted by <@${data.user.id}>`;
+
 	const embed: MessageEmbed = new MessageEmbed({
 		title: `**Deletion Notification**`,
-		description: `Your **pick** has been deleted for the following reason\n**${data.reason}**`,
+		description: `Your pick **${data.pick.name}** has been deleted for the following reason\n**${data.reason}**`,
 		color: 0xff0000,
 		fields: [
 			{
@@ -33,13 +39,14 @@ async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason
 				inline: true
 			},
 			{
-				name: 'Picked by',
-				value: `<@${data.pick.userId}>`,
+				name: 'Picked by ID',
+				value: data.pick.userId,
 				inline: true
 			},
 			{
-				name: 'Deleted by',
-				value: `<@${data.user.id}>`
+				name: 'Deleted by ID',
+				value: data.user.id,
+				inline: true
 			},
 			{
 				name: 'Pick ID',
@@ -52,8 +59,10 @@ async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason
 	const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
 	const channel = guild.channels.cache.get(channelId);
 	if (channel && channel.type === 'GUILD_TEXT') {
-		const msg = await channel.send(`<@${data.pick.userId}>`);
-		msg.reply({ embeds: [embed] });
+		await channel.send({
+			content: message,
+			embeds: [embed]
+		});
 	}
 }
 
