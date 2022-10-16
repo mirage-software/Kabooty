@@ -106,7 +106,7 @@
 	}
 </script>
 
-{#if $discord && discordUser && pick}
+{#if discordUser && pick}
 	<div id="column">
 		<div id="discord">
 			<div id="user">
