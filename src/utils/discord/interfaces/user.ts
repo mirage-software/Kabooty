@@ -1,8 +1,4 @@
-export interface IDiscordRole {
-	id: string;
-	name: string;
-	display: boolean | null | undefined;
-}
+import type { IDiscordRole } from './role';
 
 export interface IDiscordUser {
 	id: string;

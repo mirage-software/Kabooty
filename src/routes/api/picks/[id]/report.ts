@@ -3,12 +3,12 @@ import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
 import type { Collab, Pick, User } from '@prisma/client';
 import { Jwt } from '../../../../jwt';
-import { getUser } from '../../discord/user';
 import { Prisma } from '../../../../database/prisma';
 import { DiscordBot } from '../../../../bot/discord';
 import { Env } from '../../../../env';
 import { SentryClient } from '../../../../bot/sentry';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { DiscordUser } from '../../../../utils/discord/user';
 
 async function sendEmbedToDiscord(
 	pick: Pick & { user: User | null; collab: Collab },
@@ -112,7 +112,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const discordUser = await getUser(token, userId);
+		const discordUser = await DiscordUser.getUser(userId, token);
 
 		if (!discordUser) {
 			return {

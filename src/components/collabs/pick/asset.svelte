@@ -27,18 +27,20 @@
 	let imageBuffer: ArrayBuffer;
 	let filename: string;
 
-	export let submit: (
-		image: ArrayBuffer,
-		filename: string,
-		pixels:
-			| {
-					width: number;
-					height: number;
-					x: number;
-					y: number;
-			  }
-			| undefined
-	) => Promise<void>;
+	export let submit:
+		| ((
+				image: ArrayBuffer,
+				filename: string,
+				pixels:
+					| {
+							width: number;
+							height: number;
+							x: number;
+							y: number;
+					  }
+					| undefined
+		  ) => Promise<void>)
+		| undefined = undefined;
 
 	export let imageDeleted: () => void;
 
@@ -50,7 +52,9 @@
 			width: collabAsset.assetWidth,
 			height: collabAsset.assetHeight,
 			upload: (_pixels: { width: number; height: number; x: number; y: number }) => {
-				submit(imageBuffer, filename, _pixels);
+				if (submit) {
+					submit(imageBuffer, filename, _pixels);
+				}
 			}
 		};
 
@@ -164,7 +168,7 @@
 <style lang="scss">
 	h3 {
 		margin: $margin-m;
-		margin-top: $margin-s;
+		margin-bottom: $margin-xs;
 	}
 
 	h4 {

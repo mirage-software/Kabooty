@@ -109,7 +109,7 @@
 				/>
 			{:else if collab && currentImage < collab.collabAssets.length}
 				<Image
-					submit={async (buffer, name, pixels) => {
+					submit={async (buffer, _, pixels) => {
 						if (!collab) {
 							return;
 						}

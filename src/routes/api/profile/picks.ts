@@ -1,9 +1,9 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
 import { Jwt } from '../../../jwt';
-import { getUser } from '../discord/user';
 import { Prisma } from '../../../database/prisma';
 import { SentryClient } from '../../../bot/sentry';
+import { DiscordUser } from '../../../utils/discord/user';
 
 export const get: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -21,7 +21,7 @@ export const get: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user) {
 			return {

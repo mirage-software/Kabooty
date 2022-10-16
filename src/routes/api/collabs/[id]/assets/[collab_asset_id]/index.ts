@@ -7,9 +7,9 @@ import type { Asset, CollabAsset } from '@prisma/client';
 import { SentryClient } from '../../../../../../bot/sentry';
 import { Jwt } from '../../../../../../jwt';
 import { ServerPaths } from '../../../../../../utils/paths/server';
-import { getUser } from '../../../../discord/user';
 import { Prisma } from '../../../../../../database/prisma';
 import { deleteExample } from './example';
+import { DiscordUser } from '../../../../../../utils/discord/user';
 
 export const put: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -27,7 +27,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 	}
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {
@@ -150,7 +150,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 	}
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {

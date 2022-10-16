@@ -4,11 +4,11 @@ import path from 'path';
 import { Prisma } from '../../../../../../../../../database/prisma';
 import cookie from 'cookie';
 import { Jwt } from '../../../../../../../../../jwt';
-import { getUser } from '../../../../../../../discord/user';
 import { SentryClient } from '../../../../../../../../../bot/sentry';
 import imageType from 'image-type';
 import sharp from 'sharp';
 import { ServerPaths } from '../../../../../../../../../utils/paths/server';
+import { DiscordUser } from '../../../../../../../../../utils/discord/user';
 
 export const post: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -33,7 +33,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user) {
 			return {

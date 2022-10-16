@@ -6,11 +6,11 @@ import type { CollabAsset } from '@prisma/client';
 import { SentryClient } from '../../../../../../bot/sentry';
 import { Jwt } from '../../../../../../jwt';
 import { ServerPaths } from '../../../../../../utils/paths/server';
-import { getUser } from '../../../../discord/user';
 import { Prisma } from '../../../../../../database/prisma';
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
 import imageType from 'image-type';
 import sharp from 'sharp';
+import { DiscordUser } from '../../../../../../utils/discord/user';
 
 export async function deleteExample(collabAsset: CollabAsset) {
 	if (existsSync(ServerPaths.collabAsset(collabAsset.collabId, collabAsset.id))) {
@@ -39,7 +39,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {
@@ -153,7 +153,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 	}
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {

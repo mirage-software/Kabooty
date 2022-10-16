@@ -7,11 +7,11 @@ import { Prisma } from '../../../../database/prisma';
 import { Env } from '../../../../env';
 import cookie from 'cookie';
 import { Jwt } from '../../../../jwt';
-import { getUser } from '../../discord/user';
 import { SentryClient } from '../../../../bot/sentry';
 import { MessageEmbed } from 'discord.js';
-import type { IDiscordUser } from 'src/database/discord_user';
 import { ServerPaths } from '../../../../utils/paths/server';
+import type { IDiscordUser } from '../../../../utils/discord/interfaces/user';
+import { DiscordUser } from '../../../../utils/discord/user';
 
 async function sendEmbedToDiscord(data: { pick: Pick; user: IDiscordUser; reason: string | null }) {
 	const env = Env.load();
@@ -142,7 +142,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 	}
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user) {
 			return {
@@ -175,6 +175,14 @@ export const put: RequestHandler = async ({ request, params }) => {
 				return {
 					status: 403
 				};
+			} else {
+				await Prisma.client.log.create({
+					data: {
+						action: 'admin_update_pick',
+						userId: userId,
+						data: { id: params.id, pick: JSON.stringify(pick), update: JSON.stringify(body) }
+					}
+				});
 			}
 		}
 
@@ -214,16 +222,6 @@ export const put: RequestHandler = async ({ request, params }) => {
 				return {
 					status: 400
 				};
-			}
-
-			if (user.admin) {
-				await Prisma.client.log.create({
-					data: {
-						action: 'admin_link_pick',
-						userId: userId,
-						data: { id: params.id, characterId: characterId }
-					}
-				});
 			}
 
 			update.characterId = character.id;
@@ -281,7 +279,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 	}
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user) {
 			return {

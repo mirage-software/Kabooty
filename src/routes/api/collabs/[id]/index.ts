@@ -1,10 +1,10 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
-import { getUser } from '../../discord/user';
 import { Jwt } from '../../../../jwt';
 import { Prisma } from '../../../../database/prisma';
 import type { Collab } from '@prisma/client';
 import { SentryClient } from '../../../../bot/sentry';
+import { DiscordUser } from '../../../../utils/discord/user';
 
 export const get: RequestHandler = async ({ params }) => {
 	const collab = await Prisma.client.collab.findUnique({
@@ -46,7 +46,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const user = await getUser(token, userId);
+	const user = await DiscordUser.getUser(userId, token);
 
 	if (!user || !user.admin) {
 		return {
@@ -102,7 +102,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const user = await getUser(token, userId);
+	const user = await DiscordUser.getUser(userId, token);
 
 	if (!user || !user.admin) {
 		return {

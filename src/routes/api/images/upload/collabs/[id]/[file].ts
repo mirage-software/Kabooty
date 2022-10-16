@@ -5,9 +5,9 @@ import { Prisma } from '../../../../../../database/prisma';
 import { Env } from '../../../../../../env';
 import cookie from 'cookie';
 import { Jwt } from '../../../../../../jwt';
-import { getUser } from '../../../../discord/user';
 import imageType from 'image-type';
 import sharp from 'sharp';
+import { DiscordUser } from '../../../../../../utils/discord/user';
 
 // TODO: move the collab images to the new asset system
 
@@ -26,7 +26,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const user = await getUser(token, userId);
+	const user = await DiscordUser.getUser(userId, token);
 
 	if (!user || !user.admin) {
 		return {

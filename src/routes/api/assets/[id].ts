@@ -2,17 +2,17 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 import cookie from 'cookie';
 import { Jwt } from '../../../jwt';
-import { getUser } from '../discord/user';
 import { Prisma } from '../../../database/prisma';
 import { Env } from '../../../env';
 import { SentryClient } from '../../../bot/sentry';
 import { existsSync, unlinkSync } from 'fs';
 import path from 'path';
-import type { IDiscordUser } from 'src/database/discord_user';
 import { MessageEmbed } from 'discord.js';
 import { DiscordBot } from '../../../bot/discord';
 import type { Asset, CollabAsset, Pick } from '@prisma/client';
 import { ServerPaths } from '../../../utils/paths/server';
+import type { IDiscordUser } from '../../../utils/discord/interfaces/user';
+import { DiscordUser } from '../../../utils/discord/user';
 
 async function sendEmbedToDiscord(data: {
 	asset: CollabAsset;
@@ -108,7 +108,7 @@ export const del: RequestHandler = async ({ request, params }) => {
 	}
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {

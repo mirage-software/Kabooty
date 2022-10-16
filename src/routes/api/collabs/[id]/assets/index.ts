@@ -4,8 +4,8 @@ import cookie from 'cookie';
 import type { CollabAsset } from '@prisma/client';
 import { SentryClient } from '../../../../../bot/sentry';
 import { Jwt } from '../../../../../jwt';
-import { getUser } from '../../../discord/user';
 import { Prisma } from '../../../../../database/prisma';
+import { DiscordUser } from '../../../../../utils/discord/user';
 
 export const post: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
@@ -23,7 +23,7 @@ export const post: RequestHandler = async ({ request, params }) => {
 	}
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {

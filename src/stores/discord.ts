@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { IDiscordUser } from '../database/discord_user';
+import type { IDiscordUser } from '../utils/discord/interfaces/user';
 
 export function getDiscordProfilePicture(user: IDiscordUser) {
 	if (user.avatar) {

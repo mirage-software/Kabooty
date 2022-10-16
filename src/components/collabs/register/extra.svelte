@@ -2,31 +2,30 @@
 	import { t } from 'svelte-intl-precompile';
 	import SolidButton from '../../generic/design/solid_button.svelte';
 	import Card from '../../generic/design/card.svelte';
-	import type { AnimeCharacter, Collab, CollabAsset, Pick } from '@prisma/client';
-	import axios, { AxiosError } from 'axios';
+	import type { Pick } from '@prisma/client';
 	import InputText from '../../generic/design/input_text.svelte';
-	import { goto } from '$app/navigation';
 	import Dropdown from './extra/dropdown.svelte';
-	import { onMount } from 'svelte';
 	import { osu } from '../../../stores/osu';
 
 	export let pick: Pick | undefined = undefined;
 
-	export let onSubmit: (data: {
-		skills: {
-			stamina: string;
-			tenacity: string;
-			accuracy: string;
-			precision: string;
-			reaction: string;
-			agility: string;
-		};
-		specialty: string;
-		avatar: string;
-		card: { name: string; quote: string };
-		mod: string;
-		banner: { name: string; quote: string };
-	}) => Promise<void>;
+	export let onSubmit:
+		| ((data: {
+				skills: {
+					stamina: string;
+					tenacity: string;
+					accuracy: string;
+					precision: string;
+					reaction: string;
+					agility: string;
+				};
+				specialty: string;
+				avatar: string;
+				card: { name: string; quote: string };
+				mod: string;
+				banner: { name: string; quote: string };
+		  }) => Promise<void>)
+		| undefined = undefined;
 
 	let specialties = [
 		'Aim',
@@ -86,20 +85,22 @@
 			}
 		});
 
-		await onSubmit({
-			skills: skills,
-			specialty: gameSpecialty,
-			avatar: avatarText,
-			card: {
-				name: cardName,
-				quote: cardQuote
-			},
-			mod: favMod,
-			banner: {
-				name: bannerName,
-				quote: bannerQuote
-			}
-		});
+		if (onSubmit) {
+			await onSubmit({
+				skills: skills,
+				specialty: gameSpecialty,
+				avatar: avatarText,
+				card: {
+					name: cardName,
+					quote: cardQuote
+				},
+				mod: favMod,
+				banner: {
+					name: bannerName,
+					quote: bannerQuote
+				}
+			});
+		}
 	}
 </script>
 
@@ -257,29 +258,31 @@
 				]}
 			/>
 
-			<SolidButton
-				click={submit}
-				color="green"
-				string={pick ? 'collabs.registration.submit' : 'collabs.registration.register'}
-				disabled={!(
-					skills.stamina.length > 0 &&
-					skills.tenacity.length > 0 &&
-					skills.accuracy.length > 0 &&
-					skills.precision.length > 0 &&
-					skills.reaction.length > 0 &&
-					skills.agility.length > 0 &&
-					gameSpecialty.length > 0 &&
-					favMod.length === 2 &&
-					avatarValid !== false &&
-					avatarText.length > 0 &&
-					bannerNameValid !== false &&
-					bannerName.length > 0 &&
-					bannerQuoteValid !== false &&
-					cardNameValid !== false &&
-					cardName.length > 0 &&
-					cardQuoteValid !== false
-				)}
-			/>
+			{#if onSubmit}
+				<SolidButton
+					click={submit}
+					color="green"
+					string={pick ? 'collabs.registration.submit' : 'collabs.registration.register'}
+					disabled={!(
+						skills.stamina.length > 0 &&
+						skills.tenacity.length > 0 &&
+						skills.accuracy.length > 0 &&
+						skills.precision.length > 0 &&
+						skills.reaction.length > 0 &&
+						skills.agility.length > 0 &&
+						gameSpecialty.length > 0 &&
+						favMod.length === 2 &&
+						avatarValid !== false &&
+						avatarText.length > 0 &&
+						bannerNameValid !== false &&
+						bannerName.length > 0 &&
+						bannerQuoteValid !== false &&
+						cardNameValid !== false &&
+						cardName.length > 0 &&
+						cardQuoteValid !== false
+					)}
+				/>
+			{/if}
 		</div>
 	</Card>
 </div>

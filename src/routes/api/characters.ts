@@ -5,9 +5,9 @@ import type { Prisma as prisma } from '@prisma/client';
 import { Jwt } from '../../jwt';
 
 import cookie from 'cookie';
-import { getUser } from './discord/user';
 import { CollabStatus } from '@prisma/client';
 import { deletePick } from './picks/[id]';
+import { DiscordUser } from '../../utils/discord/user';
 
 export const get: RequestHandler = async ({ request }) => {
 	const url = new URL(request.url);
@@ -94,7 +94,7 @@ export const post: RequestHandler = async ({ request }) => {
 	const userId = decodedUser['user_id'] as string;
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {
@@ -159,7 +159,7 @@ export const del: RequestHandler = async ({ request }) => {
 	const userId = decodedUser['user_id'] as string;
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {

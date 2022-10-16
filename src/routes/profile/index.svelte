@@ -8,8 +8,8 @@
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import axios from 'axios';
 	import Connections from '../../components/profile/connections.svelte';
-	import type { IDiscordRole } from '../../database/discord_user';
 	import Picks from '../../components/profile/picks.svelte';
+	import type { IDiscordRole } from '../../utils/discord/interfaces/role';
 
 	onMount(async () => {
 		const result = await axios.get('/api/discord/authenticated');

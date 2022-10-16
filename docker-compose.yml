@@ -2,7 +2,7 @@ version: '3.9' # optional since v1.27.0
 services:
   kabooty:
     build: .
-    image: kabooty/54 ## !! TODO: build version, triggers a deployment
+    image: kabooty/55 ## !! TODO: build version, triggers a deployment
     ports:
       - '3000:3000'
     restart: unless-stopped

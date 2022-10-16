@@ -1,10 +1,10 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
 import { Jwt } from '../../../jwt';
-import { getUser } from '../discord/user';
 import { Prisma } from '../../../database/prisma';
 import { CollabType, type Collab } from '@prisma/client';
 import { SentryClient } from '../../../bot/sentry';
+import { DiscordUser } from '../../../utils/discord/user';
 
 export const get: RequestHandler = async () => {
 	// !! TODO: this call needs to be paginated in the future
@@ -36,7 +36,7 @@ export const post: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {

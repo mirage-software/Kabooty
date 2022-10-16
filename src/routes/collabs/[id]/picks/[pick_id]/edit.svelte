@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	import axios from 'axios';
 	import {
@@ -9,17 +9,17 @@
 		getDiscordProfilePicture,
 		getFormattedDate
 	} from '../../../../../stores/discord';
-	import type { IDiscordRole } from '../../../../../database/discord_user';
-	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
 	import type { AnimeCharacter, Asset, CollabAsset, User, Pick, Collab } from '@prisma/client';
 	import { ClientPaths } from '../../../../../utils/paths/client';
-	import { t, _ } from 'svelte-intl-precompile';
-	import IconButton from '../../../../../components/collabs/icon_button.svelte';
+	import { _ } from 'svelte-intl-precompile';
 	import { page } from '$app/stores';
 	import Extra from '../../../../../components/collabs/register/extra.svelte';
 	import AssetComponent from '../../../../../components/collabs/pick/asset.svelte';
 	import Character from '../../../../../components/collabs/register/character.svelte';
 	import { selected } from '../../../../../components/collabs/register/character/selected_store';
+	import type { Unsubscriber } from 'svelte/store';
+	import type { IDiscordRole } from '../../../../../utils/discord/interfaces/role';
+	import type { IDiscordUser } from '../../../../../utils/discord/interfaces/user';
 
 	let pick: Pick & {
 		user: User;
@@ -30,10 +30,50 @@
 		};
 	};
 
-	onMount(async () => {
-		const pickId = $page.params['pick_id'];
+	let subscription: Unsubscriber | undefined;
 
-		pick = (await axios.get('/api/picks/' + pickId)).data;
+	let discordUser: IDiscordUser;
+
+	onMount(async () => {
+		const collabId = $page.params['id'];
+		const pickId = $page.params['pick_id'];
+		const pickRoute = '/collabs/' + collabId + '/picks/' + pickId;
+
+		const result = await axios.get('/api/discord/authenticated');
+
+		if (!result.data.authenticated) {
+			goto(pickRoute);
+			return;
+		}
+
+		const _pick: Pick & {
+			user: User;
+			character: AnimeCharacter;
+			assets: (Asset & { collabAsset: CollabAsset })[];
+			collab: Collab & {
+				collabAssets: CollabAsset[];
+			};
+		} = (await axios.get('/api/picks/' + pickId)).data;
+		discordUser = (await axios.get('/api/discord/user/' + _pick.userId)).data;
+
+		subscription = discord.subscribe((user) => {
+			if (!user) {
+				// Wait, since the user is authenticated
+				return;
+			}
+
+			if (user && (user.id === _pick.userId || user.admin)) {
+				pick = _pick;
+			} else {
+				goto(pickRoute);
+			}
+		});
+	});
+
+	onDestroy(() => {
+		if (subscription) {
+			subscription();
+		}
 	});
 
 	function getDisplayRoles(roles: IDiscordRole[]) {
@@ -61,28 +101,28 @@
 	}
 </script>
 
-{#if $discord && pick}
+{#if $discord && pick && discordUser}
 	<div id="column">
 		<div id="discord">
 			<div id="user">
 				<div id="discord-stats">
-					<img id="avatar" src={getDiscordProfilePicture($discord)} alt="Discord avatar" />
+					<img id="avatar" src={getDiscordProfilePicture(discordUser)} alt="Discord avatar" />
 					<div id="stats">
 						<div class="stat">
 							<i class="las la-user" />
-							<p>{$discord.username + '#' + $discord.discriminator}</p>
+							<p>{discordUser.username + '#' + discordUser.discriminator}</p>
 						</div>
-						{#if $discord.joinedAt}
+						{#if discordUser.joinedAt}
 							<div class="stat">
 								<i class="las la-calendar" />
-								<p>Joined {getFormattedDate($discord.joinedAt.toString())}</p>
+								<p>Joined {getFormattedDate(discordUser.joinedAt.toString())}</p>
 							</div>
 						{/if}
-						{#if $discord.roles && getDisplayRoles($discord.roles).length > 0}
+						{#if discordUser.roles && getDisplayRoles(discordUser.roles).length > 0}
 							<div class="stat">
 								<i class="las la-tags roleicon" />
 								<div id="roles">
-									{#each getDisplayRoles($discord.roles) as role}
+									{#each getDisplayRoles(discordUser.roles) as role}
 										<div id="role">
 											<p>{role.name}</p>
 										</div>
@@ -102,7 +142,7 @@
 						asset={pick.assets.find((_) => {
 							return _.collabAssetId === collabAsset.id;
 						})}
-						submit={async (image, filename, pixels) => {
+						submit={async (image, _, pixels) => {
 							const asset = (
 								await axios.post(
 									ClientPaths.asset(pick.collab.id, pick.id, collabAsset.id),

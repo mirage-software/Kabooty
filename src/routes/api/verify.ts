@@ -6,11 +6,11 @@ import cookie from 'cookie';
 import { Jwt } from '../../jwt';
 import OAuth from 'discord-oauth2';
 import { Prisma } from '../../database/prisma';
-import { getUpdatedDiscordUser } from './discord/user';
 import { getUpdatedOsuUser } from './osu/access';
 import type { Osu, OsuMode } from '@prisma/client';
-import type { IDiscordUser } from '../../database/discord_user';
 import { MessageEmbed } from 'discord.js';
+import type { IDiscordUser } from '../../utils/discord/interfaces/user';
+import { DiscordUser } from '../../utils/discord/user';
 
 function getPlayTime(time: number): string {
 	const total = time / 60 / 60;
@@ -166,30 +166,23 @@ export const get: RequestHandler = async ({ request }) => {
 		// !! verification data
 
 		const guildCount = guilds.length;
-		const user = await getUpdatedDiscordUser(userId);
 
-		if (!user) {
+		try {
+			await DiscordUser.updateGuildUser(userId, serverId);
+		} catch (error) {
+			// !! Do nothing, since the user may not be in the guild
+		}
+
+		const user = await DiscordUser.getUser(userId, token);
+
+		if (!user?.joinedAt) {
 			return {
 				status: 400,
 				body: {
-					message: 'User not found'
+					message: 'User not in discord'
 				}
 			};
 		}
-
-		await Prisma.client.user.update({
-			where: {
-				discordId: userId
-			},
-			data: {
-				discordId: user.id,
-				username: user.username,
-				discriminator: user.discriminator,
-				avatar: user.avatar,
-				joinedAt: user.joinedAt,
-				creation_date: user?.creation_date
-			}
-		});
 
 		await getUpdatedOsuUser(userId);
 
