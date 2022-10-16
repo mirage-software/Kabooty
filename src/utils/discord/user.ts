@@ -150,7 +150,8 @@ export abstract class DiscordUser {
 			where: {
 				discordRoleId: {
 					notIn: roles.map((role) => role.id)
-				}
+				},
+				userDiscordId: userId
 			}
 		});
 
