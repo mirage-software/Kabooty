@@ -134,6 +134,7 @@ export abstract class DiscordUser {
 			});
 		}
 
+		console.log('Roles:');
 		console.log(roles);
 
 		if (!guildUser) {
@@ -148,7 +149,7 @@ export abstract class DiscordUser {
 			throw new Error('No user found');
 		}
 
-		await Prisma.client.userRole.deleteMany({
+		const { count } = await Prisma.client.userRole.deleteMany({
 			where: {
 				AND: [
 					{ userDiscordId: userId },
@@ -160,6 +161,9 @@ export abstract class DiscordUser {
 				]
 			}
 		});
+
+		console.log('User roles removed:');
+		console.log(count);
 
 		for (const role of roles) {
 			await Prisma.client.discordRole.upsert({
@@ -180,7 +184,7 @@ export abstract class DiscordUser {
 		for (let i = 0; i < roles.length; i++) {
 			const role = roles[i];
 
-			Prisma.client.userRole.upsert({
+			const result = await Prisma.client.userRole.upsert({
 				where: {
 					userDiscordId_discordRoleId: {
 						userDiscordId: userId,
@@ -196,6 +200,9 @@ export abstract class DiscordUser {
 					discordRoleId: role.id
 				}
 			});
+
+			console.log('User role added/updated:');
+			console.log(result);
 		}
 
 		await Prisma.client.user.update({
