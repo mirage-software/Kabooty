@@ -134,6 +134,8 @@ export abstract class DiscordUser {
 			});
 		}
 
+		console.log(roles);
+
 		if (!guildUser) {
 			await Prisma.client.user.update({
 				where: {
@@ -148,10 +150,14 @@ export abstract class DiscordUser {
 
 		await Prisma.client.userRole.deleteMany({
 			where: {
-				discordRoleId: {
-					notIn: roles.map((role) => role.id)
-				},
-				userDiscordId: userId
+				AND: [
+					{ userDiscordId: userId },
+					{
+						discordRoleId: {
+							notIn: roles.map((role) => role.id)
+						}
+					}
+				]
 			}
 		});
 
