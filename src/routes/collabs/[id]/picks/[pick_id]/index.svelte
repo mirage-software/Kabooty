@@ -121,7 +121,7 @@
 
 				setTimeout(() => {
 					// !! wait 25ms for frontend to settle
-				}, 25);
+				}, 100);
 
 				console.log($valid);
 			}

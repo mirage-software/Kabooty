@@ -55,16 +55,22 @@
 	};
 	let gameSpecialty = (pick?.extra as any)?.specialty ?? '';
 
-	let avatarText = (pick?.extra as any)?.avatar ?? $osu?.username ?? 'Unknown';
+	let avatarText = onSubmit
+		? (pick?.extra as any)?.avatar ?? $osu?.username ?? 'Unknown'
+		: (pick?.extra as any)?.avatar;
 	let avatarValid: boolean;
 
-	let bannerName = (pick?.extra as any)?.banner?.name ?? $osu?.username ?? 'Unknown';
+	let bannerName = onSubmit
+		? (pick?.extra as any)?.banner?.name ?? $osu?.username ?? 'Unknown'
+		: (pick?.extra as any)?.banner?.name;
 	let bannerNameValid: boolean;
 
 	let bannerQuote = (pick?.extra as any)?.banner?.quote ?? '';
 	let bannerQuoteValid: boolean;
 
-	let cardName = (pick?.extra as any)?.card?.name ?? $osu?.username ?? 'Unknown';
+	let cardName = onSubmit
+		? (pick?.extra as any)?.card?.name ?? $osu?.username ?? 'Unknown'
+		: (pick?.extra as any)?.card?.name;
 	let cardNameValid: boolean;
 
 	let cardQuote = (pick?.extra as any)?.card?.quote ?? '';
