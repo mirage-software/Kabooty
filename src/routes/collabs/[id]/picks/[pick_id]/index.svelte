@@ -133,18 +133,16 @@
 
 				pick = undefined;
 
-				await timeout(25);
+				await timeout(50);
 
 				pick = pickBack;
 
-				await timeout(25);
+				await timeout(75);
 
 				if ($valid !== _pick.valid) {
 					console.log('---- PICK ' + _pick.id + ' INVALIDATED ----');
 					await axios.put('/api/picks/' + _pick.id, {
-						data: {
-							valid: $valid
-						}
+						valid: $valid
 					});
 				}
 			}
