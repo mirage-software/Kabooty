@@ -20,14 +20,15 @@
 	import Character from '../../../../../components/collabs/register/character.svelte';
 	import type { Writable } from 'svelte/store';
 
-	let pick: Pick & {
-		user: User;
-		character: AnimeCharacter;
-		assets: (Asset & { collabAsset: CollabAsset })[];
-		collab: Collab & {
-			collabAssets: CollabAsset[];
-		};
-	};
+	let pick:
+		| Pick & {
+				user: User;
+				character: AnimeCharacter;
+				assets: (Asset & { collabAsset: CollabAsset })[];
+				collab: Collab & {
+					collabAssets: CollabAsset[];
+				};
+		  };
 
 	let discordUser: IDiscordUser;
 
@@ -99,6 +100,10 @@
 
 	let valid: Writable<boolean>;
 
+	function timeout(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+
 	async function runPickValidation() {
 		console.log('---- START PICK VALIDATION ----');
 		pageIndex = 1;
@@ -115,13 +120,13 @@
 					continue;
 				}
 
-				pick.extra = _pick.extra;
+				if (pick) {
+					pick.extra = _pick.extra;
+				}
 
 				pick = pick;
 
-				setTimeout(() => {
-					// !! wait 25ms for frontend to settle
-				}, 100);
+				await timeout(50);
 
 				console.log($valid);
 			}
