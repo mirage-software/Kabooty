@@ -146,6 +146,8 @@
 					});
 				}
 			}
+
+			pageIndex++;
 		}
 
 		console.log('---- PICK VALIDATION FINISHED ----');
