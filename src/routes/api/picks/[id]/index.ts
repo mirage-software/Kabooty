@@ -161,7 +161,12 @@ export const put: RequestHandler = async ({ request, params }) => {
 
 		const body: Partial<Pick> = await request.json();
 
-		if (!body.characterId && !body.extra && !body.name && !body.valid) {
+		if (
+			!body.characterId &&
+			!body.extra &&
+			!body.name &&
+			!(body.valid === false || body.valid === true)
+		) {
 			return {
 				status: 400
 			};
