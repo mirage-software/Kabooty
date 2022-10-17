@@ -2,12 +2,17 @@
 	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
+	import { WebFonts } from '../../../utils/text/webfonts';
 
 	export let title: string | null = null;
 	export let hint = 'hint';
 
 	export let value: string | null | undefined = '';
 	export let valid: boolean | undefined = undefined;
+
+	$: {
+		validate(value ?? '');
+	}
 
 	export let multiline = false;
 
@@ -46,10 +51,6 @@
 	function changed(e: any) {
 		value = e.target.value;
 
-		if (browser) {
-			validate();
-		}
-
 		if (onChanged) {
 			onChanged();
 		}
@@ -70,35 +71,30 @@
 	}
 
 	async function getCanvasFont() {
-		const fontWeight = calculation.weight?.toString() || '400';
-		const fontSize = calculation.size ? calculation.size.toString() + 'px' : '16px';
-		const fontFamily = calculation.font || 'Times New Roman';
+		return new Promise<string>(async (resolve, _) => {
+			WebFonts.load(calculation, () => {
+				const fontWeight = calculation.weight?.toString() ?? '400';
+				const fontSize = calculation.size ? calculation.size.toString() + 'px' : '16px';
+				const fontFamily = calculation.font ?? 'Times New Roman';
 
-		const WebFont = await import('webfontloader');
+				let font = `${fontWeight} ${fontSize} ${fontFamily}`;
 
-		WebFont.load({
-			google: {
-				families: [fontFamily + ':' + (calculation.italic ? fontWeight + 'italic' : fontWeight)]
-			}
+				if (calculation.italic) {
+					font = `italic normal ${font}`;
+				}
+
+				resolve(font);
+			});
 		});
-
-		if (calculation.italic) {
-			return `italic normal ${fontWeight} ${fontSize} ${fontFamily}`;
-		}
-		return `${fontWeight} ${fontSize} ${fontFamily}`;
 	}
 
-	async function validate() {
+	async function validate(text: string) {
 		if (calculation.width) {
-			const width = getTextWidth(value ?? '', await getCanvasFont());
+			const width = getTextWidth(text, await getCanvasFont());
 
 			valid = width <= calculation.width;
 		}
 	}
-
-	onMount(() => {
-		validate();
-	});
 </script>
 
 <div id="text" style={getMultilineStyle(maxWidth, null)}>
@@ -111,6 +107,7 @@
 			placeholder={$t(hint)}
 			bind:value
 			on:input={changed}
+			on:change={changed}
 			style={getMultilineStyle(maxWidth, height)}
 		/>
 	{:else}
@@ -120,6 +117,7 @@
 			id="input"
 			placeholder={$t(hint)}
 			on:input={changed}
+			on:change={changed}
 			{value}
 		/>
 	{/if}

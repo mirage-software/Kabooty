@@ -6,6 +6,8 @@
 	import InputText from '../../generic/design/input_text.svelte';
 	import Dropdown from './extra/dropdown.svelte';
 	import { osu } from '../../../stores/osu';
+	import { onDestroy, onMount } from 'svelte';
+	import type { Unsubscriber } from 'svelte/store';
 
 	export let pick: Pick | undefined = undefined;
 
@@ -70,8 +72,10 @@
 
 	let favMod = (pick?.extra as any)?.mod ?? '';
 
-	async function submit() {
-		osu.subscribe((osuUser) => {
+	let subscription: Unsubscriber;
+
+	onMount(() => {
+		subscription = osu.subscribe((osuUser) => {
 			if (avatarText === 'Unknown' && osuUser?.username) {
 				avatarText = osuUser?.username;
 			}
@@ -84,7 +88,13 @@
 				cardName = osuUser?.username;
 			}
 		});
+	});
 
+	onDestroy(() => {
+		subscription();
+	});
+
+	async function submit() {
 		if (onSubmit) {
 			await onSubmit({
 				skills: skills,

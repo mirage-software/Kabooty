@@ -9,7 +9,8 @@ import { DiscordUser } from '../utils/discord/user';
 
 async function sendBumpEmbed(
 	pick: Pick & { assets: Asset[]; collab: Collab & { collabAssets: CollabAsset[] } },
-	time: Date
+	time: Date,
+	last = false
 ) {
 	const env = Env.load();
 	const serverId = env['DISCORD_SERVER_ID'];
@@ -21,13 +22,18 @@ async function sendBumpEmbed(
 		valid = false;
 	}
 
-	const message = `<@${pick.userId}>, it is time for you to bump. The bump ends <t:${Math.round(
+	let message = `<@${pick.userId}>, it is time for you to bump. The bump ends <t:${Math.round(
 		time.getTime() / 1000
-	)}:R>`;
+	)}:R>.`;
+
+	if (last) {
+		message +=
+			" **You have missed the two previous bumps. If you don't bump your pick will be deleted!**";
+	}
 
 	const embed: MessageEmbed = new MessageEmbed({
 		title: `**Bump instructions**`,
-		description: `Your pick **${pick.name}** needs to be bumped. Here are the instructions to bump.`,
+		description: `Your pick **${pick.name}** needs to be bumped. Here are the instructions to bump. If you miss 3 bumps in a row your pick will be deleted.`,
 		color: 0xff0000,
 		fields: [
 			{
@@ -39,23 +45,13 @@ async function sendBumpEmbed(
 				name: 'Step 2',
 				value: 'Type /bump (discord), or click the bump button (website)',
 				inline: false
-			},
-			{
-				name: 'Step 3',
-				value: '???',
-				inline: false
-			},
-			{
-				name: 'Step 4',
-				value: 'Profit, your pick will not be deleted unless you have 3 missed bumps in a row.',
-				inline: false
 			}
 		]
 	});
 
 	if (!valid) {
 		embed.addFields({
-			name: 'Step 5',
+			name: 'Step 3',
 			value:
 				"Your pick currently isn't complete. Please update your pick on the website, and make sure you have all images uploaded/valid, or your pick will be deleted.",
 			inline: false
@@ -74,6 +70,7 @@ async function sendBumpEmbed(
 
 export abstract class Bumps {
 	static started = false;
+	static processing = false;
 
 	static async start() {
 		if (!Bumps.started) {
@@ -84,6 +81,12 @@ export abstract class Bumps {
 	}
 
 	static async process() {
+		if (Bumps.processing) {
+			return;
+		}
+
+		Bumps.processing = true;
+
 		const time = new Date();
 		const previousTime = new Date(time.toISOString());
 		previousTime.setHours(time.getHours() - 24 * 5);
@@ -114,11 +117,8 @@ export abstract class Bumps {
 						},
 						bumps: {
 							none: {
-								OR: {
-									state: 'OPEN',
-									createdAt: {
-										gte: previousTime
-									}
+								createdAt: {
+									gte: previousTime
 								}
 							}
 						}
@@ -130,6 +130,12 @@ export abstract class Bumps {
 						include: {
 							collabAssets: true
 						}
+					},
+					bumps: {
+						orderBy: {
+							createdAt: 'desc'
+						},
+						take: 3
 					}
 				},
 				take: 50,
@@ -148,11 +154,18 @@ export abstract class Bumps {
 					}
 				});
 
-				await sendBumpEmbed(pick, futureTime);
+				const thirdInRow =
+					pick.bumps.length >= 3 &&
+					pick.bumps[0].state === 'MISSED' &&
+					pick.bumps[1].state === 'MISSED';
+
+				await sendBumpEmbed(pick, futureTime, thirdInRow);
 			}
 
 			offset += 50;
 		}
+
+		Bumps.processing = false;
 	}
 
 	static async closeOld(now: Date) {

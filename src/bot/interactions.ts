@@ -97,9 +97,7 @@ export abstract class Interactions {
 
 		interaction.reply({
 			ephemeral: true,
-			content: result
-				? 'Successfully bumped all open bumps.'
-				: 'There is nothing to bump right now.'
+			content: result ? 'Successfully bumped your picks.' : 'There is nothing to bump right now.'
 		});
 	}
 }
