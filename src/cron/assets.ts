@@ -11,6 +11,10 @@ export abstract class Assets {
 	}
 
 	static async clean(directory: string = ServerPaths.root()) {
+		if (!directory) {
+			return;
+		}
+
 		const fileStats = await lstat(directory);
 
 		if (!fileStats.isDirectory()) {
