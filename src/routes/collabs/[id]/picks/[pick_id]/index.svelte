@@ -41,7 +41,7 @@
 		const pickId = $page.params['pick_id'];
 
 		pick = (await axios.get('/api/picks/' + pickId)).data;
-		discordUser = (await axios.get('/api/discord/user/' + pick.userId)).data;
+		discordUser = (await axios.get('/api/discord/user/' + pick?.userId)).data;
 	});
 
 	function getDisplayRoles(roles: IDiscordRole[]) {
@@ -58,19 +58,19 @@
 		let confirmed = false;
 		let reason: string | null = '';
 
-		if ($discord?.admin && pick.userId !== $discord?.id) {
+		if ($discord?.admin && pick?.userId !== $discord?.id) {
 			reason = _window.prompt('Whats the reason for the deletion?', 'Duplicate Pick');
 			if (reason) {
 				confirmed = true;
 			}
 		}
 
-		if (pick.userId === $discord?.id) {
+		if (pick?.userId === $discord?.id) {
 			confirmed = _window.confirm($t('collabs.delete_pick_confirm'));
 		}
 
 		if (confirmed) {
-			await axios.delete('/api/picks/' + pick.id, {
+			await axios.delete('/api/picks/' + pick?.id, {
 				data: {
 					reason: reason
 				}
@@ -139,15 +139,18 @@
 
 				await timeout(25);
 
-				console.log($valid);
+				if ($valid !== _pick.valid) {
+					console.log('---- PICK ' + _pick.id + ' INVALIDATED ----');
+					await axios.put('/api/picks/' + _pick.id, {
+						data: {
+							valid: $valid
+						}
+					});
+				}
 			}
 		}
 
-		// await axios.delete('/api/picks/' + pick.id, {
-		// 	data: {
-		// 		reason: reason
-		// 	}
-		// });
+		console.log('---- PICK VALIDATION FINISHED ----');
 	}
 
 	async function reportPick() {
@@ -161,7 +164,7 @@
 		);
 
 		if (response) {
-			await axios.post('/api/picks/' + pick.id + '/report', {
+			await axios.post('/api/picks/' + pick?.id + '/report', {
 				report: response
 			});
 
@@ -170,6 +173,10 @@
 	}
 
 	async function removeAsset(collabAssetId: string) {
+		if (!pick) {
+			return;
+		}
+
 		const assetIndex = pick.assets.findIndex((_) => {
 			return _.collabAssetId === collabAssetId;
 		});
