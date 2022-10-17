@@ -21,14 +21,15 @@
 	import type { Writable } from 'svelte/store';
 
 	let pick:
-		| Pick & {
+		| (Pick & {
 				user: User;
 				character: AnimeCharacter;
 				assets: (Asset & { collabAsset: CollabAsset })[];
 				collab: Collab & {
 					collabAssets: CollabAsset[];
 				};
-		  };
+		  })
+		| undefined;
 
 	let discordUser: IDiscordUser;
 
@@ -90,7 +91,11 @@
 	async function getPicks() {
 		data = (
 			await axios.get(
-				'/api/collabs/' + pick.collabId + '/picks?page=' + pageIndex + '&query=&sort=date&order=asc'
+				'/api/collabs/' +
+					pick?.collabId +
+					'/picks?page=' +
+					pageIndex +
+					'&query=&sort=date&order=asc'
 			)
 		).data;
 		if (data.length !== 25) {
@@ -124,9 +129,15 @@
 					pick.extra = _pick.extra;
 				}
 
-				pick = pick;
+				const pickBack = pick;
 
-				await timeout(50);
+				pick = undefined;
+
+				await timeout(25);
+
+				pick = pickBack;
+
+				await timeout(25);
 
 				console.log($valid);
 			}
