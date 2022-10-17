@@ -71,24 +71,22 @@
 						{/if}
 					</div>
 
-					{#if $discord.admin || !$discord.joinedAt}
-						<div id="buttons">
-							{#if !$discord.joinedAt}
-								<SolidButton
-									string="discord.join"
-									click={async () => {
-										await axios.get('/api/discord/join');
-									}}
-								/>
-							{/if}
-							{#if bumps.length > 0}
-								<SolidButton string="bump" click={bump} />
-							{/if}
-							{#if $discord.admin}
-								<SolidButton string="admin.title" click={() => goto('/admin')} />
-							{/if}
-						</div>
-					{/if}
+					<div id="buttons">
+						{#if !$discord.joinedAt}
+							<SolidButton
+								string="discord.join"
+								click={async () => {
+									await axios.get('/api/discord/join');
+								}}
+							/>
+						{/if}
+						{#if bumps.length > 0}
+							<SolidButton string="bump" click={bump} />
+						{/if}
+						{#if $discord.admin}
+							<SolidButton string="admin.title" click={() => goto('/admin')} />
+						{/if}
+					</div>
 				</div>
 			</div>
 		</div>

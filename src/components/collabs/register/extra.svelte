@@ -112,6 +112,32 @@
 			});
 		}
 	}
+
+	import { writable } from 'svelte/store';
+
+	export const isValidStore = writable(false);
+
+	$: valid =
+		skills.stamina.length > 0 &&
+		skills.tenacity.length > 0 &&
+		skills.accuracy.length > 0 &&
+		skills.precision.length > 0 &&
+		skills.reaction.length > 0 &&
+		skills.agility.length > 0 &&
+		gameSpecialty.length > 0 &&
+		favMod.length === 2 &&
+		avatarValid !== false &&
+		avatarText.length > 0 &&
+		bannerNameValid !== false &&
+		bannerName.length > 0 &&
+		bannerQuoteValid !== false &&
+		cardNameValid !== false &&
+		cardName.length > 0 &&
+		cardQuoteValid !== false;
+
+	$: {
+		isValidStore.set(valid);
+	}
 </script>
 
 <h3>{$t('collabs.registration.extra.title')}</h3>
@@ -273,24 +299,7 @@
 					click={submit}
 					color="green"
 					string={pick ? 'collabs.registration.submit' : 'collabs.registration.register'}
-					disabled={!(
-						skills.stamina.length > 0 &&
-						skills.tenacity.length > 0 &&
-						skills.accuracy.length > 0 &&
-						skills.precision.length > 0 &&
-						skills.reaction.length > 0 &&
-						skills.agility.length > 0 &&
-						gameSpecialty.length > 0 &&
-						favMod.length === 2 &&
-						avatarValid !== false &&
-						avatarText.length > 0 &&
-						bannerNameValid !== false &&
-						bannerName.length > 0 &&
-						bannerQuoteValid !== false &&
-						cardNameValid !== false &&
-						cardName.length > 0 &&
-						cardQuoteValid !== false
-					)}
+					disabled={!valid}
 				/>
 			{/if}
 		</div>

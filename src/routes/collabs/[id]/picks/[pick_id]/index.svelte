@@ -18,6 +18,7 @@
 	import Extra from '../../../../../components/collabs/register/extra.svelte';
 	import AssetComponent from '../../../../../components/collabs/pick/asset.svelte';
 	import Character from '../../../../../components/collabs/register/character.svelte';
+	import type { Writable } from 'svelte/store';
 
 	let pick: Pick & {
 		user: User;
@@ -74,6 +75,63 @@
 			});
 			_window.alert('Pick Deleted');
 		}
+	}
+
+	let pageIndex = 1;
+	let data: (Pick & {
+		user: User;
+		character: AnimeCharacter;
+		assets: (Asset & { collabAsset: CollabAsset })[];
+	})[] = [];
+
+	let loading = true;
+
+	async function getPicks() {
+		data = (
+			await axios.get(
+				'/api/collabs/' + pick.collabId + '/picks?page=' + pageIndex + '&query=&sort=date&order=asc'
+			)
+		).data;
+		if (data.length !== 25) {
+			loading = false;
+		}
+	}
+
+	let valid: Writable<boolean>;
+
+	async function runPickValidation() {
+		console.log('---- START PICK VALIDATION ----');
+		pageIndex = 1;
+		data = [];
+		loading = true;
+
+		while (loading) {
+			await getPicks();
+
+			for (let i = 0; i < data.length; i++) {
+				const _pick = data[i];
+
+				if (!_pick.valid) {
+					continue;
+				}
+
+				pick.extra = _pick.extra;
+
+				pick = pick;
+
+				setTimeout(() => {
+					// !! wait 25ms for frontend to settle
+				}, 25);
+
+				console.log($valid);
+			}
+		}
+
+		// await axios.delete('/api/picks/' + pick.id, {
+		// 	data: {
+		// 		reason: reason
+		// 	}
+		// });
 	}
 
 	async function reportPick() {
@@ -150,6 +208,11 @@
 									/>
 								</div>
 							{/if}
+							{#if $discord?.id === '675733770610933761'}
+								<div id="admin">
+									<IconButton icon="la la-sync" click={runPickValidation} />
+								</div>
+							{/if}
 						</div>
 						<SolidButton click={reportPick} string={'picks.report'} color="red" />
 					</div>
@@ -181,7 +244,7 @@
 				{/each}
 			</div>
 			<div id="extra">
-				<Extra {pick} />
+				<Extra {pick} bind:isValidStore={valid} />
 			</div>
 		</div>
 	</div>
