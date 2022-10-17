@@ -93,14 +93,6 @@ export abstract class Interactions {
 	}
 
 	static async bumpPicks(interaction: CommandInteraction) {
-		const env = Env.load();
-
-		const channelId = env['DISCORD_BUMP_COMMANDS_CHANNEL_ID'];
-
-		if (interaction.channel?.id !== channelId) {
-			return;
-		}
-
 		const result = await Bumps.bump(interaction.user.id);
 
 		interaction.reply({
