@@ -175,6 +175,9 @@ export const put: RequestHandler = async ({ request, params }) => {
 		const pick = await Prisma.client.pick.findUnique({
 			where: {
 				id: params.id
+			},
+			include: {
+				collab: true
 			}
 		});
 
@@ -184,7 +187,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 			};
 		}
 
-		if (userId !== pick.userId) {
+		if (userId !== pick.userId || !pick.collab.allowEditing) {
 			if (!user.admin) {
 				return {
 					status: 403

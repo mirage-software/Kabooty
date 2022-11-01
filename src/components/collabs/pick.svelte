@@ -103,7 +103,7 @@
 
 				<div id="buttons">
 					<div id="report">
-						{#if profile}
+						{#if profile && collab.allowEditing}
 							<SolidButton
 								click={async () => {
 									goto('/collabs/' + pick.collabId + '/picks/' + pick.id + '/edit');

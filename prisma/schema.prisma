@@ -92,6 +92,7 @@ model Collab {
   type         CollabType
   status       CollabStatus
   bumpStatus   BumpStatus    @default(DISABLED)
+  allowEditing Boolean       @default(false)
   picks        Pick[]
   participants Participant[]
   collabAssets CollabAsset[]

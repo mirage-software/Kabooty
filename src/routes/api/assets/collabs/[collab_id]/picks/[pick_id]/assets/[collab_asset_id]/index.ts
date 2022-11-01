@@ -47,6 +47,9 @@ export const post: RequestHandler = async ({ request, params }) => {
 		const collabAsset = await Prisma.client.collabAsset.findUnique({
 			where: {
 				id: collabAssetId
+			},
+			include: {
+				collab: true
 			}
 		});
 
@@ -56,6 +59,12 @@ export const post: RequestHandler = async ({ request, params }) => {
 				body: {
 					message: 'Collab asset not found'
 				}
+			};
+		}
+
+		if (!collabAsset.collab.allowEditing) {
+			return {
+				status: 403
 			};
 		}
 

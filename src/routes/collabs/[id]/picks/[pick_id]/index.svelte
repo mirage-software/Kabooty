@@ -9,7 +9,6 @@
 	} from '../../../../../stores/discord';
 	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
 	import type { AnimeCharacter, Asset, CollabAsset, User, Pick, Collab } from '@prisma/client';
-	import { ClientPaths } from '../../../../../utils/paths/client';
 	import { t } from 'svelte-intl-precompile';
 	import IconButton from '../../../../../components/collabs/icon_button.svelte';
 	import { page } from '$app/stores';
@@ -17,7 +16,6 @@
 	import type { IDiscordUser } from '../../../../../utils/discord/interfaces/user';
 	import Extra from '../../../../../components/collabs/register/extra.svelte';
 	import AssetComponent from '../../../../../components/collabs/pick/asset.svelte';
-	import Character from '../../../../../components/collabs/register/character.svelte';
 	import type { Writable } from 'svelte/store';
 
 	let pick:

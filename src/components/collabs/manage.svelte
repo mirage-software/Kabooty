@@ -32,6 +32,9 @@
 	let bumpStatusOptions = ['ENABLED', 'DISABLED'];
 	let bumpStatusStrings = bumpStatusOptions.map((status) => $t(`collabs.bump_status.${status}`));
 
+	let allowEditOptions = [true, false];
+	let allowEditStrings = allowEditOptions.map((status) => (status ? 'Yes' : 'No'));
+
 	let _window: Window | null = null;
 
 	onMount(async () => {
@@ -200,6 +203,13 @@
 					data={bumpStatusOptions}
 					strings={bumpStatusStrings}
 					placeholder={'collabs.manage.bump_status'}
+				/>
+				<Dropdown
+					bind:value={collab.allowEditing}
+					title={'Allow editing'}
+					data={allowEditOptions}
+					strings={allowEditStrings}
+					placeholder={'Manage edit permission'}
 				/>
 				<div id="logo">
 					{#if (collab && collab.logo) || image}
