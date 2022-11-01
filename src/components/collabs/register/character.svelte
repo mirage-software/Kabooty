@@ -31,9 +31,15 @@
 	let page = 1;
 
 	onMount(async () => {
-		try {
-			await axios.get('/api/collabs/' + collab.id + '/open');
-		} catch (_) {
+		if (!pick) {
+			try {
+				await axios.get('/api/collabs/' + collab.id + '/open');
+			} catch (_) {
+				goto('/collabs/' + collab.id + '/error?error=errors.collab_closed');
+			}
+		}
+
+		if (!collab.allowEditing) {
 			goto('/collabs/' + collab.id + '/error?error=errors.collab_closed');
 		}
 	});
