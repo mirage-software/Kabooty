@@ -1,5 +1,6 @@
 import { Assets } from './assets';
 import { Bumps } from './bumps';
+import { Si } from './si';
 
 export abstract class Cron {
 	static initialized = false;
@@ -10,6 +11,7 @@ export abstract class Cron {
 
 			Assets.start();
 			Bumps.start();
+			Si.start();
 		}
 	}
 }
