@@ -26,10 +26,10 @@ export abstract class Si {
 		const guild = await DiscordBot.client.guilds.fetch({ guild: serverId });
 		const channel = guild.channels.cache.get(channelId);
 
-		channel?.setName(name);
+		await channel?.setName(name);
 
 		if (channel?.type === 'GUILD_TEXT') {
-			channel.setTopic(topic);
+			await channel.setTopic(topic);
 		}
 	}
 }
