@@ -39,7 +39,7 @@ export const get: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const participatns = await Prisma.client.participant.findMany({
+	const participants = await Prisma.client.participant.findMany({
 		orderBy: [
 			{
 				createdAt: 'asc'
@@ -71,14 +71,14 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	let count = 0;
 
-	participatns.forEach((participatn) => {
+	participants.forEach((participant) => {
 		let osu_id = '';
 		let osu_name = '';
 		let hex_ranks = '';
 		let av_name = '';
 		let charname = '';
 		let id = count;
-		let db_id = participatn.id;
+		let db_id = participant.id;
 		let series = '';
 		let specialty = '';
 		let gamemode = '';
@@ -93,10 +93,11 @@ export const get: RequestHandler = async ({ request, params }) => {
 		let fav_mod = '';
 		let country = '';
 
-		if (participatn.user != null) {
-			if (participatn.pick != null) {
+		if (participant.user != null) {
+			if (participant.pick != null) {
+
 				// This should be typed sometime!
-				let extra: any = participatn.pick.extra;
+				let extra: any = participant.pick.extra;
 
 				if (extra != null) {
 					fav_mod = extra.mod == null ? '' : extra.mod;
@@ -131,21 +132,21 @@ export const get: RequestHandler = async ({ request, params }) => {
 					}
 				}
 
-				if (participatn.pick.character != null) {
-					charname = participatn.pick.character.name == null ? '' : participatn.pick.character.name;
+				if (participant.pick.character != null) {
+					charname = participant.pick.character.name == null ? '' : participant.pick.character.name;
 					series =
-						participatn.pick.character.anime_name == null
+						participant.pick.character.anime_name == null
 							? ''
-							: participatn.pick.character.anime_name;
+							: participant.pick.character.anime_name;
 				}
 			}
 
-			if (participatn.user.osu != null) {
-				osu_name = participatn.user.osu.username == null ? '' : participatn.user.osu.username;
-				country = participatn.user.osu.country == null ? '' : participatn.user.osu.country;
+			if (participant.user.osu != null) {
+				osu_name = participant.user.osu.username == null ? '' : participant.user.osu.username;
+				country = participant.user.osu.country == null ? '' : participant.user.osu.country;
 
-				if (participatn.user.osu.modes != null) {
-					participatn.user.osu.modes.forEach((mode) => {
+				if (participant.user.osu.modes != null) {
+					participant.user.osu.modes.forEach((mode) => {
 						if (mode.selected === true) {
 							osu_id = mode.osuId == null ? '' : mode.osuId;
 							gamemode = mode.gamemode == null ? '' : mode.gamemode;
