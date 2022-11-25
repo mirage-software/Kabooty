@@ -37,6 +37,7 @@
 	let filter = 'default';
 	let order = 'desc';
 	let query = '';
+	let hasExport = false;
 
 	let loading = true;
 
@@ -98,42 +99,6 @@
 		await getPicks();
 	}
 
-	async function exportcsv() {
-		const collabId = $page.params['id'];
-
-		let res = await fetch('/api/collabs/' + collabId + '/exportcsv');
-
-		// Dont ask me i copyd this from a thread
-		let blob = await res.blob();
-		var url = window.URL || window.webkitURL;
-		let link = url.createObjectURL(blob);
-
-		let a = document.createElement('a');
-		a.setAttribute('download', `export.csv`);
-		a.setAttribute('href', link);
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-	}
-
-	async function exportassets() {
-		const collabId = $page.params['id'];
-
-		let res = await fetch('/api/collabs/' + collabId + '/exportassets');
-
-		// Dont ask me i copyd this from a thread
-		let blob = await res.blob();
-		var url = window.URL || window.webkitURL;
-		let link = url.createObjectURL(blob);
-
-		let a = document.createElement('a');
-		a.setAttribute('download', `export.zip`);
-		a.setAttribute('href', link);
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-	}
-
 	let collab: Collab | null = null;
 
 	onMount(async () => {
@@ -158,8 +123,7 @@
 							color="green"
 							string="collabs.update"
 						/>
-						<SolidButton click={exportcsv} color="blue" string="collabs.export_csv" />
-						<SolidButton click={exportassets} color="blue" string="collabs.export_assets" />
+						<SolidButton click={() => goto('/api/collabs/' + collab?.id + '/export')} color="blue" string="collabs.export" />
 					</div>
 				{/if}
 			</div>
