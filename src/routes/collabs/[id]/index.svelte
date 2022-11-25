@@ -134,7 +134,6 @@
 		document.body.removeChild(a);
 	}
 
-
 	let collab: Collab | null = null;
 
 	onMount(async () => {
