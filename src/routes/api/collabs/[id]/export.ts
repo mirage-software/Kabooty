@@ -109,7 +109,7 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	writeFileSync(filePath, await zip.generateAsync({ type: 'uint8array' }));
 
-	let file = readFileSync(filePath);
+	const file = readFileSync(filePath);
 
 	const contentType = mime.contentType('export.zip') || 'application/octet-stream';
 
