@@ -98,6 +98,24 @@
 		await getPicks();
 	}
 
+	async function exportCollab() {
+		const collabId = $page.params['id'];
+
+		let res = await fetch('/api/collabs/' + collabId + '/export');
+
+		// Dont ask me i copyd this from a thread
+		let blob = await res.blob();
+		var url = window.URL || window.webkitURL;
+		let link = url.createObjectURL(blob);
+
+		let a = document.createElement('a');
+		a.setAttribute('download', `export.csv`);
+		a.setAttribute('href', link);
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	}
+
 	let collab: Collab | null = null;
 
 	onMount(async () => {
@@ -116,11 +134,15 @@
 			<div id="title">
 				<PageTitle value={collab.title} />
 				{#if $discord?.admin}
-					<SolidButton
-						click={() => goto('/collabs/' + collab?.id + '/manage')}
-						color="green"
-						string="collabs.update"
-					/>
+					<div id="admin">
+						<SolidButton
+							click={() => goto('/collabs/' + collab?.id + '/manage')}
+							color="green"
+							string="collabs.update"
+						/>
+						<SolidButton click={exportCollab} color="blue" string="collabs.export_csv" />
+						<SolidButton click={exportCollab} color="blue" string="collabs.export_assets" />
+					</div>
 				{/if}
 			</div>
 			<div id="filter">
@@ -209,6 +231,25 @@
 
 				@media (min-width: 400px) {
 					flex-direction: row;
+				}
+
+				#admin {
+					display: flex;
+					flex-direction: column;
+					justify-content: flex-start;
+					justify-items: center;
+					align-items: stretch;
+					align-self: stretch;
+					align-content: stretch;
+
+					gap: $margin-s;
+
+					@media (min-width: 400px) {
+						flex-direction: row;
+
+						gap: $margin-xs;
+						align-content: center;
+					}
 				}
 			}
 

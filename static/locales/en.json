@@ -57,6 +57,8 @@
 		"title": "Collabs",
 		"create": "Create collab",
 		"update": "Update collab",
+		"export_csv": "CSV Export",
+		"export_assets": "Asset Export",
 		"ongoing": "Ongoing",
 		"no_ongoing": "There are no ongoing collabs",
 		"upload_logo": "Upload logo",
