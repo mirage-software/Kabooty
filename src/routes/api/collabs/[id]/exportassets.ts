@@ -65,9 +65,7 @@ export const get: RequestHandler = async ({ request, params }) => {
         }
     });
 
-    let file_return = undefined;
     var zip = new JSZip();
-
     let count = 0;
 
     participants.forEach(participant => {
