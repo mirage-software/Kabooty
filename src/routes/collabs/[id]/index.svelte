@@ -123,7 +123,11 @@
 							color="green"
 							string="collabs.update"
 						/>
-						<SolidButton click={() => goto('/api/collabs/' + collab?.id + '/export')} color="blue" string="collabs.export" />
+						<SolidButton
+							click={() => goto('/api/collabs/' + collab?.id + '/export')}
+							color="blue"
+							string="collabs.export"
+						/>
 					</div>
 				{/if}
 			</div>
