@@ -38,7 +38,7 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	const user = await DiscordUser.getUser(userId, token);
 
-	if (!user || !user.admin) {
+	if (!user || !user.admin || userId !== '687004886922952755') {
 		return {
 			status: 403
 		};
