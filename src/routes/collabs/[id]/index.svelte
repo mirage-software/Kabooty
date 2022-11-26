@@ -37,6 +37,7 @@
 	let filter = 'default';
 	let order = 'desc';
 	let query = '';
+	let hasExport = false;
 
 	let loading = true;
 
@@ -116,11 +117,18 @@
 			<div id="title">
 				<PageTitle value={collab.title} />
 				{#if $discord?.admin}
-					<SolidButton
-						click={() => goto('/collabs/' + collab?.id + '/manage')}
-						color="green"
-						string="collabs.update"
-					/>
+					<div id="admin">
+						<SolidButton
+							click={() => goto('/collabs/' + collab?.id + '/manage')}
+							color="green"
+							string="collabs.update"
+						/>
+						<SolidButton
+							click={() => goto('/api/collabs/' + collab?.id + '/export')}
+							color="blue"
+							string="collabs.export"
+						/>
+					</div>
 				{/if}
 			</div>
 			<div id="filter">
@@ -209,6 +217,25 @@
 
 				@media (min-width: 400px) {
 					flex-direction: row;
+				}
+
+				#admin {
+					display: flex;
+					flex-direction: column;
+					justify-content: flex-start;
+					justify-items: center;
+					align-items: stretch;
+					align-self: stretch;
+					align-content: stretch;
+
+					gap: $margin-s;
+
+					@media (min-width: 400px) {
+						flex-direction: row;
+
+						gap: $margin-xs;
+						align-content: center;
+					}
 				}
 			}
 
