@@ -4,7 +4,7 @@ import { Jwt } from '../../../../jwt';
 import { Prisma } from '../../../../database/prisma';
 import { DiscordUser } from '../../../../utils/discord/user';
 import { ServerPaths } from '../../../../utils/paths/server';
-import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { mkdirSync, readFile, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import JSZip from 'jszip';
 import * as mime from 'mime-types';
@@ -38,7 +38,11 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	const user = await DiscordUser.getUser(userId, token);
 
-	if (!user || !user.admin || userId !== '687004886922952755') {
+	if (
+		!user ||
+		!user.admin ||
+		(userId !== '687004886922952755' && userId !== '203932549746130944')
+	) {
 		return {
 			status: 403
 		};
@@ -56,7 +60,18 @@ export const get: RequestHandler = async ({ request, params }) => {
 	let csv =
 		'osu_id;osu_name;hex_ranks;av_name;charname;id;db_id;series;specialty;gamemode;rank;level;banner_name;card_name;banner_quote;card_quote;prestige;supporter_tier;fav_mod;country\n';
 
+	// Generate ZIP for the export
+	const filePath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.zip');
+
+	mkdirSync(path.dirname(filePath), { recursive: true });
+
+	console.log(path.dirname(filePath));
+
+	writeFileSync(filePath, await zip.generateAsync({ type: 'uint8array' }));
+
 	for (let page = 0; page <= total_pages; page++) {
+		await zip.loadAsync(readFileSync(filePath));
+
 		const picks = await Prisma.client.pick.findMany({
 			orderBy: [
 				{
@@ -97,15 +112,11 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 			process_counter++;
 		});
+
+		writeFileSync(filePath, await zip.generateAsync({ type: 'uint8array' }));
 	}
 
 	zip.file('data.csv', csv);
-
-	const filePath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.zip');
-
-	mkdirSync(path.dirname(filePath), { recursive: true });
-
-	console.log(path.dirname(filePath));
 
 	writeFileSync(filePath, await zip.generateAsync({ type: 'uint8array' }));
 
