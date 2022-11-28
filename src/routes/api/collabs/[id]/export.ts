@@ -4,7 +4,7 @@ import { Jwt } from '../../../../jwt';
 import { Prisma } from '../../../../database/prisma';
 import { DiscordUser } from '../../../../utils/discord/user';
 import { ServerPaths } from '../../../../utils/paths/server';
-import { mkdirSync, readFile, readFileSync, writeFileSync } from 'fs';
+import { mkdirSync, readFile, readFileSync, writeFileSync, createWriteStream } from 'fs';
 import path from 'path';
 import JSZip from 'jszip';
 import * as mime from 'mime-types';
@@ -57,20 +57,24 @@ export const get: RequestHandler = async ({ request, params }) => {
 	const max = 100;
 	const total_pages = Math.ceil(count / max);
 	const zip = new JSZip();
-	let csv =
+	const csv =
 		'osu_id;osu_name;hex_ranks;av_name;charname;id;db_id;series;specialty;gamemode;rank;level;banner_name;card_name;banner_quote;card_quote;prestige;supporter_tier;fav_mod;country\n';
 
 	// Generate ZIP for the export
-	const filePath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.zip');
+	const zipPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.zip');
+	const csvPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.csv');
+	const csvStream = createWriteStream(csvPath);
 
-	mkdirSync(path.dirname(filePath), { recursive: true });
+	csvStream.write(csv);
 
-	console.log(path.dirname(filePath));
+	mkdirSync(path.dirname(zipPath), { recursive: true });
 
-	writeFileSync(filePath, await zip.generateAsync({ type: 'uint8array' }));
+	console.log(path.dirname(zipPath));
+
+	writeFileSync(zipPath, await zip.generateAsync({ type: 'uint8array' }));
 
 	for (let page = 0; page <= total_pages; page++) {
-		await zip.loadAsync(readFileSync(filePath));
+		await zip.loadAsync(readFileSync(zipPath));
 
 		const picks = await Prisma.client.pick.findMany({
 			orderBy: [
@@ -106,21 +110,23 @@ export const get: RequestHandler = async ({ request, params }) => {
 		let process_counter = 100 * page;
 
 		picks.forEach((pick) => {
-			csv += buildcsv(pick, process_counter);
+			csvStream.write(buildcsv(pick, process_counter));
 
 			buildassets(pick, zip, process_counter);
 
 			process_counter++;
 		});
 
-		writeFileSync(filePath, await zip.generateAsync({ type: 'uint8array' }));
+		writeFileSync(zipPath, await zip.generateAsync({ type: 'uint8array' }));
 	}
 
-	zip.file('data.csv', csv);
+	csvStream.close();
 
-	writeFileSync(filePath, await zip.generateAsync({ type: 'uint8array' }));
+	zip.file('data.csv', readFileSync(csvPath));
 
-	const file = readFileSync(filePath);
+	writeFileSync(zipPath, await zip.generateAsync({ type: 'uint8array' }));
+
+	const file = readFileSync(zipPath);
 
 	const contentType = mime.contentType('export.zip') || 'application/octet-stream';
 
