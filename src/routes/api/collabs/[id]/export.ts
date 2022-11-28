@@ -63,15 +63,16 @@ export const get: RequestHandler = async ({ request, params }) => {
 	// Generate ZIP for the export
 	const zipPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.zip');
 	const csvPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.csv');
-	const csvStream = createWriteStream(csvPath);
 
-	csvStream.write(csv);
 
 	mkdirSync(path.dirname(zipPath), { recursive: true });
 
 	console.log(path.dirname(zipPath));
 
+	writeFileSync(csvPath, csv);
 	writeFileSync(zipPath, await zip.generateAsync({ type: 'uint8array' }));
+
+	const csvStream = createWriteStream(csvPath);
 
 	for (let page = 0; page <= total_pages; page++) {
 		await zip.loadAsync(readFileSync(zipPath));
@@ -109,14 +110,17 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 		let process_counter = 100 * page;
 
+		let csv_chunk = "";
+
 		picks.forEach((pick) => {
-			csvStream.write(buildcsv(pick, process_counter));
+			csv_chunk +=buildcsv(pick, process_counter);
 
 			buildassets(pick, zip, process_counter);
 
 			process_counter++;
 		});
 
+		csvStream.write(csv_chunk);
 		writeFileSync(zipPath, await zip.generateAsync({ type: 'uint8array' }));
 	}
 
