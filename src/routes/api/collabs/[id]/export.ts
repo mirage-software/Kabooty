@@ -281,9 +281,6 @@ function getSupporterTier(roles: Array<any>) {
 			case '963221388892700723':
 				if (tier < 1) tier = 1;
 				break;
-			default:
-				tier = 0;
-				break;
 		}
 	});
 
@@ -316,9 +313,6 @@ function getPrestige(roles: Array<any>) {
 				break;
 			case '963258467928408134':
 				if (prestige < 1) prestige = 1;
-				break;
-			default:
-				prestige = 0;
 				break;
 		}
 	});
