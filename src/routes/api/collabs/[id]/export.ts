@@ -4,9 +4,16 @@ import { Jwt } from '../../../../jwt';
 import { Prisma } from '../../../../database/prisma';
 import { DiscordUser } from '../../../../utils/discord/user';
 import { ServerPaths } from '../../../../utils/paths/server';
-import { mkdirSync, readFile, readFileSync, writeFileSync, createWriteStream } from 'fs';
+import {
+	mkdirSync,
+	readFile,
+	readFileSync,
+	writeFileSync,
+	createWriteStream,
+	createReadStream
+} from 'fs';
 import path from 'path';
-import JSZip from 'jszip';
+import archiver from 'archiver';
 import * as mime from 'mime-types';
 
 export const get: RequestHandler = async ({ request, params }) => {
@@ -56,7 +63,9 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	const max = 100;
 	const total_pages = Math.ceil(count / max);
-	const zip = new JSZip();
+	const archive = archiver('zip', {
+		zlib: { level: 9 } // Sets the compression level.
+	});
 	const csv =
 		'osu_id;osu_name;hex_ranks;av_name;charname;id;db_id;series;specialty;gamemode;rank;level;banner_name;card_name;banner_quote;card_quote;prestige;supporter_tier;fav_mod;country\n';
 
@@ -64,19 +73,15 @@ export const get: RequestHandler = async ({ request, params }) => {
 	const zipPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.zip');
 	const csvPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.csv');
 
-
 	mkdirSync(path.dirname(zipPath), { recursive: true });
 
-	console.log(path.dirname(zipPath));
-
-	writeFileSync(csvPath, csv);
-	writeFileSync(zipPath, await zip.generateAsync({ type: 'uint8array' }));
-
 	const csvStream = createWriteStream(csvPath);
+	const zipStream = createWriteStream(zipPath);
+
+	archive.pipe(zipStream);
+	csvStream.write(csv);
 
 	for (let page = 0; page <= total_pages; page++) {
-		await zip.loadAsync(readFileSync(zipPath));
-
 		const picks = await Prisma.client.pick.findMany({
 			orderBy: [
 				{
@@ -110,25 +115,24 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 		let process_counter = 100 * page;
 
-		let csv_chunk = "";
+		let csv_chunk = '';
 
 		picks.forEach((pick) => {
-			csv_chunk +=buildcsv(pick, process_counter);
+			csv_chunk += buildcsv(pick, process_counter);
 
-			buildassets(pick, zip, process_counter);
+			buildassets(pick, archive, process_counter);
 
 			process_counter++;
 		});
 
 		csvStream.write(csv_chunk);
-		writeFileSync(zipPath, await zip.generateAsync({ type: 'uint8array' }));
 	}
 
 	csvStream.close();
 
-	zip.file('data.csv', readFileSync(csvPath));
+	archive.append(createReadStream(csvPath), { name: 'data.csv' });
 
-	writeFileSync(zipPath, await zip.generateAsync({ type: 'uint8array' }));
+	archive.finalize();
 
 	const file = readFileSync(zipPath);
 
@@ -144,7 +148,7 @@ export const get: RequestHandler = async ({ request, params }) => {
 	};
 };
 
-function buildassets(pick: any, zip: JSZip, process_counter: number) {
+function buildassets(pick: any, archive: any, process_counter: number) {
 	const assets = pick.assets;
 
 	assets.forEach((asset: any) => {
@@ -157,7 +161,9 @@ function buildassets(pick: any, zip: JSZip, process_counter: number) {
 			file
 		);
 
-		zip.folder(asset.collabAsset.assetType)?.file(`${process_counter}.png`, readFileSync(filePath));
+		archive.appent(createReadStream(filePath), {
+			name: `${asset.collabAsset.assetType}/${process_counter}.png`
+		});
 	});
 }
 
