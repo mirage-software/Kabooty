@@ -78,7 +78,6 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	archive.pipe(zipStream);
 	jsonStream.write('[');
-	console.log("test");
 
 	for (let page = 0; page <= total_pages; page++) {
 		const picks = await Prisma.client.pick.findMany({
