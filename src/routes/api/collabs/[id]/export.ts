@@ -134,6 +134,8 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	archive.finalize();
 
+	await new Promise(fulfill => zipStream.on("close", fulfill));
+
 	const file = readFileSync(zipPath);
 
 	const contentType = mime.contentType('export.zip') || 'application/octet-stream';
