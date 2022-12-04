@@ -161,7 +161,7 @@ function buildassets(pick: any, archive: any, process_counter: number) {
 			file
 		);
 
-		archive.appent(createReadStream(filePath), {
+		archive.append(createReadStream(filePath), {
 			name: `${asset.collabAsset.assetType}/${process_counter}.png`
 		});
 	});
