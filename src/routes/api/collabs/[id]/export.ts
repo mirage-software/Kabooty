@@ -66,20 +66,18 @@ export const get: RequestHandler = async ({ request, params }) => {
 	const archive = archiver('zip', {
 		zlib: { level: 9 } // Sets the compression level.
 	});
-	const csv =
-		'osu_id;osu_name;hex_ranks;av_name;charname;id;db_id;series;specialty;gamemode;rank;level;banner_name;card_name;banner_quote;card_quote;prestige;supporter_tier;fav_mod;country\n';
 
 	// Generate ZIP for the export
 	const zipPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.zip');
-	const csvPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.csv');
+	const jsonPath = path.join(ServerPaths.collab(collab.id), '/export/', 'export.json');
 
 	mkdirSync(path.dirname(zipPath), { recursive: true });
 
-	const csvStream = createWriteStream(csvPath);
+	const jsonStream = createWriteStream(jsonPath);
 	const zipStream = createWriteStream(zipPath);
 
 	archive.pipe(zipStream);
-	csvStream.write(csv);
+	jsonStream.write('[');
 
 	for (let page = 0; page <= total_pages; page++) {
 		const picks = await Prisma.client.pick.findMany({
@@ -115,26 +113,29 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 		let process_counter = 100 * page;
 
-		let csv_chunk = '';
+		let json_chunk = '';
 
 		picks.forEach((pick) => {
-			csv_chunk += buildcsv(pick, process_counter);
+			json_chunk += buildcsv(pick, process_counter);
+			json_chunk += ',';
 
 			buildassets(pick, archive, process_counter);
 
 			process_counter++;
 		});
 
-		csvStream.write(csv_chunk);
+		jsonStream.write(json_chunk);
 	}
 
-	csvStream.close();
+	jsonStream.write(']');
 
-	archive.append(createReadStream(csvPath), { name: 'data.csv' });
+	jsonStream.close();
+
+	archive.append(createReadStream(jsonPath), { name: 'data.json' });
 
 	archive.finalize();
 
-	await new Promise(fulfill => zipStream.on("close", fulfill));
+	await new Promise((fulfill) => zipStream.on('close', fulfill));
 
 	const file = readFileSync(zipPath);
 
@@ -255,7 +256,30 @@ function buildcsv(pick: any, count: number) {
 		}
 	}
 
-	return `${osu_id};${osu_name};${hex_ranks};${av_name};${charname};${id};${db_id};${series};${specialty};${gamemode};${rank};${level};${banner_name};${card_name};${banner_quote};${card_quote};${prestige};${supporter_tier};${fav_mod};${country}\n`;
+	let export_object: any = {
+		osu_id: osu_id,
+		osu_name: osu_name,
+		hex_ranks: hex_ranks,
+		av_name: av_name,
+		charname: charname,
+		id: id,
+		db_id: db_id,
+		series: series,
+		specialty: specialty,
+		gamemode: gamemode,
+		rank: rank,
+		level: level,
+		banner_name: banner_name,
+		card_name: card_name,
+		banner_quote: banner_quote,
+		card_quote: card_quote,
+		prestige: prestige,
+		supporter_tier: supporter_tier,
+		fav_mod: fav_mod,
+		country: country
+	};
+
+	return JSON.stringify(export_object);
 }
 
 function getSupporterTier(roles: Array<any>) {
