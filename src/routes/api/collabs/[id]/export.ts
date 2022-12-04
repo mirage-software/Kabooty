@@ -134,6 +134,8 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	archive.finalize();
 
+	await new Promise(fulfill => zipStream.on("close", fulfill));
+
 	const file = readFileSync(zipPath);
 
 	const contentType = mime.contentType('export.zip') || 'application/octet-stream';
@@ -279,9 +281,6 @@ function getSupporterTier(roles: Array<any>) {
 			case '963221388892700723':
 				if (tier < 1) tier = 1;
 				break;
-			default:
-				tier = 0;
-				break;
 		}
 	});
 
@@ -314,9 +313,6 @@ function getPrestige(roles: Array<any>) {
 				break;
 			case '963258467928408134':
 				if (prestige < 1) prestige = 1;
-				break;
-			default:
-				prestige = 0;
 				break;
 		}
 	});
