@@ -117,7 +117,7 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 		picks.forEach((pick) => {
 			json_chunk += buildcsv(pick, process_counter);
-			json_chunk += ",";
+			json_chunk += ',';
 
 			buildassets(pick, archive, process_counter);
 
@@ -135,7 +135,7 @@ export const get: RequestHandler = async ({ request, params }) => {
 
 	archive.finalize();
 
-	await new Promise(fulfill => zipStream.on("close", fulfill));
+	await new Promise((fulfill) => zipStream.on('close', fulfill));
 
 	const file = readFileSync(zipPath);
 
@@ -277,7 +277,7 @@ function buildcsv(pick: any, count: number) {
 		supporter_tier: supporter_tier,
 		fav_mod: fav_mod,
 		country: country
-	}
+	};
 
 	return JSON.stringify(export_object);
 }
