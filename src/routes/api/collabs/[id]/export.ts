@@ -254,6 +254,11 @@ function buildcsv(pick: any, count: number) {
 				});
 			}
 		}
+
+		if(pick.original == true) {
+			charname = pick.name;
+			series = "custom";
+		}
 	}
 
 	let export_object: any = {
