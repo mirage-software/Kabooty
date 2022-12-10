@@ -85,6 +85,7 @@ model Collab {
   createdAt    DateTime      @default(now())
   title        String
   topic        String
+  url          String?
   logo         String?
   creator      User          @relation(fields: [creatorId], references: [discordId], onDelete: Cascade)
   creatorId    String

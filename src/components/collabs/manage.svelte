@@ -25,6 +25,9 @@
 	let image: string | null = null;
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
+	let uniqueURL = false;
+	let error: string | null = null;
+	let original_url: string | null = collab.url;
 
 	let statusOptions = ['OPEN', 'RELEASE', 'CLOSED', 'EARLY_ACCESS', 'DESIGN'];
 	let statusStrings = statusOptions.map((status) => $t(`collabs.status.${status}`));
@@ -40,6 +43,7 @@
 	onMount(async () => {
 		_window = window;
 		collabAssets = collab.collabAssets || [];
+		checkUniqueURL();
 	});
 
 	let deletedAssetIds: string[] = [];
@@ -142,6 +146,22 @@
 		collabAssets = [...collabAssets];
 	}
 
+	async function checkUniqueURL() {
+		const URIQuery = encodeURIComponent(collab.url || '');
+
+		const response = await axios.get(`/api/url?search=${URIQuery}`);
+
+		uniqueURL = response.data;
+
+		if (uniqueURL === false && collab.url !== original_url) {
+			error = 'The URL is already beeing used';
+		} else {
+			error = null;
+		}
+
+		console.log(uniqueURL);
+	}
+
 	async function onSave() {
 		if (!collab.id) {
 			collab = (await axios.post('/api/collabs', collab)).data;
@@ -188,6 +208,13 @@
 					bind:value={collab.title}
 					title={'collabs.manage.name'}
 					hint={'Endless Mirage Megacollab'}
+				/>
+				<InputText
+					bind:value={collab.url}
+					title={'collabs.manage.url'}
+					onChanged={checkUniqueURL}
+					hint={'6th'}
+					{error}
 				/>
 				<InputText bind:value={collab.topic} title={'collabs.manage.topic'} hint={'Hotwheels'} />
 				<Dropdown
@@ -288,7 +315,8 @@
 					collab.title.length < 5 ||
 					collab.topic.length < 4 ||
 					collab.collabAssets.length < 1 ||
-					!collab.collabAssets.find((asset) => asset.mainAsset)}
+					!collab.collabAssets.find((asset) => asset.mainAsset) ||
+					!uniqueURL}
 			/>
 		</div>
 	</Card>
