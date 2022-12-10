@@ -16,6 +16,7 @@
 		user: User;
 		character: AnimeCharacter;
 		assets: (Asset & { collabAsset: CollabAsset })[];
+		collab?: Collab;
 	};
 	export let collab: Collab;
 	export let profile = false;
@@ -58,6 +59,15 @@
 			_window.alert('Pick Deleted');
 			onChange();
 		}
+	}
+
+	function isReleased(collab: Collab | undefined) {
+
+		if(collab !== undefined && collab.status == 'RELEASE') {
+			return true;
+		}
+
+		return false;
 	}
 </script>
 
@@ -120,6 +130,15 @@
 								color="green"
 							/>
 						{/if}
+						{#if profile && isReleased(pick.collab)}
+						<SolidButton
+						click={async () => {
+							goto('/api/collabs/' + pick.collabId + '/delivery');
+						}}
+						string={'picks.delivery'}
+						color="blue"
+					/>
+					{/if}
 					</div>
 
 					{#if $discord?.admin || profile}
@@ -149,7 +168,6 @@
 	#container {
 		display: flex;
 		flex-direction: column;
-
 		height: 100%;
 
 		#image {
@@ -212,7 +230,6 @@
 			#buttons {
 				display: flex;
 				flex-direction: row;
-
 				justify-content: space-between;
 
 				flex-wrap: wrap;
@@ -233,6 +250,7 @@
 				#report {
 					align-self: stretch;
 					display: flex;
+					gap: 5px;
 					justify-content: stretch;
 				}
 
