@@ -55,6 +55,11 @@ export const put: RequestHandler = async ({ request, params }) => {
 	}
 
 	const body: Collab = await request.json();
+	let url = null;
+
+	if(body.url !== undefined) {
+		url = body.url?.toLowerCase();
+	}
 
 	try {
 		const updated = await Prisma.client.collab.update({
@@ -63,7 +68,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 			},
 			data: {
 				status: body.status,
-				url: body.url,
+				url: url,
 				topic: body.topic,
 				title: body.title,
 				rules: body.rules === '' ? null : body.rules,

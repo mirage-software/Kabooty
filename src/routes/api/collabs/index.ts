@@ -45,12 +45,19 @@ export const post: RequestHandler = async ({ request }) => {
 		}
 
 		const body: Collab = await request.json();
+		let url = null;
+
+		if(body.url !== undefined) {
+			url = body.url?.toLowerCase();
+		}
 
 		const collab = await Prisma.client.collab.create({
+
+			
 			data: {
 				// TODO: these are hardcoded for now, must be an option later
 				type: CollabType.OPEN,
-				url: body.url,
+				url: url,
 				status: body.status,
 				creatorId: userId,
 				title: body.title,
