@@ -26,8 +26,8 @@
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
 	let uniqueURL = false;
-	let error: string | null = null;
-	let original_url: string | null = collab.url;
+	let error: string | null | undefined = null;
+	let original_url: string | null | undefined = collab.url;
 
 	let statusOptions = ['OPEN', 'RELEASE', 'CLOSED', 'EARLY_ACCESS', 'DESIGN'];
 	let statusStrings = statusOptions.map((status) => $t(`collabs.status.${status}`));
