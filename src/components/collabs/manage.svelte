@@ -154,12 +154,10 @@
 		uniqueURL = response.data;
 
 		if (uniqueURL === false && collab.url !== original_url) {
-			error = 'The URL is already beeing used';
+			error = 'This url is already being used';
 		} else {
 			error = null;
 		}
-
-		console.log(uniqueURL);
 	}
 
 	async function onSave() {
