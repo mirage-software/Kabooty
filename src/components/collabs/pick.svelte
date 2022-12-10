@@ -62,8 +62,7 @@
 	}
 
 	function isReleased(collab: Collab | undefined) {
-
-		if(collab !== undefined && collab.status == 'RELEASE') {
+		if (collab !== undefined && collab.status == 'RELEASE') {
 			return true;
 		}
 
@@ -131,14 +130,14 @@
 							/>
 						{/if}
 						{#if profile && isReleased(pick.collab)}
-						<SolidButton
-						click={async () => {
-							goto('/api/collabs/' + pick.collabId + '/delivery');
-						}}
-						string={'picks.delivery'}
-						color="blue"
-					/>
-					{/if}
+							<SolidButton
+								click={async () => {
+									goto('/api/collabs/' + pick.collabId + '/delivery');
+								}}
+								string={'picks.delivery'}
+								color="blue"
+							/>
+						{/if}
 					</div>
 
 					{#if $discord?.admin || profile}
