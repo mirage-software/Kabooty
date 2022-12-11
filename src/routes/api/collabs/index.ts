@@ -5,6 +5,7 @@ import { Prisma } from '../../../database/prisma';
 import { CollabType, type Collab } from '@prisma/client';
 import { SentryClient } from '../../../bot/sentry';
 import { DiscordUser } from '../../../utils/discord/user';
+import { toKebabCase } from 'src/utils/text/toKebabCase';
 
 export const get: RequestHandler = async () => {
 	// !! TODO: this call needs to be paginated in the future
@@ -47,13 +48,11 @@ export const post: RequestHandler = async ({ request }) => {
 		const body: Collab = await request.json();
 		let url = null;
 
-		if(body.url !== undefined) {
-			url = body.url?.toLowerCase();
+		if (body.url !== undefined) {
+			url = toKebabCase(body.url);
 		}
 
 		const collab = await Prisma.client.collab.create({
-
-			
 			data: {
 				// TODO: these are hardcoded for now, must be an option later
 				type: CollabType.OPEN,

@@ -13,6 +13,7 @@
 	import Dropdown from './register/extra/dropdown.svelte';
 	import Asset from './asset.svelte';
 	import { onMount } from 'svelte';
+	import { toKebabCase } from 'src/utils/text/toKebabCase';
 
 	export let collab: Partial<Collab & { collabAssets: CollabAsset[] }> = {
 		title: undefined,
@@ -147,7 +148,8 @@
 	}
 
 	async function checkUniqueURL() {
-		const URIQuery = encodeURIComponent(collab.url || '');
+		const kebabURL = toKebabCase(collab.url);
+		const URIQuery = encodeURIComponent(kebabURL || '');
 
 		const response = await axios.get(`/api/url?search=${URIQuery}`);
 
@@ -161,6 +163,8 @@
 	}
 
 	async function onSave() {
+		collab.url = toKebabCase(collab.url);
+
 		if (!collab.id) {
 			collab = (await axios.post('/api/collabs', collab)).data;
 		} else {

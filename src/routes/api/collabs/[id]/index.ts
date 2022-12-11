@@ -5,6 +5,7 @@ import { Prisma } from '../../../../database/prisma';
 import type { Collab } from '@prisma/client';
 import { SentryClient } from '../../../../bot/sentry';
 import { DiscordUser } from '../../../../utils/discord/user';
+import { toKebabCase } from 'src/utils/text/toKebabCase';
 
 export const get: RequestHandler = async ({ params }) => {
 	const collab = await Prisma.client.collab.findUnique({
@@ -57,8 +58,8 @@ export const put: RequestHandler = async ({ request, params }) => {
 	const body: Collab = await request.json();
 	let url = null;
 
-	if(body.url !== undefined) {
-		url = body.url?.toLowerCase();
+	if (body.url !== undefined) {
+		url = toKebabCase(body.url);
 	}
 
 	try {
