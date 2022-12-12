@@ -189,6 +189,7 @@
 		"report": "Report",
 		"view": "View",
 		"edit": "Edit",
+		"delivery": "Download",
 		"current": {
 			"name": "Your current character name"
 		}
