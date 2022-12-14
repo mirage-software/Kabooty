@@ -12,13 +12,13 @@ export const get: RequestHandler = async ({ request }) => {
 		};
 	}
 
-	const collab = await Prisma.client.collab.findMany({
+	const collab = await Prisma.client.collab.findUnique({
 		where: {
 			url: query
 		}
 	});
 
-	if (collab.length === 0) {
+	if (collab === null) {
 		return {
 			status: 200,
 			body: true
