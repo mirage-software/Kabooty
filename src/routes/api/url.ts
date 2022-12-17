@@ -12,11 +12,18 @@ export const get: RequestHandler = async ({ request }) => {
 		};
 	}
 
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			url: query
-		}
-	});
+	const where = {
+		OR: [
+			{
+				url: query
+			},
+			{
+				id: query
+			}
+		]
+	};
+
+	const collab = await Prisma.client.collab.findFirst({ where });
 
 	if (collab === null) {
 		return {
