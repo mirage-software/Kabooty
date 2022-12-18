@@ -13,7 +13,7 @@
 	import Dropdown from './register/extra/dropdown.svelte';
 	import Asset from './asset.svelte';
 	import { onMount } from 'svelte';
-	import { toKebabCase } from '../../utils/text/toKebabCase';
+	import { Formatting } from '../../utils/text/formatting';
 
 	export let collab: Partial<Collab & { collabAssets: CollabAsset[] }> = {
 		title: undefined,
@@ -26,9 +26,9 @@
 	let image: string | null = null;
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
-	let uniqueURL = false;
+	let uniqueUrl = false;
 	let error: string | null | undefined = null;
-	let original_url: string | null | undefined = collab.url;
+	let url: string | null | undefined = collab.url;
 
 	let statusOptions = ['OPEN', 'RELEASE', 'CLOSED', 'EARLY_ACCESS', 'DESIGN'];
 	let statusStrings = statusOptions.map((status) => $t(`collabs.status.${status}`));
@@ -148,24 +148,26 @@
 	}
 
 	async function checkUniqueURL() {
-		collab.url = toKebabCase(collab.url);
-		const URIQuery = encodeURIComponent(collab.url || '');
+		url = Formatting.toKebabCase(collab.url);
 
-		const response = await axios.get(`/api/url?search=${URIQuery}`);
+		try {
+			const data = (await axios.get(`/api/collabs/${url}`)).data;
 
-		uniqueURL = response.data;
-
-		if (uniqueURL === false && collab.url !== original_url) {
-			error = 'This url is already being used';
-			uniqueURL = false;
-		} else {
+			if (data.id !== collab.id) {
+				uniqueUrl = false;
+				error = 'This URL is already in use';
+			} else {
+				uniqueUrl = true;
+				error = null;
+			}
+		} catch (_) {
+			uniqueUrl = true;
 			error = null;
-			uniqueURL = true;
 		}
 	}
 
 	async function onSave() {
-		collab.url = toKebabCase(collab.url);
+		collab.url = Formatting.toKebabCase(collab.url);
 
 		if (!collab.id) {
 			collab = (await axios.post('/api/collabs', collab)).data;
@@ -220,6 +222,9 @@
 					hint={'6th'}
 					{error}
 				/>
+				{#if !error && url}
+					<h6 style="margin: 0; opacity: 0.6;">Becomes <a href="/collabs/{url}">{url}</a></h6>
+				{/if}
 				<InputText bind:value={collab.topic} title={'collabs.manage.topic'} hint={'Hotwheels'} />
 				<Dropdown
 					bind:value={collab.status}
@@ -320,7 +325,7 @@
 					collab.topic.length < 4 ||
 					collab.collabAssets.length < 1 ||
 					!collab.collabAssets.find((asset) => asset.mainAsset) ||
-					!uniqueURL}
+					!uniqueUrl}
 			/>
 		</div>
 	</Card>
