@@ -5,7 +5,7 @@ import { Prisma } from '../../../database/prisma';
 import { CollabType, type Collab } from '@prisma/client';
 import { SentryClient } from '../../../bot/sentry';
 import { DiscordUser } from '../../../utils/discord/user';
-import { toKebabCase } from '../../../utils/text/formatting';
+import { Formatting } from '../../../utils/text/formatting';
 
 export const get: RequestHandler = async () => {
 	// !! TODO: this call needs to be paginated in the future
@@ -49,7 +49,7 @@ export const post: RequestHandler = async ({ request }) => {
 		let url = null;
 
 		if (body.url !== undefined) {
-			url = toKebabCase(body.url);
+			url = Formatting.toKebabCase(body.url);
 		}
 
 		const collab = await Prisma.client.collab.create({

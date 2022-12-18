@@ -17,36 +17,23 @@ export const get: RequestHandler = async ({ request, params }) => {
 	const decodedUser = Jwt.decode(cookies['user_id']);
 	const userId = decodedUser['user_id'] as string;
 
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			id: params.id
-		}
-	});
-
-	const user: any = await DiscordUser.getUser(userId, token);
-
-	if (!collab) {
+	if (!token) {
 		return {
-			status: 404,
-			body: {
-				message: 'Collab not found'
-			}
+			status: 401
 		};
 	}
+
+	const user = await DiscordUser.getUser(userId, token);
 
 	if (!user) {
 		return {
-			status: 404,
-			body: {
-				message: 'No Materials found for this user. Are you signed in?'
-			}
+			status: 403
 		};
 	}
 
-	const pick = await Prisma.client.pick.findFirst({
+	const pick = await Prisma.client.pick.findUnique({
 		where: {
-			userId: user.id,
-			collabId: collab.id
+			id: params.id
 		}
 	});
 
@@ -54,12 +41,18 @@ export const get: RequestHandler = async ({ request, params }) => {
 		return {
 			status: 404,
 			body: {
-				message: 'No Materials found for this user.'
+				message: 'No materials found for this pick'
 			}
 		};
 	}
 
-	const deliveryPath = path.join(ServerPaths.collab(collab.id), '/delivery/', `${pick.id}.zip`);
+	if (user.id !== pick.userId) {
+		return {
+			status: 403
+		};
+	}
+
+	const deliveryPath = path.join(ServerPaths.collab(pick.collabId), '/delivery/', `${pick.id}.zip`);
 
 	const file = readFileSync(deliveryPath);
 
@@ -69,7 +62,7 @@ export const get: RequestHandler = async ({ request, params }) => {
 		status: 200,
 		headers: {
 			'Content-Type': contentType,
-			'Content-Disposition': `attachment; filename="${user.username}.zip"`,
+			'Content-Disposition': `attachment; filename="collab-${pick.collabId}-${user.id}.zip"`,
 			'cache-control': 'public, max-age=172800'
 		},
 		body: file

@@ -37,7 +37,6 @@
 	let filter = 'default';
 	let order = 'desc';
 	let query = '';
-	let hasExport = false;
 
 	let loading = true;
 

@@ -132,7 +132,7 @@
 						{#if profile && isReleased(pick.collab)}
 							<SolidButton
 								click={async () => {
-									goto('/api/collabs/' + pick.collabId + '/delivery');
+									goto('/api/picks/' + pick.id + '/delivery');
 								}}
 								string={'picks.delivery'}
 								color="blue"

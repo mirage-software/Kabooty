@@ -1,21 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-
-	import { onMount } from 'svelte';
-
-	import axios from 'axios';
-	import type { Collab } from '@prisma/client';
 	import { Splide, SplideSlide } from '@splidejs/svelte-splide';
 
 	import '@splidejs/splide/dist/css/themes/splide-default.min.css';
-
-	let collab: Collab | null = null;
-
-	onMount(async () => {
-		const collabId = $page.params['id'];
-
-		collab = (await axios.get('/api/collabs/' + collabId)).data;
-	});
 </script>
 
 <div class="wrapper">
