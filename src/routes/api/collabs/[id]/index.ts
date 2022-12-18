@@ -5,12 +5,19 @@ import { Prisma } from '../../../../database/prisma';
 import type { Collab } from '@prisma/client';
 import { SentryClient } from '../../../../bot/sentry';
 import { DiscordUser } from '../../../../utils/discord/user';
-import { toKebabCase } from '../../../../utils/text/toKebabCase';
+import { Formatting } from '../../../../utils/text/formatting';
 
 export const get: RequestHandler = async ({ params }) => {
-	const collab = await Prisma.client.collab.findUnique({
+	const collab = await Prisma.client.collab.findFirst({
 		where: {
-			id: params.id
+			OR: [
+				{
+					id: params.id
+				},
+				{
+					url: params.id
+				}
+			]
 		},
 		include: {
 			collabAssets: true
@@ -56,11 +63,6 @@ export const put: RequestHandler = async ({ request, params }) => {
 	}
 
 	const body: Collab = await request.json();
-	let url = null;
-
-	if (body.url !== undefined) {
-		url = toKebabCase(body.url);
-	}
 
 	try {
 		const updated = await Prisma.client.collab.update({
@@ -69,7 +71,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 			},
 			data: {
 				status: body.status,
-				url: url,
+				url: Formatting.toKebabCase(body.url),
 				topic: body.topic,
 				title: body.title,
 				rules: body.rules === '' ? null : body.rules,

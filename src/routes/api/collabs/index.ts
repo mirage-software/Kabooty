@@ -5,7 +5,7 @@ import { Prisma } from '../../../database/prisma';
 import { CollabType, type Collab } from '@prisma/client';
 import { SentryClient } from '../../../bot/sentry';
 import { DiscordUser } from '../../../utils/discord/user';
-import { toKebabCase } from '../../../utils/text/toKebabCase';
+import { toKebabCase } from '../../../utils/text/formatting';
 
 export const get: RequestHandler = async () => {
 	// !! TODO: this call needs to be paginated in the future
