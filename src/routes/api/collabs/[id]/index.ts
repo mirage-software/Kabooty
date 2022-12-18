@@ -8,10 +8,21 @@ import { DiscordUser } from '../../../../utils/discord/user';
 import { toKebabCase } from '../../../../utils/text/toKebabCase';
 
 export const get: RequestHandler = async ({ params }) => {
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			id: params.id
-		},
+
+
+	const where = {
+		OR: [
+			{
+				url: params.id
+			},
+			{
+				id: params.id
+			}
+		]
+	};
+
+	const collab = await Prisma.client.collab.findFirst({
+		where,
 		include: {
 			collabAssets: true
 		}
