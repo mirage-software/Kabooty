@@ -9,6 +9,7 @@
 
 	export let value: string | null | undefined = '';
 	export let valid: boolean | undefined = undefined;
+	export let error: string | null | undefined = '';
 
 	$: {
 		validate(value ?? '');
@@ -123,6 +124,9 @@
 	{/if}
 	{#if valid === false}
 		<h6 id="invalid">{$t('errors.text_too_long')}</h6>
+	{/if}
+	{#if error}
+		<h6 id="invalid">{$t(error)}</h6>
 	{/if}
 </div>
 

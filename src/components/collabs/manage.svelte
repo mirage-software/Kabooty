@@ -13,6 +13,7 @@
 	import Dropdown from './register/extra/dropdown.svelte';
 	import Asset from './asset.svelte';
 	import { onMount } from 'svelte';
+	import { Formatting } from '../../utils/text/formatting';
 
 	export let collab: Partial<Collab & { collabAssets: CollabAsset[] }> = {
 		title: undefined,
@@ -25,6 +26,9 @@
 	let image: string | null = null;
 	let imageBuffer: ArrayBuffer | null = null;
 	let filename: string | null = null;
+	let uniqueUrl = false;
+	let error: string | null | undefined = null;
+	let url: string | null | undefined = collab.url;
 
 	let statusOptions = ['OPEN', 'RELEASE', 'CLOSED', 'EARLY_ACCESS', 'DESIGN'];
 	let statusStrings = statusOptions.map((status) => $t(`collabs.status.${status}`));
@@ -40,6 +44,7 @@
 	onMount(async () => {
 		_window = window;
 		collabAssets = collab.collabAssets || [];
+		checkUniqueURL();
 	});
 
 	let deletedAssetIds: string[] = [];
@@ -142,7 +147,28 @@
 		collabAssets = [...collabAssets];
 	}
 
+	async function checkUniqueURL() {
+		url = Formatting.toKebabCase(collab.url);
+
+		try {
+			const data = (await axios.get(`/api/collabs/${url}`)).data;
+
+			if (data.id !== collab.id) {
+				uniqueUrl = false;
+				error = 'This URL is already in use';
+			} else {
+				uniqueUrl = true;
+				error = null;
+			}
+		} catch (_) {
+			uniqueUrl = true;
+			error = null;
+		}
+	}
+
 	async function onSave() {
+		collab.url = Formatting.toKebabCase(collab.url);
+
 		if (!collab.id) {
 			collab = (await axios.post('/api/collabs', collab)).data;
 		} else {
@@ -189,6 +215,16 @@
 					title={'collabs.manage.name'}
 					hint={'Endless Mirage Megacollab'}
 				/>
+				<InputText
+					bind:value={collab.url}
+					title={'collabs.manage.url'}
+					onChanged={checkUniqueURL}
+					hint={'6th'}
+					{error}
+				/>
+				{#if !error && url}
+					<h6 style="margin: 0; opacity: 0.6;">Becomes <a href="/collabs/{url}">{url}</a></h6>
+				{/if}
 				<InputText bind:value={collab.topic} title={'collabs.manage.topic'} hint={'Hotwheels'} />
 				<Dropdown
 					bind:value={collab.status}
@@ -288,7 +324,8 @@
 					collab.title.length < 5 ||
 					collab.topic.length < 4 ||
 					collab.collabAssets.length < 1 ||
-					!collab.collabAssets.find((asset) => asset.mainAsset)}
+					!collab.collabAssets.find((asset) => asset.mainAsset) ||
+					!uniqueUrl}
 			/>
 		</div>
 	</Card>
