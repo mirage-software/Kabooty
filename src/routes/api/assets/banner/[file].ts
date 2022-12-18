@@ -8,7 +8,7 @@ import sharp from 'sharp';
 export const get: RequestHandler = async ({ params, request }) => {
 	const env = Env.load();
 
-	const filePath = path.join(env['FILE_STORAGE_PATH'], "banner", params.file);
+	const filePath = path.join(env['FILE_STORAGE_PATH'], 'banner', params.file);
 
 	const fileName = path.basename(filePath);
 

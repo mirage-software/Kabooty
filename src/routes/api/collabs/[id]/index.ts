@@ -8,8 +8,6 @@ import { DiscordUser } from '../../../../utils/discord/user';
 import { toKebabCase } from '../../../../utils/text/toKebabCase';
 
 export const get: RequestHandler = async ({ params }) => {
-
-
 	const where = {
 		OR: [
 			{
