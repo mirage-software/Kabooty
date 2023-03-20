@@ -1,16 +1,16 @@
 <script lang="ts">
-	import HeaderButton from '../design/header_button.svelte';
-	import SignInButton from '../design/signin_button.svelte';
-	import Sidebar from '../sidebar/sidebar.svelte';
-	import type { IFuctions } from '../sidebar/functions';
+	import HeaderButton from './header_button.svelte';
+	import SignInButton from './signin_button.svelte';
+	import Sidebar from './sidebar.svelte';
+	import type { IFuctions } from './functions';
 
 	import links from './links.json';
 
-	let sidebar: IFuctions;
+	let toggleSidebar: () => void;
 </script>
 
 <div id="header">
-	<Sidebar bind:functions={sidebar} />
+	<Sidebar bind:toggle={toggleSidebar} />
 	<div id="navigation">
 		<div id="decoration">
 			<!-- svelte-ignore a11y-missing-attribute -->
@@ -18,7 +18,7 @@
 			<!-- svelte-ignore a11y-missing-attribute -->
 			<img id="dec2" src="/assets/29.png" />
 		</div>
-		<i id="icon" class="las la-bars" on:click={() => sidebar.toggle()} />
+		<i id="icon" class="las la-bars" on:click={toggleSidebar} on:keypress={toggleSidebar} />
 
 		<a href="/"><img src="/logo.png" alt="Home" /></a>
 
@@ -88,7 +88,7 @@
 				img#dec2 {
 					position: relative;
 					top: -30px;
-					right: 30px;
+					right: -15px;
 					width: 120px;
 					height: 120px;
 				}

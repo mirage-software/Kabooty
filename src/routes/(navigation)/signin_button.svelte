@@ -1,38 +1,22 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
-	import { discord, getDiscordProfilePicture } from '../../../stores/discord';
+	import { discord, getDiscordProfilePicture } from '../../stores/discord';
 
 	import axios, { type AxiosResponse } from 'axios';
-	import type { IDiscordAuthUrl } from '../../../routes/api/discord/authorize/+server';
+	import type { IDiscordAuthUrl } from '../api/discord/authorize/+server';
 
 	let request: Promise<AxiosResponse<IDiscordAuthUrl>>;
 	let url: string | undefined;
 
+	// TODO: use svelte fetch and turn into input
 	onMount(async () => {
 		request = axios.get<IDiscordAuthUrl>('/api/discord/authorize');
 		url = (await request).data.url;
 	});
-
-	async function click() {
-		if (!url && !request) {
-			return;
-		}
-
-		if (!url) {
-			url = (await request).data.url;
-		}
-
-		if ($discord) {
-			goto('/profile');
-		} else {
-			goto(url);
-		}
-	}
 </script>
 
-<button on:click={click}>
+<a href={$discord ? '/profile' : url}>
 	<p>
 		{$discord ? $discord.username + '#' + $discord.discriminator : $t('header.signin')}
 	</p>
@@ -44,10 +28,10 @@
 			<img id="avatar" src={getDiscordProfilePicture($discord)} />
 		{/if}
 	</div>
-</button>
+</a>
 
 <style lang="scss">
-	button {
+	a {
 		height: $header-height;
 
 		background: none;

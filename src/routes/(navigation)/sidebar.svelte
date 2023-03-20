@@ -1,16 +1,14 @@
 <script lang="ts">
-	import SidebarButton from '../design/sidebar_button.svelte';
-	import type { IFuctions } from './functions';
+	import { page } from '$app/stores';
+	import { t } from 'svelte-intl-precompile';
 
 	let active = false;
 
-	import links from '../header/links.json';
+	import links from './links.json';
 
-	export const functions: IFuctions = {
-		toggle() {
-			active = !active;
-		}
-	};
+	export function toggle() {
+		active = !active;
+	}
 </script>
 
 <div id="sidebar" class={active ? 'active' : 'inactive'}>
@@ -20,21 +18,18 @@
 		<!-- svelte-ignore a11y-missing-attribute -->
 		<img id="dec2" src="/assets/40.png" />
 	</div>
-	<i id="icon" class="las la-angle-left" on:click={() => functions.toggle()} />
+	<i id="icon" class="las la-angle-left" on:click={toggle} on:keypress={toggle} />
 
 	{#each links as link}
-		<div>
-			<SidebarButton
-				onClick={functions.toggle}
-				route={link['route']}
-				string={link['string']}
-				icon={link['icon']}
-			/>
-		</div>
+		<a href={link.route} class={$page.route.id === link.id ? 'active' : 'inactive'}>
+			<div id="active" />
+			<i id="icon" class="las la-{link.icon}" />
+			<p>{$t('header.' + link.string)}</p>
+		</a>
 	{/each}
 </div>
 <div id="scrim" class={active ? 'active' : 'inactive'} />
-<div on:click={functions.toggle} id="toggle" class={active ? 'active' : 'inactive'} />
+<div on:click={toggle} on:keypress={toggle} id="toggle" class={active ? 'active' : 'inactive'} />
 
 <style lang="scss">
 	#sidebar.active {

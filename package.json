@@ -19,9 +19,6 @@
 		"format": "prettier --ignore-path .prettierignore --write --plugin-search-dir=. . && eslint --ignore-path .prettierignore . --fix",
 		"prisma:generate": "prisma generate"
 	},
-	// "pre-commit": [
-	// 	"lint"
-	// ],
 	"devDependencies": {
 		"@playwright/test": "^1.21.0",
 		"@sentry/types": "^7.6.0",

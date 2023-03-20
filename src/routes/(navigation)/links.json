@@ -1,10 +1,12 @@
 [
 	{
+		"id": "/(navigation)/",
 		"route": "/",
 		"string": "home",
 		"icon": "home"
 	},
 	{
+		"id": "/collabs",
 		"route": "/collabs",
 		"string": "collabs",
 		"icon": "users"

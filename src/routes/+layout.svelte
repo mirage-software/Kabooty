@@ -37,7 +37,6 @@
 
 	import '../app.scss';
 
-	import Header from '../components/generic/header/header.svelte';
 	import Modal from 'svelte-simple-modal';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
@@ -49,12 +48,10 @@
 	<title>Endless Mirage — Your one stop shop for GFX & Collabs</title>
 </svelte:head>
 
-<Header />
 <div id="background" />
 
-<div id="content">
-	<slot />
-</div>
+<slot />
+
 {#if browser}
 	<Modal
 		show={$modal}
@@ -67,19 +64,6 @@
 {/if}
 
 <style lang="scss">
-	#content {
-		display: flex;
-		justify-content: center;
-
-		left: 0;
-		right: 0;
-
-		bottom: 0;
-
-		width: 100%;
-		min-height: 100%;
-	}
-
 	#background {
 		position: fixed;
 		background: $content-background;
