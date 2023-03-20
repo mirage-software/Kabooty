@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { t } from 'svelte-intl-precompile';
 
-	// export let status = 200;
-	// export let error: any;
+	export let status = 200;
+	export let error: any;
 	export let type = 'unknown';
 </script>
 

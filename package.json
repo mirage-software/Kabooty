@@ -2,7 +2,7 @@
 	"name": "kabooty",
 	"version": "0.0.1",
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=16.14.0"
 	},
 	"scripts": {
 		"dev": "vite dev",

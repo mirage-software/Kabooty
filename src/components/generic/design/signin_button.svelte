@@ -5,7 +5,7 @@
 	import { discord, getDiscordProfilePicture } from '../../../stores/discord';
 
 	import axios, { type AxiosResponse } from 'axios';
-	import type { IDiscordAuthUrl } from '../../../routes/api/discord/authorize';
+	import type { IDiscordAuthUrl } from '../../../routes/api/discord/authorize/+server';
 
 	let request: Promise<AxiosResponse<IDiscordAuthUrl>>;
 	let url: string | undefined;

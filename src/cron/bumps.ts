@@ -4,7 +4,7 @@ import { MessageEmbed } from 'discord.js';
 import { DiscordBot } from '../bot/discord';
 import { Prisma } from '../database/prisma';
 import { Env } from '../env';
-import { deletePick, sendEmbedToDiscord } from '../routes/api/picks/[id]';
+import { deletePick, sendEmbedToDiscord } from '../routes/api/picks/[id]/+server';
 import { DiscordUser } from '../utils/discord/user';
 
 async function sendBumpEmbed(

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/env';
+	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
 	import { WebFonts } from '../../../utils/text/webfonts';

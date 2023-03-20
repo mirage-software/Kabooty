@@ -4,7 +4,7 @@
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
-	import { canUpdateOsu } from '../../routes/api/osu/update/can_update';
+	import { canUpdateOsu } from '../../routes/api/osu/update/can_update/+server';
 	import { osu } from '../../stores/osu';
 	import LoadingSpinner from '../generic/design/loading_spinner.svelte';
 
