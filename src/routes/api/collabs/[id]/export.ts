@@ -4,14 +4,7 @@ import { Jwt } from '../../../../jwt';
 import { Prisma } from '../../../../database/prisma';
 import { DiscordUser } from '../../../../utils/discord/user';
 import { ServerPaths } from '../../../../utils/paths/server';
-import {
-	mkdirSync,
-	readFile,
-	readFileSync,
-	writeFileSync,
-	createWriteStream,
-	createReadStream
-} from 'fs';
+import { mkdirSync, readFileSync, createWriteStream, createReadStream } from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 import * as mime from 'mime-types';
@@ -255,9 +248,9 @@ function buildcsv(pick: any, count: number) {
 			}
 		}
 
-		if(pick.original == true) {
+		if (pick.original == true) {
 			charname = pick.name;
-			series = "custom";
+			series = 'custom';
 		}
 	}
 

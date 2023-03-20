@@ -17,7 +17,7 @@ export abstract class Interactions {
 	};
 
 	static async updateCommands(client: Client<true>) {
-		const env = await Env.load();
+		const env = Env.load();
 
 		const rest = new REST({ version: '9' }).setToken(client.token);
 

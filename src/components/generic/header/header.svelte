@@ -14,9 +14,9 @@
 	<div id="navigation">
 		<div id="decoration">
 			<!-- svelte-ignore a11y-missing-attribute -->
-			<img id="dec1" src="/assets/28.png" />
+			<img id="dec1" src="/assets/27.png" />
 			<!-- svelte-ignore a11y-missing-attribute -->
-			<img id="dec2" src="/assets/30.png" />
+			<img id="dec2" src="/assets/29.png" />
 		</div>
 		<i id="icon" class="las la-bars" on:click={() => sidebar.toggle()} />
 
@@ -70,6 +70,8 @@
 				justify-content: space-between;
 
 				pointer-events: none;
+
+				opacity: 0.8;
 
 				img {
 					margin: 0;
