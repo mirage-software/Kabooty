@@ -1,8 +1,7 @@
 <script lang="ts">
-	import HeaderButton from './header_button.svelte';
-	import SignInButton from './signin_button.svelte';
+	import Navigation from './buttons/navigation.svelte';
+	import Account from './buttons/account.svelte';
 	import Sidebar from './sidebar.svelte';
-	import type { IFuctions } from './functions';
 
 	import links from './links.json';
 
@@ -25,13 +24,11 @@
 		<div style="display: flex;">
 			<div id="links">
 				{#each links as link}
-					<div>
-						<HeaderButton route={link['route']} string={link['string']} />
-					</div>
+					<Navigation {link} type="header" />
 				{/each}
 			</div>
 
-			<SignInButton />
+			<Account />
 		</div>
 	</div>
 </div>

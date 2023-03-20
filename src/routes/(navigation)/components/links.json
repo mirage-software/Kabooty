@@ -1,12 +1,12 @@
 [
 	{
-		"id": "/(navigation)/",
+		"id": "/(navigation)",
 		"route": "/",
 		"string": "home",
 		"icon": "home"
 	},
 	{
-		"id": "/collabs",
+		"id": "/(navigation)/collabs",
 		"route": "/collabs",
 		"string": "collabs",
 		"icon": "users"

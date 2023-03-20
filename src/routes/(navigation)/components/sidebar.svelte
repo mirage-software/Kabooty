@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { t } from 'svelte-intl-precompile';
+	import Navigation from './buttons/navigation.svelte';
 
 	let active = false;
 
@@ -21,11 +20,7 @@
 	<i id="icon" class="las la-angle-left" on:click={toggle} on:keypress={toggle} />
 
 	{#each links as link}
-		<a href={link.route} class={$page.route.id === link.id ? 'active' : 'inactive'}>
-			<div id="active" />
-			<i id="icon" class="las la-{link.icon}" />
-			<p>{$t('header.' + link.string)}</p>
-		</a>
+		<Navigation {link} type="sidebar" />
 	{/each}
 </div>
 <div id="scrim" class={active ? 'active' : 'inactive'} />

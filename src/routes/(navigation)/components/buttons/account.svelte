@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
-	import { discord, getDiscordProfilePicture } from '../../stores/discord';
+	import { discord, getDiscordProfilePicture } from '../../../../stores/discord';
 
 	import axios, { type AxiosResponse } from 'axios';
-	import type { IDiscordAuthUrl } from '../api/discord/authorize/+server';
+	import type { IDiscordAuthUrl } from '../../../api/discord/authorize/+server';
 
 	let request: Promise<AxiosResponse<IDiscordAuthUrl>>;
 	let url: string | undefined;

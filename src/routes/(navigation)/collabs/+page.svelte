@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 
-	import { discord } from '../../stores/discord';
+	import { discord } from '../../../stores/discord';
 
-	import SolidButton from '../../components/generic/design/solid_button.svelte';
-	import PageTitle from '../../components/generic/design/page_title.svelte';
-	import Ongoing from '../../components/collabs/ongoing.svelte';
+	import SolidButton from '../../../components/generic/design/solid_button.svelte';
+	import PageTitle from '../../../components/generic/design/page_title.svelte';
+	import Ongoing from '../../../components/collabs/ongoing.svelte';
 </script>
 
 <div id="column">
