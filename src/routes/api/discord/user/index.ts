@@ -4,7 +4,7 @@ import { SentryClient } from '../../../../bot/sentry';
 import { Jwt } from '../../../../jwt';
 import { DiscordUser } from '../../../../utils/discord/user';
 
-export const get: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	try {
 		const cookieHeader = request.headers.get('cookie');
 		const cookies = cookie.parse(cookieHeader ?? '');

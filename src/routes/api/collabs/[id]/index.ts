@@ -7,7 +7,7 @@ import { SentryClient } from '../../../../bot/sentry';
 import { DiscordUser } from '../../../../utils/discord/user';
 import { Formatting } from '../../../../utils/text/formatting';
 
-export const get: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params }) => {
 	const collab = await Prisma.client.collab.findFirst({
 		where: {
 			OR: [
@@ -39,7 +39,7 @@ export const get: RequestHandler = async ({ params }) => {
 	};
 };
 
-export const put: RequestHandler = async ({ request, params }) => {
+export const PUT: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);
@@ -96,7 +96,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 	}
 };
 
-export const del: RequestHandler = async ({ request, params }) => {
+export const DELETE: RequestHandler = async ({ request, params }) => {
 	// TODO: delete images
 
 	const cookieHeader = request.headers.get('cookie');

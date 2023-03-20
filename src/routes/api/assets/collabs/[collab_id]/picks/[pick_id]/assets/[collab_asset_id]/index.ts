@@ -10,7 +10,7 @@ import sharp from 'sharp';
 import { ServerPaths } from '../../../../../../../../../utils/paths/server';
 import { DiscordUser } from '../../../../../../../../../utils/discord/user';
 
-export const post: RequestHandler = async ({ request, params }) => {
+export const POST: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);

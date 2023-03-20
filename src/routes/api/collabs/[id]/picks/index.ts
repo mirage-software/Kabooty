@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { Prisma } from '../../../../../database/prisma';
 import type { Prisma as prisma } from '@prisma/client';
 
-export const get: RequestHandler = async ({ params, request }) => {
+export const GET: RequestHandler = async ({ params, request }) => {
 	const url = new URL(request.url);
 	const page = parseInt(url.searchParams.get('page') ?? '1');
 	const query = url.searchParams.get('query')?.trim() ?? undefined;

@@ -9,7 +9,7 @@ import path from 'path';
 import archiver from 'archiver';
 import * as mime from 'mime-types';
 
-export const get: RequestHandler = async ({ request, params }) => {
+export const GET: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);

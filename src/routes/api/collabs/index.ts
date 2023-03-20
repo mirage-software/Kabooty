@@ -7,7 +7,7 @@ import { SentryClient } from '../../../bot/sentry';
 import { DiscordUser } from '../../../utils/discord/user';
 import { Formatting } from '../../../utils/text/formatting';
 
-export const get: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
 	// !! TODO: this call needs to be paginated in the future
 	const collabs = await Prisma.client.collab.findMany({
 		include: {
@@ -21,7 +21,7 @@ export const get: RequestHandler = async () => {
 	};
 };
 
-export const post: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);

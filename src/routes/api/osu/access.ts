@@ -111,7 +111,7 @@ export async function getOsuUser(access_token: string, gamemode: string | undefi
 	return user;
 }
 
-export const get: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['user_id']);

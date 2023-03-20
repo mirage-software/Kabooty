@@ -5,7 +5,7 @@ export interface IOsuAuthUrl extends Record<string, string> {
 	url: string;
 }
 
-export const get: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
 	const env = Env.load();
 
 	return {

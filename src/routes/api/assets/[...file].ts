@@ -5,7 +5,7 @@ import { Env } from '../../../env';
 import * as mime from 'mime-types';
 import sharp from 'sharp';
 
-export const get: RequestHandler = async ({ params, request }) => {
+export const GET: RequestHandler = async ({ params, request }) => {
 	const env = Env.load();
 
 	const filePath = path.join(env['FILE_STORAGE_PATH'], params.file);

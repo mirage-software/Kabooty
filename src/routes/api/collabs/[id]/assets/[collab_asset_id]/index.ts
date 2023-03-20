@@ -11,7 +11,7 @@ import { Prisma } from '../../../../../../database/prisma';
 import { deleteExample } from './example';
 import { DiscordUser } from '../../../../../../utils/discord/user';
 
-export const put: RequestHandler = async ({ request, params }) => {
+export const PUT: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);
@@ -134,7 +134,7 @@ export async function deleteImages(collabAssetId: string): Promise<void> {
 	}
 }
 
-export const del: RequestHandler = async ({ request, params }) => {
+export const DELETE: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);

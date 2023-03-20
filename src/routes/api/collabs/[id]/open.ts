@@ -55,7 +55,7 @@ export function isCollabOpen(collab: Collab, user: IDiscordUser | null | undefin
 	return false;
 }
 
-export const get: RequestHandler = async ({ params, request }) => {
+export const GET: RequestHandler = async ({ params, request }) => {
 	let user;
 
 	try {

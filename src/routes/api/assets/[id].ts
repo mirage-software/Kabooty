@@ -89,7 +89,7 @@ export async function deleteImage(asset: Asset): Promise<void> {
 	});
 }
 
-export const del: RequestHandler = async ({ request, params }) => {
+export const DELETE: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);

@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { SentryClient } from '../../../../bot/sentry';
 import { DiscordUser } from '../../../../utils/discord/user';
 
-export const get: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params }) => {
 	try {
 		const userId = params['id'];
 

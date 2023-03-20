@@ -133,7 +133,7 @@ async function sendEmbedToDiscord(data: {
 	}
 }
 
-export const get: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	try {
 		const env = Env.load();
 

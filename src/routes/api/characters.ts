@@ -9,7 +9,7 @@ import { CollabStatus } from '@prisma/client';
 import { deletePick } from './picks/[id]';
 import { DiscordUser } from '../../utils/discord/user';
 
-export const get: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	const url = new URL(request.url);
 	const query = url.searchParams.get('search')?.trim() ?? undefined;
 	const page = parseInt(url.searchParams.get('page') ?? '1');
@@ -78,7 +78,7 @@ export const get: RequestHandler = async ({ request }) => {
 	};
 };
 
-export const post: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decodedToken = Jwt.decode(cookies['discord_token']);
@@ -143,7 +143,7 @@ export const post: RequestHandler = async ({ request }) => {
 	}
 };
 
-export const del: RequestHandler = async ({ request }) => {
+export const DELETE: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decodedToken = Jwt.decode(cookies['discord_token']);

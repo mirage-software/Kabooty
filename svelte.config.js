@@ -1,44 +1,16 @@
 import adapter from '@sveltejs/adapter-node';
-import preprocess from 'svelte-preprocess';
-import autoprefixer from 'autoprefixer';
-import precompileIntl from 'svelte-intl-precompile/sveltekit-plugin';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://github.com/sveltejs/svelte-preprocess
 	// for more information about preprocessors
-	preprocess: [
-		preprocess({
-			scss: {
-				prependData: '@use "src/variables.scss" as *;'
-			},
-			postcss: {
-				plugins: [autoprefixer]
-			}
-		})
-	],
-
-	compilerOptions: {
-		generate: 'dom'
-	},
-
+	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter(),
 
-		vite: {
-			css: {
-				preprocessorOptions: {
-					scss: {
-						additionalData: '@use "src/variables.scss" as *;'
-					}
-				}
-			},
-			plugins: [precompileIntl('static/locales')]
-		},
-
 		prerender: {
-			default: true,
-			enabled: true
+			crawl: true
 		}
 	}
 };

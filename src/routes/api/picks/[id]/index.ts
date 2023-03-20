@@ -91,7 +91,7 @@ export async function deletePick(pick: Pick & { assets: Asset[] }): Promise<void
 	});
 }
 
-export const get: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params }) => {
 	if (!params.id) {
 		throw new Error('No ID parameter provided');
 	}
@@ -131,7 +131,7 @@ export const get: RequestHandler = async ({ params }) => {
 	};
 };
 
-export const put: RequestHandler = async ({ request, params }) => {
+export const PUT: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);
@@ -277,7 +277,7 @@ export const put: RequestHandler = async ({ request, params }) => {
 	}
 };
 
-export const del: RequestHandler = async ({ request, params }) => {
+export const DELETE: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);

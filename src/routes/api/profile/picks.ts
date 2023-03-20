@@ -5,7 +5,7 @@ import { Prisma } from '../../../database/prisma';
 import { SentryClient } from '../../../bot/sentry';
 import { DiscordUser } from '../../../utils/discord/user';
 
-export const get: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);

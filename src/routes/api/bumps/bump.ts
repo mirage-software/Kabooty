@@ -5,7 +5,7 @@ import { SentryClient } from '../../../bot/sentry';
 import { DiscordUser } from '../../../utils/discord/user';
 import { Bumps } from '../../../cron/bumps';
 
-export const patch: RequestHandler = async ({ request }) => {
+export const PATCH: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');
 	const cookies = cookie.parse(cookieHeader ?? '');
 	const decoded = Jwt.decode(cookies['discord_token']);

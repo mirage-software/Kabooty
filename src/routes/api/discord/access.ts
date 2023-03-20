@@ -14,7 +14,7 @@ export interface IDiscordAccessToken extends Record<string, string | number> {
 	scope: string;
 }
 
-export const get: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	try {
 		const cookieHeader = request.headers.get('cookie');
 		const cookies = cookie.parse(cookieHeader ?? '');

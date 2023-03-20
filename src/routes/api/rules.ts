@@ -3,7 +3,7 @@ import { SentryClient } from '../../bot/sentry';
 import { DiscordBot } from '../../bot/discord';
 import { Env } from '../../env';
 
-export const get: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
 	try {
 		const env = Env.load();
 
