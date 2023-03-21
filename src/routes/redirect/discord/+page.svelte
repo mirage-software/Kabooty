@@ -18,7 +18,7 @@
 		if (!discordError) {
 			const code = $page.url.searchParams.get('code') ?? '';
 			try {
-				await axios.get('/api/discord/access', {
+				await axios.get('/api/auth/discord/access', {
 					headers: {
 						Authorization: code
 					}
@@ -26,7 +26,7 @@
 
 				if (!$discord) {
 					// Returns an encrypted session cookie to identify the user
-					const user = await axios.get('/api/discord/user');
+					const user = await axios.get('/api/auth/discord/user');
 
 					discord.update(user.data);
 				}

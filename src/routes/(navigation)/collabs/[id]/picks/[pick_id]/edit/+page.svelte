@@ -39,7 +39,7 @@
 		const pickId = $page.params['pick_id'];
 		const pickRoute = '/collabs/' + collabId + '/picks/' + pickId;
 
-		const result = await axios.get('/api/discord/authenticated');
+		const result = await axios.get('/api/auth/discord/authenticated');
 
 		if (!result.data.authenticated) {
 			goto(pickRoute);
@@ -54,7 +54,7 @@
 				collabAssets: CollabAsset[];
 			};
 		} = (await axios.get('/api/picks/' + pickId)).data;
-		discordUser = (await axios.get('/api/discord/user/' + _pick.userId)).data;
+		discordUser = (await axios.get('/api/auth/discord/user/' + _pick.userId)).data;
 
 		subscription = discord.subscribe((user) => {
 			if (!user) {

@@ -65,7 +65,7 @@
 	}
 
 	onMount(async () => {
-		const result = await axios.get('/api/discord/authenticated');
+		const result = await axios.get('/api/auth/discord/authenticated');
 
 		if (!result.data.authenticated) {
 			goto('/');

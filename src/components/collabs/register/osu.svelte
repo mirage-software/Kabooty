@@ -19,7 +19,8 @@
 			<h4>{$t('collabs.registration.connect.osu_description')}</h4>
 			<SolidButton
 				click={async () => {
-					const state = await axios.get('/api/osu/authorize');
+					// TODO: abstract into data layer
+					const state = await axios.get('/api/auth/osu/url');
 					osu.setRedirectUrl(getCurrentRoute());
 					goto(state.data.url);
 				}}

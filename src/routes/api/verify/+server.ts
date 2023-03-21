@@ -7,11 +7,11 @@ import cookie from 'cookie';
 import { Jwt } from '../../../jwt';
 import OAuth from 'discord-oauth2';
 import { Prisma } from '../../../database/prisma';
-import { getUpdatedOsuUser } from '../osu/access';
 import type { Osu, OsuMode } from '@prisma/client';
 import { MessageEmbed } from 'discord.js';
 import type { IDiscordUser } from '../../../utils/discord/interfaces/user';
 import { DiscordUser } from '../../../utils/discord/user';
+import { getUpdatedOsuUser } from '../auth/osu/access/+server';
 
 function getPlayTime(time: number): string {
 	const total = time / 60 / 60;
@@ -175,11 +175,14 @@ export const GET: RequestHandler = async ({ request }) => {
 		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user?.joinedAt) {
-			return json({
-				message: 'User not in discord'
-			}, {
-				status: 400
-			});
+			return json(
+				{
+					message: 'User not in discord'
+				},
+				{
+					status: 400
+				}
+			);
 		}
 
 		await getUpdatedOsuUser(userId);
@@ -198,11 +201,14 @@ export const GET: RequestHandler = async ({ request }) => {
 		});
 
 		if (!osu) {
-			return json({
-				message: 'No osu data found'
-			}, {
-				status: 400
-			});
+			return json(
+				{
+					message: 'No osu data found'
+				},
+				{
+					status: 400
+				}
+			);
 		}
 
 		// TODO: implement alternative verification
@@ -302,7 +308,6 @@ export const GET: RequestHandler = async ({ request }) => {
 
 		return new Response(undefined);
 	} catch (error) {
-		console.log(error);
 		SentryClient.log(error);
 
 		return new Response(undefined, { status: 400 });

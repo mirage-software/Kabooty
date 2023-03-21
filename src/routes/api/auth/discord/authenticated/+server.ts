@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
-import { DiscordBot } from '../../../../bot/discord';
-import { SentryClient } from '../../../../bot/sentry';
-import { Jwt } from '../../../../jwt';
+import { DiscordBot } from '../../../../../bot/discord';
+import { SentryClient } from '../../../../../bot/sentry';
+import { Jwt } from '../../../../../jwt';
 
 export const GET: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');

@@ -1,10 +1,10 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import OAuth from 'discord-oauth2';
-import { Env } from '../../../../env';
+import { Env } from '../../../../../env';
 import cookie from 'cookie';
-import { Jwt } from '../../../../jwt';
-import { SentryClient } from '../../../../bot/sentry';
+import { Jwt } from '../../../../../jwt';
+import { SentryClient } from '../../../../../bot/sentry';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -54,10 +54,13 @@ export const GET: RequestHandler = async ({ request }) => {
 	} catch (error) {
 		SentryClient.log(error);
 
-		return json({
-			error: 'Failed to join the Discord'
-		}, {
-			status: 400
-		});
+		return json(
+			{
+				error: 'Failed to join the Discord'
+			},
+			{
+				status: 400
+			}
+		);
 	}
 };

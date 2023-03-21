@@ -3,17 +3,7 @@
 	import { t } from 'svelte-intl-precompile';
 	import { discord, getDiscordProfilePicture } from '../../../../stores/discord';
 
-	import axios, { type AxiosResponse } from 'axios';
-	import type { IDiscordAuthUrl } from '../../../api/discord/authorize/+server';
-
-	let request: Promise<AxiosResponse<IDiscordAuthUrl>>;
-	let url: string | undefined;
-
-	// TODO: use svelte fetch and turn into input
-	onMount(async () => {
-		request = axios.get<IDiscordAuthUrl>('/api/discord/authorize');
-		url = (await request).data.url;
-	});
+	export let url: string | undefined;
 </script>
 
 <a href={$discord ? '/profile' : url}>

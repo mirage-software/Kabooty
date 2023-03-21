@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
-import { SentryClient } from '../../../../bot/sentry';
-import { Jwt } from '../../../../jwt';
-import { DiscordUser } from '../../../../utils/discord/user';
+import { SentryClient } from '../../../../../bot/sentry';
+import { Jwt } from '../../../../../jwt';
+import { DiscordUser } from '../../../../../utils/discord/user';
 
 export const GET: RequestHandler = async ({ request }) => {
 	try {
@@ -25,10 +25,13 @@ export const GET: RequestHandler = async ({ request }) => {
 	} catch (error) {
 		SentryClient.log(error);
 
-		return json({
-			error: 'Failed to get user'
-		}, {
-			status: 400
-		});
+		return json(
+			{
+				error: 'Failed to get user'
+			},
+			{
+				status: 400
+			}
+		);
 	}
 };

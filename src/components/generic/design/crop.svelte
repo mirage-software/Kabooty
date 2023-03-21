@@ -73,7 +73,6 @@
 		string={'collabs.registration.asset.upload'}
 		click={async () => {
 			if (upload) {
-				console.log(pixels);
 				upload(pixels);
 			}
 

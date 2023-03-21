@@ -4,6 +4,9 @@ import autoprefixer from 'autoprefixer';
 
 /** @type {import('vite').UserConfig} */
 const config = {
+	server: {
+		port: 3000
+	},
 	plugins: [sveltekit(), precompileIntl('static/locales')],
 	css: {
 		postcss: {

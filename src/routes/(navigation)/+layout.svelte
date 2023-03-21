@@ -1,8 +1,11 @@
-<script>
+<script lang="ts">
+	import type { LayoutData } from './$types';
 	import Header from './components/header.svelte';
+
+	export let data: LayoutData;
 </script>
 
-<Header />
+<Header url={data.auth.discord.url} />
 
 <slot id="content" />
 

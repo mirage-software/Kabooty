@@ -14,7 +14,7 @@ function createOsuUserStore() {
 		},
 		fetch: async () => {
 			try {
-				const data = (await axios.get('/api/osu/user')).data as IOsuUser;
+				const data = (await axios.get('/api/auth/osu/user')).data as IOsuUser;
 				osu.update(data);
 			} catch (error) {
 				osu.update(null);

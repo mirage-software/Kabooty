@@ -142,7 +142,6 @@ export const DELETE: RequestHandler = async ({ request, params }) => {
 
 		return new Response(undefined);
 	} catch (error) {
-		console.log(error);
 		SentryClient.log(error);
 
 		return new Response(undefined, { status: 500 });

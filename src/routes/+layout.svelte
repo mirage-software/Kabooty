@@ -15,24 +15,27 @@
 	import { Env } from '../env';
 	import { discord } from '../stores/discord';
 
+	// TODO: deprecate the axios interface, move to sveltekit fetch instead
 	if (!browser) {
 		const baseUrl = Env.public()['PUBLIC_BASE_URL'];
 		axios.defaults.baseURL = baseUrl;
 	}
 
 	onMount(async () => {
-		axios.get('/api/discord/authenticated').then(async (response) => {
-			const authenticated = response.data.authenticated;
+		if (browser) {
+			axios.get('/api/auth/discord/authenticated').then(async (response) => {
+				const authenticated = response.data.authenticated;
 
-			if (authenticated) {
-				// Returns an encrypted session cookie to identify the user
-				const user = await axios.get('/api/discord/user');
+				if (authenticated) {
+					// Returns an encrypted session cookie to identify the user
+					const user = await axios.get('/api/auth/discord/user');
 
-				discord.update(user.data);
+					discord.update(user.data);
 
-				osu.fetch();
-			}
-		});
+					osu.fetch();
+				}
+			});
+		}
 	});
 
 	import '../app.scss';

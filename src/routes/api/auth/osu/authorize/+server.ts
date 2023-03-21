@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { Env } from '../../../../env';
+import { Env } from '../../../../../env';
 
 export interface IOsuAuthUrl extends Record<string, string> {
 	url: string;

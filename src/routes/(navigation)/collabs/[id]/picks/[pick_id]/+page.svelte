@@ -39,7 +39,7 @@
 		const pickId = $page.params['pick_id'];
 
 		pick = (await axios.get('/api/picks/' + pickId)).data;
-		discordUser = (await axios.get('/api/discord/user/' + pick?.userId)).data;
+		discordUser = (await axios.get('/api/auth/discord/user/' + pick?.userId)).data;
 	});
 
 	function getDisplayRoles(roles: IDiscordRole[]) {

@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { Prisma } from '../../../../database/prisma';
+import { Prisma } from '../../../../../database/prisma';
 import cookie from 'cookie';
-import { Jwt } from '../../../../jwt';
-import { SentryClient } from '../../../../bot/sentry';
+import { Jwt } from '../../../../../jwt';
+import { SentryClient } from '../../../../../bot/sentry';
 
 export const GET: RequestHandler = async ({ request }) => {
 	const cookieHeader = request.headers.get('cookie');

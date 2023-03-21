@@ -4,7 +4,7 @@
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
-	import { canUpdateOsu } from '../../routes/api/osu/update/can_update/+server';
+	import { canUpdateOsu } from '../../routes/api/auth/osu/update/can_update/+server';
 	import { osu } from '../../stores/osu';
 	import LoadingSpinner from '../generic/design/loading_spinner.svelte';
 
@@ -61,7 +61,8 @@
 				{#if $osu === null || $osu === undefined}
 					<SolidButton
 						click={async () => {
-							const state = await axios.get('/api/osu/authorize');
+							// TODO: abstract into data layer
+							const state = await axios.get('/api/auth/osu/url');
 							goto(state.data.url);
 						}}
 						color="green"
@@ -72,7 +73,7 @@
 				{#if $osu !== null && $osu !== undefined}
 					<SolidButton
 						click={async () => {
-							const user = await axios.get(`/api/osu/update/${$osu?.modes[0].gamemode}`);
+							const user = await axios.get(`/api/auth/osu/update/${$osu?.modes[0].gamemode}`);
 							osu.update(user.data);
 						}}
 						color="green"

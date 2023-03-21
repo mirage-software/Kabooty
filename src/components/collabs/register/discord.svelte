@@ -27,7 +27,8 @@
 			</div>
 			<SolidButton
 				click={async () => {
-					const state = await axios.get('/api/discord/authorize');
+					// TODO: abstract into data layer
+					const state = await axios.get('/api/auth/discord/url');
 					discord.setRedirectUrl(getCurrentRoute());
 					goto(state.data.url);
 				}}

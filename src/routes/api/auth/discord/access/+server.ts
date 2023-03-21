@@ -1,11 +1,11 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import OAuth from 'discord-oauth2';
-import { Env } from '../../../../env';
+import { Env } from '../../../../../env';
 import cookie from 'cookie';
 import { dev } from '$app/environment';
-import { Jwt } from '../../../../jwt';
-import { SentryClient } from '../../../../bot/sentry';
+import { Jwt } from '../../../../../jwt';
+import { SentryClient } from '../../../../../bot/sentry';
 
 export interface IDiscordAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ request }) => {
 		const access_token = decoded['access_token'] as string;
 
 		if (access_token) {
-			return new Response(undefined);
+			return json({});
 		}
 
 		const env = Env.load();
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ request }) => {
 		headers.append('Set-Cookie', discordTokenCookie);
 		headers.append('Set-Cookie', userIdCookie);
 
-		return new Response(undefined, { headers: headers });
+		return json({}, { headers: headers });
 	} catch (error) {
 		SentryClient.log(error);
 

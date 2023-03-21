@@ -15,7 +15,7 @@
 		try {
 			const code = $page.url.searchParams.get('code');
 
-			await axios.get('/api/osu/access', {
+			await axios.get('/api/auth/osu/access', {
 				headers: {
 					Authorization: code ?? ''
 				}
