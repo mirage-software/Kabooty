@@ -1,9 +1,10 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { Env } from '../../../../env';
 import * as mime from 'mime-types';
 import sharp from 'sharp';
+import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params, request }) => {
 	const env = Env.load();
@@ -42,6 +43,6 @@ export const GET: RequestHandler = async ({ params, request }) => {
 			}
 		});
 	} catch (error) {
-		return new Response(undefined, { status: 404 });
+		return json({}, { status: 404 });
 	}
 };

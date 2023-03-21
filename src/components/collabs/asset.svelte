@@ -3,7 +3,7 @@
 	import axios from 'axios';
 
 	import { createEventDispatcher, onMount } from 'svelte';
-	import Checkbox from '../generic/design/checkbox.svelte';
+	import Checkbox from '../../routes/components/checkbox.svelte';
 
 	const dispatch = createEventDispatcher<{ delete: string; edit: string; main: string }>();
 
@@ -99,7 +99,7 @@
 	{#if manage}
 		<Checkbox
 			checked={collabAsset.mainAsset ?? false}
-			click={() => {
+			on:change={() => {
 				click('main');
 			}}
 		/>

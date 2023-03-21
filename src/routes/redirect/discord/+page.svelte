@@ -6,9 +6,10 @@
 
 	import { onMount } from 'svelte';
 	import Error from '../../error.svelte';
-	import Loading from '../../../components/generic/design/loading_spinner.svelte';
+	import Loading from '../../components/loading_spinner.svelte';
 	import axios from 'axios';
 	import { osu } from '../../../stores/osu';
+	import { base } from '$app/paths';
 
 	let discordError: string | undefined | null;
 
@@ -39,7 +40,7 @@
 					localStorage.removeItem('discord_page_redirect');
 					goto(redirect);
 				} else {
-					goto('/profile');
+					goto(base + '/');
 				}
 			} catch (_) {
 				discordError = 'invalid_code';

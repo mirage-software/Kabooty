@@ -1,19 +1,8 @@
 <script lang="ts">
-	export let click: () => void;
 	export let checked: boolean;
-
-	function onChange() {
-		const checkbox = document.getElementById('checkbox') as HTMLInputElement;
-
-		if (checkbox) {
-			checkbox.checked = checked;
-		}
-
-		click();
-	}
 </script>
 
-<input id="checkbox" type="checkbox" name="checkbox" {checked} on:change={onChange} />
+<input id="checkbox" type="checkbox" name="checkbox" {checked} on:change />
 
 <style lang="scss">
 	input[type='checkbox'] {
@@ -22,10 +11,10 @@
 		margin: 0;
 
 		font: inherit;
-		color: currentColor;
-		width: 1.15em;
-		height: 1.15em;
-		border: 0.15em solid currentColor;
+		color: white;
+		min-width: 22px;
+		height: 22px;
+		border: 2px solid white;
 		border-radius: 50%;
 		// transform: translateY(-0.075em);
 
@@ -35,8 +24,8 @@
 
 	input[type='checkbox']::before {
 		content: '';
-		width: 0.65em;
-		height: 0.65em;
+		width: 12px;
+		height: 12px;
 		// clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 		// transform: scale(0);
 		// transform-origin: bottom left;

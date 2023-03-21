@@ -5,7 +5,7 @@
 
 	import { onMount } from 'svelte';
 	import Error from '../../error.svelte';
-	import Loading from '../../../components/generic/design/loading_spinner.svelte';
+	import Loading from '../../components/loading_spinner.svelte';
 	import axios from 'axios';
 	import { osu } from '../../../stores/osu';
 

@@ -51,7 +51,17 @@
 	<title>Endless Mirage — Your one stop shop for GFX & Collabs</title>
 </svelte:head>
 
-<div id="background" />
+<!-- svelte-ignore a11y-missing-attribute -->
+<div id="background">
+	<div class="decoration" id="left">
+		<img src="/assets/decoration.svg" />
+		<div class="overlay" />
+	</div>
+	<div class="decoration" id="right">
+		<img src="/assets/decoration.svg" />
+		<div class="overlay" />
+	</div>
+</div>
 
 <slot />
 
@@ -76,6 +86,51 @@
 		width: 100%;
 		height: 100%;
 
-		z-index: -1;
+		z-index: -3;
+
+		img {
+			height: 100%;
+			opacity: 0.03;
+			position: relative;
+			z-index: -2;
+		}
+
+		.decoration {
+			position: fixed;
+			height: 100%;
+
+			.overlay {
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				z-index: -1;
+			}
+		}
+
+		#left {
+			left: 0;
+
+			.overlay {
+				background: linear-gradient(
+					90deg,
+					rgba($content-background, 0) 0%,
+					$content-background 80%
+				);
+			}
+		}
+
+		#right {
+			right: 0;
+
+			.overlay {
+				background: linear-gradient(
+					270deg,
+					rgba($content-background, 0) 0%,
+					$content-background 80%
+				);
+			}
+		}
 	}
 </style>

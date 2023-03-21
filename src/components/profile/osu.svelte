@@ -6,7 +6,7 @@
 	import { t } from 'svelte-intl-precompile';
 	import { canUpdateOsu } from '../../routes/api/auth/osu/update/can_update/+server';
 	import { osu } from '../../stores/osu';
-	import LoadingSpinner from '../generic/design/loading_spinner.svelte';
+	import LoadingSpinner from '../../routes/components/loading_spinner.svelte';
 
 	import SolidButton from '../generic/design/solid_button.svelte';
 	import Details from './osu/details.svelte';

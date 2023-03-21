@@ -7,7 +7,7 @@
 	import { osu } from '../../stores/osu';
 
 	import axios from 'axios';
-	import LoadingSpinner from '../../components/generic/design/loading_spinner.svelte';
+	import LoadingSpinner from '../components/loading_spinner.svelte';
 	import Discord from '../../components/collabs/register/discord.svelte';
 	import Osu from '../../components/collabs/register/osu.svelte';
 

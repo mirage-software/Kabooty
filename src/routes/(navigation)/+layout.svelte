@@ -1,13 +1,12 @@
 <script lang="ts">
-	import type { LayoutData } from './$types';
 	import Header from './components/header.svelte';
-
-	export let data: LayoutData;
 </script>
 
-<Header url={data.auth.discord.url} />
+<Header />
 
-<slot id="content" />
+<div id="content">
+	<slot />
+</div>
 
 <style>
 	#content {
@@ -16,7 +15,6 @@
 
 		left: 0;
 		right: 0;
-
 		bottom: 0;
 
 		width: 100%;

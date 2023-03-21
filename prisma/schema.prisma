@@ -12,22 +12,24 @@ datasource db {
 }
 
 model User {
-  discordId     String        @id
-  username      String
-  discriminator String
-  avatar        String?
-  joinedAt      DateTime?
-  lastUpdated   DateTime?
-  roles         UserRole[]
-  osu           Osu?
-  collabs       Collab[]
-  picks         Pick[]
-  participated  Participant[]
-  creation_date DateTime?
-  verified      Boolean       @default(false)
-  logs          Log[]
-  assets        Asset[]
-  bumps         Bump[]
+  discordId             String        @id
+  username              String
+  discriminator         String
+  avatar                String?
+  joinedAt              DateTime?
+  lastUpdated           DateTime?
+  acceptedPrivacyPolicy Boolean       @default(false)
+  acceptedCookies       Boolean       @default(false)
+  roles                 UserRole[]
+  osu                   Osu?
+  collabs               Collab[]
+  picks                 Pick[]
+  participated          Participant[]
+  creation_date         DateTime?
+  verified              Boolean       @default(false)
+  logs                  Log[]
+  assets                Asset[]
+  bumps                 Bump[]
 }
 
 model UserRole {

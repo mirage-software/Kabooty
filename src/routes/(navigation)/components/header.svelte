@@ -4,7 +4,6 @@
 	import Sidebar from './sidebar.svelte';
 
 	import links from './links.json';
-	export let url: string | undefined;
 
 	let toggleSidebar: () => void;
 </script>
@@ -29,7 +28,7 @@
 				{/each}
 			</div>
 
-			<Account {url} />
+			<Account />
 		</div>
 	</div>
 </div>

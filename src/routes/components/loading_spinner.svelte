@@ -1,19 +1,26 @@
+<script>
+	export let px = 40;
+	export let width = 6;
+
+	$: viewbox = 60 + width;
+</script>
+
 <div id="loading">
 	<svg
 		class="spinner"
-		width="40px"
-		height="40px"
-		viewBox="0 0 66 66"
+		width="{px}px"
+		height="{px}px"
+		viewBox="0 0 {viewbox} {viewbox}"
 		xmlns="http://www.w3.org/2000/svg"
 	>
 		<circle
 			class="path"
 			fill="none"
-			stroke-width="6"
+			stroke-width={width}
 			stroke-linecap="round"
-			cx="33"
-			cy="33"
-			r="30"
+			cx={viewbox / 2}
+			cy={viewbox / 2}
+			r={viewbox / 2 - width / 2}
 		/>
 	</svg>
 </div>
@@ -22,7 +29,8 @@
 	#loading {
 		display: flex;
 		justify-content: center;
-		padding: $margin-l;
+		align-items: center;
+		padding: 0;
 
 		max-width: $max-width;
 	}

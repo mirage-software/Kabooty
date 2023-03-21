@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { base } from '$app/paths';
 	import { t } from 'svelte-intl-precompile';
 	import { discord, getDiscordProfilePicture } from '../../../../stores/discord';
-
-	export let url: string | undefined;
 </script>
 
-<a href={$discord ? '/profile' : url}>
+<a href={base + ($discord ? '/profile' : '/login')}>
 	<p>
 		{$discord ? $discord.username + '#' + $discord.discriminator : $t('header.signin')}
 	</p>
@@ -23,15 +21,6 @@
 <style lang="scss">
 	a {
 		height: $header-height;
-
-		background: none;
-		color: white;
-		border: none;
-		padding: 0;
-		font: inherit;
-		cursor: pointer;
-		outline: none;
-
 		border-radius: $border-radius-s;
 
 		display: flex;
