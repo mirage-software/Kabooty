@@ -16,12 +16,12 @@ export const GET: RequestHandler = async ({ request }) => {
 		const userId = decodedUser['user_id'] as string;
 
 		if (!token) {
-			return new Response(undefined, { status: 401 });
+			return json({}, { status: 401 });
 		}
 
 		const user = await DiscordUser.getUser(userId, token);
 
-		return new Response(JSON.stringify(user));
+		return json(user);
 	} catch (error) {
 		SentryClient.log(error);
 

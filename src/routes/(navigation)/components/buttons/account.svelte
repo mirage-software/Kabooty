@@ -31,7 +31,7 @@
 			height: $header-height - $margin-s * 2;
 			width: $header-height - $margin-s * 2;
 
-			margin: $margin-s;
+			margin: $margin-s calc($margin-s - 1px);
 
 			border: 1px solid white;
 			border-radius: 50%;

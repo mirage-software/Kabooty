@@ -1,20 +1,22 @@
-$page-color: #746060;
 $font-color: white;
 $card-color: #332828;
 $dark-overlay: rgba(0, 0, 0, 0.1);
 
-$top-bar-background: #5b3431;
-
-$content-background: #2e353b;
+$content-background: #392e36;
 $sidebar-background: $content-background;
-// $content-background: radial-gradient(at top right, #5b2e2e 30%, #432625 100%);
 
-$gradient-light: #5e4444;
-$gradient-dark: #4b3131;
-$decoration-fill: #5e4444;
+$gradient-light: #714848;
+$gradient-dark: #4d3b3b;
+$gradient-backup: #644343;
 
 $green: #19a24b;
 $green-loading: #189446;
 $green-disabled: #178640;
-$red: #d54545;
-$blue: #2490c6;
+
+$red: #ca4040;
+$red-loading: #b03e3e;
+$red-disabled: #992f2f;
+
+$blue: #44a7d9;
+$blue-loading: #3290bf;
+$blue-disabled: #1c77a4;

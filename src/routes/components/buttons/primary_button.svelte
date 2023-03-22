@@ -55,7 +55,7 @@
 
 	button:active {
 		outline: none;
-		top: 6px !important;
+		top: 8px !important;
 		box-shadow: 0px 0px 0px 0px $green-disabled !important;
 	}
 

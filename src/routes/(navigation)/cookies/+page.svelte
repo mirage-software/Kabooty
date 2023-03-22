@@ -1,12 +1,12 @@
 <div id="cookies">
-	<h1 style="margin-top: 0;">Cookie Policy</h1>
+	<h1>Cookie Policy</h1>
 	<p>
 		This is the Cookie Policy for Endless Mirage, exclusively hosted at https://endlessmirage.net/.
 		This cookie policy is not valid for any website hosted on another domain, considering this
 		cookie policy is provided for Open Source Software licensed under the GNU GPLv3.
 	</p>
 
-	<p class="section"><strong>What are cookies?</strong></p>
+	<h3 class="section">What are cookies?</h3>
 	<p>
 		As is common practice with almost all professional websites this site uses cookies, which are
 		tiny files that are downloaded to your computer, to improve your experience. This page describes
@@ -15,7 +15,7 @@
 		you from signing into the website.
 	</p>
 
-	<p class="section"><strong>How we use cookies</strong></p>
+	<h3 class="section">How we use cookies</h3>
 	<p>
 		We use cookies for a variety of reasons detailed below. Unfortunately in most cases there are no
 		industry standard options for disabling cookies without completely disabling the functionality
@@ -25,7 +25,7 @@
 		losing essential functionality on the website.
 	</p>
 
-	<p class="section"><strong>Disabling cookies</strong></p>
+	<h3 class="section">Disabling cookies</h3>
 	<p>
 		You can prevent the setting of cookies by adjusting the settings on your browser (see your
 		browser's built in help for this). Be aware that disabling cookies will affect the functionality
@@ -33,7 +33,7 @@
 		to log in and use this website. Therefore it is recommended that you do not disable cookies.
 	</p>
 
-	<p class="section"><strong>The cookies we set</strong></p>
+	<h3 class="section">The cookies we set</h3>
 	<ul>
 		<li>
 			<p>Account related cookies</p>
@@ -65,7 +65,7 @@
 		</li>
 	</ul>
 
-	<p class="section"><strong>Third party cookies</strong></p>
+	<h3 class="section">Third party cookies</h3>
 
 	<p>
 		In some special cases we also use cookies provided by trusted third parties. The following
@@ -86,7 +86,7 @@
 		</li>
 	</ul>
 
-	<p class="section"><strong>More Information</strong></p>
+	<h3 class="section">More Information</h3>
 	<p>
 		If you are looking for more information on our cookies policy, or the function of cookies
 		themselves, feel free to contact us through one of the following methods.
@@ -102,16 +102,24 @@
 		display: flex;
 		flex-direction: column;
 		max-width: $max-width;
-		margin: $margin-l;
+		margin: $margin-xxl;
 		color: white;
+
+		h1 {
+			margin-bottom: $margin-xs;
+		}
 
 		p {
 			margin: 0;
 		}
 
 		.section {
-			margin-top: $margin-m;
+			margin-top: $margin-l;
 			margin-bottom: $margin-xs;
+		}
+
+		ul {
+			margin: 0;
 		}
 	}
 </style>

@@ -13,9 +13,8 @@
 <div id="sidebar" class={active ? 'active' : 'inactive'}>
 	<div id="decoration">
 		<!-- svelte-ignore a11y-missing-attribute -->
-		<img id="dec1" src="/assets/38.png" />
-		<!-- svelte-ignore a11y-missing-attribute -->
-		<img id="dec2" src="/assets/40.png" />
+		<img src="/assets/decoration.svg" />
+		<div class="overlay" />
 	</div>
 	<i id="icon" class="las la-angle-left" on:click={toggle} on:keypress={toggle} />
 
@@ -96,23 +95,29 @@
 
 			pointer-events: none;
 
+			.overlay {
+				position: absolute;
+				top: 0;
+				left: 100px;
+				height: 100%;
+				width: 200px;
+				z-index: -1;
+
+				background: linear-gradient(
+					270deg,
+					rgba($content-background, 0) 0%,
+					$content-background 80%
+				);
+			}
+
 			img {
 				position: relative;
-				width: 120px;
-				height: 120px;
-				z-index: -1;
-				opacity: 0.9;
-			}
-
-			#dec1 {
-				top: -15px;
-				left: -10px;
-			}
-
-			#dec2 {
-				top: 40px;
-				right: -10px;
-				align-self: end;
+				height: 100%;
+				width: 300px;
+				z-index: -3;
+				opacity: 0.03;
+				left: 100px;
+				transform: rotateY(180deg);
 			}
 		}
 

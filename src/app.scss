@@ -1,5 +1,9 @@
 /* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */
 
+* {
+	font-family: 'Montserrat', sans-serif;
+}
+
 html {
 	height: 100%;
 }
@@ -7,7 +11,6 @@ html {
 body,
 html {
 	margin: 0;
-	font-family: 'Noto Sans', sans-serif;
 
 	min-height: 100%;
 
@@ -24,8 +27,60 @@ h6,
 a {
 	color: $font-color;
 	text-align: left;
+	margin: 0;
+	padding: 0;
 }
 
 a {
 	text-decoration: none;
+}
+
+a.link {
+	text-decoration: underline;
+}
+
+h1 {
+	font-weight: 800;
+	font-size: 42px;
+}
+
+h2 {
+	font-weight: 700;
+	font-size: 30px;
+}
+
+h3 {
+	font-weight: 600;
+	font-size: 22px;
+}
+
+h4 {
+	font-weight: 600;
+	font-size: 18px;
+}
+
+h5 {
+	font-weight: 700;
+	font-size: 16px;
+	font-style: italic;
+}
+
+h6 {
+	font-weight: 700;
+	font-size: 12px;
+}
+
+p {
+	font-weight: 400;
+	font-size: 16px;
+}
+
+b {
+	font-weight: 700;
+	font-size: 16px;
+}
+
+button {
+	font-weight: 700;
+	font-size: 16px;
 }

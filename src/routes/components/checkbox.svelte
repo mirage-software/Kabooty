@@ -15,7 +15,7 @@
 		min-width: 22px;
 		height: 22px;
 		border: 2px solid white;
-		border-radius: 50%;
+		border-radius: 7px;
 		// transform: translateY(-0.075em);
 
 		display: grid;
@@ -24,8 +24,8 @@
 
 	input[type='checkbox']::before {
 		content: '';
-		width: 12px;
-		height: 12px;
+		width: 14px;
+		height: 14px;
 		// clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 		// transform: scale(0);
 		// transform-origin: bottom left;
@@ -34,7 +34,7 @@
 		box-shadow: inset 1em 1em var(--form-control-color);
 		/* Windows High Contrast Mode */
 		background-color: $green;
-		border-radius: 50%;
+		border-radius: 3px;
 	}
 
 	input[type='checkbox']:checked::before {

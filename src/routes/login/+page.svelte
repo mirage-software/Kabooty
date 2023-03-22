@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { afterNavigate, goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
+	import type { Unsubscriber } from 'svelte/store';
 	import { discord } from '../../stores/discord';
 	import PrimaryButton from '../components/buttons/primary_button.svelte';
 	import Checkbox from '../components/checkbox.svelte';
@@ -13,21 +14,36 @@
 	$: agreed = false;
 
 	let previousPage: string | undefined;
+	let discordUnsubscribe: Unsubscriber;
 
 	afterNavigate(({ from }) => {
 		previousPage = from?.url.pathname;
 	});
 
 	onMount(() => {
-		if ($discord) {
-			goto(previousPage ?? base + '/');
+		discordUnsubscribe = discord.subscribe((_discord) => {
+			if (_discord) {
+				goto(previousPage ?? base + '/');
+			}
+		});
+	});
+
+	onDestroy(() => {
+		if (discordUnsubscribe) {
+			discordUnsubscribe();
 		}
 	});
 </script>
 
 <div id="content">
-	<div id="login">
-		<div id="header">
+	<div id="header">
+		<div id="decoration">
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<img id="dec1" src="/assets/27.png" />
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<img id="dec2" src="/assets/29.png" />
+		</div>
+		<div id="actions">
 			{#if previousPage}
 				<a class="item" href={previousPage}><i class="las la-angle-left" /></a>
 			{:else}
@@ -36,10 +52,15 @@
 			<img class="item" src="/logo.png" alt="Endless Mirage" />
 			<a class="item" href="{base}/"><i class="las la-home" /></a>
 		</div>
+	</div>
+	<div id="login">
 		<div id="text">
 			<h2>{$t('login.title')}</h2>
 			<p>
-				{@html $t('login.description')}
+				{$t('login.description')}
+			</p>
+			<p>
+				<b>{$t('login.cookie_disclaimer')}</b>
 			</p>
 		</div>
 		<div id="privacy">
@@ -50,7 +71,7 @@
 				}}
 			/>
 			<a href="{base}/privacy" class="privacy" target="_blank" rel="noreferrer"
-				>{$t('login.privacy')}</a
+				><b>{$t('login.privacy')}</b></a
 			>
 		</div>
 		<div id="actions">
@@ -68,56 +89,70 @@
 </div>
 
 <style lang="scss">
-	#privacy {
-		display: flex;
-
-		a {
-			text-decoration: underline;
-			margin-left: $margin-xs;
-		}
-	}
-
-	$breakpoint-login: 420px;
-
 	#content {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-
-		@media (min-width: $breakpoint-login) {
-			padding: $margin-m;
-		}
 	}
 
-	#login {
+	#header {
 		display: flex;
-		flex-direction: column;
-
-		@media (min-width: $breakpoint-login) {
-			border-radius: $border-radius-m;
-		}
-
+		justify-content: center;
 		width: 100%;
-		max-width: 500px;
-		background: $decoration-fill;
+		background: $gradient-backup;
 		background: linear-gradient(90deg, $gradient-dark 0%, $gradient-light 100%);
 		box-shadow: $box-shadow;
+		height: $header-height;
+		position: relative;
 
-		#header {
+		#decoration {
+			position: absolute;
+			height: $header-height;
+			width: 100%;
+			overflow: hidden;
+			max-width: 500px;
+
+			top: 0;
+
 			display: flex;
 			justify-content: space-between;
 
+			pointer-events: none;
+
+			opacity: 0.8;
+
+			img {
+				margin: 0;
+			}
+
+			img#dec1 {
+				position: relative;
+				top: -30px;
+				left: -10px;
+				width: 120px;
+				height: 120px;
+			}
+
+			img#dec2 {
+				position: relative;
+				top: -30px;
+				right: -15px;
+				width: 120px;
+				height: 120px;
+			}
+		}
+
+		#actions {
+			display: flex;
+			justify-content: space-between;
+			width: 100%;
+			max-width: 500px;
+
 			.item {
-				width: 50px;
-				height: 50px;
-				padding: 20px;
+				width: calc($header-height - $margin-m * 2);
+				height: calc($header-height - $margin-m * 2);
+				padding: $margin-m;
 
 				display: flex;
 				align-items: center;
@@ -128,38 +163,43 @@
 				}
 			}
 		}
+	}
+
+	#login {
+		display: flex;
+		flex-direction: column;
+		padding: $margin-xxl;
+		width: 100%;
+		max-width: calc(500px + $margin-xl * 2);
 
 		#text {
-			padding: 0 $margin-m;
+			padding: 0 $margin-xl;
 
 			h2 {
-				margin: 0;
+				margin-bottom: $margin-m;
 			}
 
 			p {
-				margin: 0;
 				margin-top: $margin-xs;
 			}
 		}
 
 		#privacy {
-			padding: 0 $margin-m;
-			padding-top: $margin-s;
+			padding: 0 $margin-xl;
+			padding-top: $margin-xs;
+			display: flex;
+			align-items: center;
 
-			h2 {
-				margin: 0;
-			}
-
-			p {
-				margin: 0;
-				margin-top: $margin-xs;
+			a {
+				text-decoration: underline;
+				margin-left: $margin-s;
 			}
 		}
 
 		#actions {
 			display: flex;
 			flex-direction: row;
-			padding: $margin-m;
+			padding: $margin-xl;
 			justify-content: flex-end;
 		}
 	}

@@ -647,15 +647,27 @@
 		display: flex;
 		flex-direction: column;
 		max-width: $max-width;
-		margin: $margin-l;
+		margin: $margin-xxl;
 		color: white;
+
+		h1 {
+			margin-bottom: $margin-xs;
+		}
+
+		h3 {
+			margin-bottom: $margin-xs;
+		}
+
+		h5 {
+			margin-bottom: $margin-m;
+		}
 
 		p {
 			margin: 0;
 		}
 
 		.section {
-			margin-top: $margin-m;
+			margin-top: $margin-l;
 			margin-bottom: $margin-xs;
 		}
 

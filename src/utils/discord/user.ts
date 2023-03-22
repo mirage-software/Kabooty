@@ -202,7 +202,9 @@ export abstract class DiscordUser {
 			},
 			data: {
 				joinedAt: guildUser.joinedAt,
-				creation_date: guildUser.user.createdAt
+				creation_date: guildUser.user.createdAt,
+				acceptedCookies: true,
+				acceptedPrivacyPolicy: true
 			}
 		});
 	}

@@ -6,8 +6,12 @@
 	},
 	"login": {
 		"title": "Sign In",
-		"description": "We use Discord for our account system. In order to sign in and use the website, please sign in using your Discord account.<br /><br />By signing in you agree to our privacy policy, and usage of cookies.",
+		"description": "We use Discord for our account system. In order to sign in and use the website, please sign in using your Discord account.",
+		"cookie_disclaimer": "By signing in you agree to our privacy policy, and usage of cookies.",
 		"privacy": "I agree to the privacy policy."
+	},
+	"redirect": {
+		"processing": "Please wait while we log you in."
 	},
 	"cookies": "By using the website, you agree to the use of any necessary cookies.",
 	"errors": {

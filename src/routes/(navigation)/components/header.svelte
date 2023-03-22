@@ -34,8 +34,12 @@
 </div>
 
 <style lang="scss">
+	a {
+		display: flex;
+	}
+
 	#header {
-		background: $decoration-fill;
+		background: $gradient-backup;
 		background: linear-gradient(90deg, $gradient-dark 0%, $gradient-light 100%);
 		box-shadow: $box-shadow;
 
@@ -110,11 +114,12 @@
 			}
 
 			img {
-				height: 33px;
+				height: calc($header-height - $margin-m * 2);
+				width: calc($header-height - $margin-m * 2);
 				margin-left: 0;
 
 				@media (min-width: $breakpoint-m) {
-					margin-left: $margin-m - $margin-xs;
+					margin-left: $margin-l - $margin-xs;
 				}
 			}
 
