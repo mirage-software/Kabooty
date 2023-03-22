@@ -13,7 +13,12 @@
 	"redirect": {
 		"processing": "Please wait while we log you in."
 	},
-	"cookies": "By using the website, you agree to the use of any necessary cookies.",
+	"cookies": {
+		"title": "Cookie Disclaimer",
+		"description": "By using the website, you agree to the use of any necessary cookies.",
+		"link": "You can view our cookie policy here.",
+		"confirm": "Close"
+	},
 	"errors": {
 		"title": "Oopsie woopsie!",
 		"unknown": "An unknown error has occurred.",
