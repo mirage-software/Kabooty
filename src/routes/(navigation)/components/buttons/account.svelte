@@ -4,7 +4,10 @@
 	import { discord, getDiscordProfilePicture } from '../../../../stores/discord';
 </script>
 
-<a href={base + ($discord ? '/profile' : '/login')}>
+<a
+	href={base + ($discord ? '/profile' : '/login')}
+	aria-label={$discord ? $t('header.profile') : $t('header.signin')}
+>
 	<p>
 		{$discord ? $discord.username + '#' + $discord.discriminator : $t('header.signin')}
 	</p>

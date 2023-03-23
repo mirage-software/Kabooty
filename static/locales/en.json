@@ -2,7 +2,8 @@
 	"header": {
 		"signin": "Sign In",
 		"collabs": "Collabs",
-		"home": "Home"
+		"home": "Home",
+		"profile": "Profile"
 	},
 	"login": {
 		"title": "Sign In",
