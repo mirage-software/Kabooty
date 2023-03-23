@@ -35,65 +35,85 @@
 	});
 </script>
 
-<div id="content">
-	<div id="header">
-		<div id="decoration">
-			<!-- svelte-ignore a11y-missing-attribute -->
-			<img id="dec1" src="/assets/27.png" />
-			<!-- svelte-ignore a11y-missing-attribute -->
-			<img id="dec2" src="/assets/29.png" />
+<div id="centered">
+	<div id="content">
+		<div id="header">
+			<div id="decoration">
+				<!-- svelte-ignore a11y-missing-attribute -->
+				<img id="dec1" src="/assets/27.png" />
+				<!-- svelte-ignore a11y-missing-attribute -->
+				<img id="dec2" src="/assets/29.png" />
+			</div>
+			<div id="actions">
+				{#if previousPage}
+					<a class="item" href={previousPage}><i class="las la-angle-left" /></a>
+				{:else}
+					<div class="item" />
+				{/if}
+				<img class="item" src="/logo.png" alt="Endless Mirage" />
+				<a class="item" href="{base}/"><i class="las la-home" /></a>
+			</div>
 		</div>
-		<div id="actions">
-			{#if previousPage}
-				<a class="item" href={previousPage}><i class="las la-angle-left" /></a>
-			{:else}
-				<div class="item" />
-			{/if}
-			<img class="item" src="/logo.png" alt="Endless Mirage" />
-			<a class="item" href="{base}/"><i class="las la-home" /></a>
-		</div>
-	</div>
-	<div id="login">
-		<div id="text">
-			<h2>{$t('login.title')}</h2>
-			<p>
-				{$t('login.description')}
-			</p>
-			<p>
-				<b>{$t('login.cookie_disclaimer')}</b>
-			</p>
-		</div>
-		<div id="privacy">
-			<Checkbox
-				bind:checked={agreed}
-				on:change={(_) => {
-					agreed = !agreed;
-				}}
-			/>
-			<a href="{base}/privacy" class="privacy" target="_blank" rel="noreferrer"
-				><b>{$t('login.privacy')}</b></a
-			>
-		</div>
-		<div id="actions">
-			<PrimaryButton
-				on:click={() => {
-					if (agreed) {
-						goto(data.auth.discord.url);
-					}
-				}}
-				disabled={!agreed}
-				content={$t('login.title')}
-			/>
+		<div id="login">
+			<div id="text">
+				<h2>{$t('login.title')}</h2>
+				<p>
+					{$t('login.description')}
+				</p>
+				<p>
+					<b>{$t('login.cookie_disclaimer')}</b>
+				</p>
+			</div>
+			<div id="privacy">
+				<Checkbox
+					bind:checked={agreed}
+					on:change={(_) => {
+						agreed = !agreed;
+					}}
+				/>
+				<a href="{base}/privacy" class="privacy" target="_blank" rel="noreferrer"
+					><b>{$t('login.privacy')}</b></a
+				>
+			</div>
+			<div id="actions">
+				<PrimaryButton
+					on:click={() => {
+						if (agreed) {
+							goto(data.auth.discord.url);
+						}
+					}}
+					disabled={!agreed}
+					content={$t('login.title')}
+				/>
+			</div>
 		</div>
 	</div>
 </div>
 
 <style lang="scss">
-	#content {
+	#centered {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
+		min-height: 100vh;
+		overflow-y: auto;
+
+		@media (min-width: calc(500px + $margin-xxl * 4)) {
+			justify-content: center;
+			align-items: center;
+		}
+	}
+
+	#content {
+		background-color: $content-background-dark;
+		box-shadow: $box-shadow;
+		display: flex;
+		flex-direction: column;
 		align-items: center;
+
+		@media (min-width: calc(500px + $margin-xxl * 4)) {
+			border-radius: $border-radius-m;
+			margin: $margin-xxl 0;
+		}
 	}
 
 	#header {
@@ -102,9 +122,12 @@
 		width: 100%;
 		background: $gradient-backup;
 		background: linear-gradient(90deg, $gradient-dark 0%, $gradient-light 100%);
-		box-shadow: $box-shadow;
 		height: $header-height;
 		position: relative;
+
+		@media (min-width: calc(500px + $margin-xxl * 4)) {
+			border-radius: $border-radius-m;
+		}
 
 		#decoration {
 			position: absolute;
@@ -168,12 +191,12 @@
 	#login {
 		display: flex;
 		flex-direction: column;
-		padding: $margin-xxl;
 		width: 100%;
-		max-width: calc(500px + $margin-xl * 2);
+		max-width: calc(500px + $margin-xxl * 2);
 
 		#text {
-			padding: 0 $margin-xl;
+			padding: $margin-xxl;
+			padding-bottom: 0;
 
 			h2 {
 				margin-bottom: $margin-m;
@@ -185,7 +208,7 @@
 		}
 
 		#privacy {
-			padding: 0 $margin-xl;
+			padding: 0 $margin-xxl;
 			padding-top: $margin-xs;
 			display: flex;
 			align-items: center;
@@ -199,7 +222,7 @@
 		#actions {
 			display: flex;
 			flex-direction: row;
-			padding: $margin-xl;
+			padding: $margin-xxl;
 			justify-content: flex-end;
 		}
 	}

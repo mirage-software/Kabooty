@@ -212,5 +212,18 @@
 			"name": "Your current character name"
 		}
 	},
-	"bump": "Bump picks"
+	"bump": "Bump picks",
+	"footer": {
+		"more": "Looking for more?",
+		"socials": "Check out our social media!",
+		"privacy": "Privacy Policy",
+		"cookies": "Cookie Policy",
+		"admin": "Administrators",
+		"characters": "Characters Database",
+		"statistics": "Statistics",
+		"open_source": "This is an open source project licensed under the GNU GPLv3, initiated by",
+		"repose": "Repose Software",
+		"contributors": "For a complete list of our contributors, or the source code, check us out on",
+		"github": "GitHub"
+	}
 }

@@ -1,10 +1,8 @@
 <script lang="ts">
 	import Footer from '../components/footer.svelte';
-	import Header from './components/header.svelte';
 </script>
 
 <div id="page">
-	<Header />
 	<div id="content">
 		<slot />
 	</div>

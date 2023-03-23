@@ -49,8 +49,6 @@
 	import { osu } from '../stores/osu';
 	import { modal } from '../stores/modal';
 	import type { LayoutData } from './$types';
-	import { base } from '$app/paths';
-	import PrimaryButton from './components/buttons/primary_button.svelte';
 	import Cookies from './cookies.svelte';
 </script>
 

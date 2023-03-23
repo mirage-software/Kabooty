@@ -1,9 +1,13 @@
 $font-color: white;
-$card-color: #332828;
 $dark-overlay: rgba(0, 0, 0, 0.1);
 
 $content-background: #392e36;
+$content-background-dark: #282227;
+$content-background-light: #553e3e;
 $sidebar-background: $content-background;
+
+// !! TODO: deprecade card-color
+$card-color: $content-background-light;
 
 $gradient-light: #714848;
 $gradient-dark: #4d3b3b;

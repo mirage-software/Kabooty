@@ -62,7 +62,7 @@
 			justify-content: stretch;
 			align-items: center;
 
-			background-color: rgba(0, 0, 0, 0.08);
+			background-color: rgba(255, 255, 255, 0.05);
 
 			div#active {
 				border-radius: 0 3px 3px 0;
