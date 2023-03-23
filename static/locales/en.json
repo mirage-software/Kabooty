@@ -7,7 +7,7 @@
 	"login": {
 		"title": "Sign In",
 		"description": "We use Discord for our account system. In order to sign in and use the website, please sign in using your Discord account.",
-		"cookie_disclaimer": "By signing in you agree to our privacy policy, and usage of cookies.",
+		"cookie_disclaimer": "By signing in you agree to our privacy policy, and usage of necessary cookies.",
 		"privacy": "I agree to the privacy policy."
 	},
 	"redirect": {
@@ -16,8 +16,10 @@
 	"cookies": {
 		"title": "Cookie Disclaimer",
 		"description": "By using the website, you agree to the use of any necessary cookies.",
+		"usage": "We currently use cookies to remember your preferences, keep you signed in, and track your usage of the website. You may decline the cookie that helps us track your usage, however, any other cookies are necessary for the website to function. For more detailed information, please refer to our cookie policy.",
 		"link": "You can view our cookie policy here.",
-		"confirm": "Close"
+		"decline": "Decline",
+		"accept": "Accept"
 	},
 	"errors": {
 		"title": "Oopsie woopsie!",

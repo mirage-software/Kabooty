@@ -14,9 +14,9 @@
 		border: none;
 		padding: 12px 32px;
 		border-radius: 5px;
-		box-shadow: 0px 6px 0px 0px $green-disabled;
+		box-shadow: 0px 6px 0px 0px $red-disabled;
 		color: white;
-		background: $green;
+		background: $red;
 		cursor: pointer;
 		transition: top 0.16s, background 0.16s, box-shadow 0.16s;
 		position: relative;
@@ -27,8 +27,8 @@
 	}
 
 	.disabled {
-		background: $green-disabled;
-		box-shadow: 0px 0px 0px 0px $green-disabled !important;
+		background: $red-disabled;
+		box-shadow: 0px 0px 0px 0px $red-disabled !important;
 		top: 6px !important;
 		cursor: unset !important;
 	}
@@ -38,17 +38,17 @@
 		animation: flashing $duration ease-in-out infinite;
 
 		top: 2px !important;
-		box-shadow: 0px 4px 0px 0px $green-disabled !important;
+		box-shadow: 0px 4px 0px 0px $red-disabled !important;
 
 		@keyframes flashing {
 			0% {
-				background: $green;
+				background: $red;
 			}
 			50% {
-				background: $green-loading;
+				background: $red-loading;
 			}
 			100% {
-				background: $green;
+				background: $red;
 			}
 		}
 	}
@@ -56,11 +56,11 @@
 	button:active {
 		outline: none;
 		top: 8px !important;
-		box-shadow: 0px 0px 0px 0px $green-disabled !important;
+		box-shadow: 0px 0px 0px 0px $red-disabled !important;
 	}
 
 	button:hover {
 		top: 4px;
-		box-shadow: 0px 4px 0px 0px $green-disabled;
+		box-shadow: 0px 4px 0px 0px $red-disabled;
 	}
 </style>

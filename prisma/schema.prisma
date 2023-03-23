@@ -19,7 +19,6 @@ model User {
   joinedAt              DateTime?
   lastUpdated           DateTime?
   acceptedPrivacyPolicy Boolean       @default(false)
-  acceptedCookies       Boolean       @default(false)
   roles                 UserRole[]
   osu                   Osu?
   collabs               Collab[]

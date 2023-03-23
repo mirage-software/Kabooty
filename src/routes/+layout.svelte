@@ -41,13 +41,6 @@
 		}
 	});
 
-	async function setCookiesAccepted() {
-		await fetch(`${base}/api/cookies/accept`, {
-			method: 'PATCH'
-		});
-		invalidate('app:cookies:notice');
-	}
-
 	import '../app.scss';
 
 	import Modal from 'svelte-simple-modal';
@@ -56,9 +49,9 @@
 	import { osu } from '../stores/osu';
 	import { modal } from '../stores/modal';
 	import type { LayoutData } from './$types';
-	import { invalidate } from '$app/navigation';
 	import { base } from '$app/paths';
 	import PrimaryButton from './components/buttons/primary_button.svelte';
+	import Cookies from './cookies.svelte';
 </script>
 
 <svelte:head>
@@ -79,19 +72,8 @@
 
 <slot />
 
-{#if !data.cookies_accepted}
-	<div id="cookienotice">
-		<div class="content">
-			<div class="disclaimer">
-				<h3>{$t('cookies.title')}</h3>
-				<p>{$t('cookies.description')}</p>
-				<a href="{base}/cookies">{$t('cookies.link')}</a>
-			</div>
-			<div id="button">
-				<PrimaryButton on:click={setCookiesAccepted} content={$t('cookies.confirm')} />
-			</div>
-		</div>
-	</div>
+{#if data.cookies_accepted === undefined}
+	<Cookies />
 {/if}
 
 {#if browser}
@@ -106,57 +88,6 @@
 {/if}
 
 <style lang="scss">
-	#cookienotice {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-
-		background: $gradient-backup;
-		background: linear-gradient(90deg, $gradient-dark 0%, $gradient-light 100%);
-		box-shadow: $box-shadow;
-
-		display: flex;
-		justify-content: center;
-
-		.content {
-			display: flex;
-			flex-direction: column;
-
-			gap: $margin-xl;
-
-			@media (min-width: $breakpoint-s) {
-				flex-direction: row;
-				align-items: flex-end;
-			}
-
-			width: 100%;
-			max-width: $max-width;
-			margin: $margin-xxl;
-
-			h3 {
-				margin-bottom: $margin-xs;
-			}
-
-			p {
-				margin-bottom: $margin-xs;
-			}
-
-			a {
-				text-decoration: underline;
-			}
-
-			#button {
-				width: 100%;
-
-				@media (min-width: $breakpoint-s) {
-					width: auto;
-					margin-left: auto;
-				}
-			}
-		}
-	}
-
 	#background {
 		position: fixed;
 		background: $content-background;
