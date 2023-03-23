@@ -1,13 +1,13 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { Prisma } from '../../../../../database/prisma';
+import { Prisma } from '../../../../../../database/prisma';
 import cookie from 'cookie';
-import { Jwt } from '../../../../../jwt';
+import { Jwt } from '../../../../../../jwt';
 import { getOsuUser, type IOsuAccessToken } from '../../access/+server';
 import axios from 'axios';
-import { Env } from '../../../../../env';
+import { Env } from '../../../../../../env';
 import { canUpdateOsu } from '../can_update/+server';
-import { SentryClient } from '../../../../../bot/sentry';
+import { SentryClient } from '../../../../../../bot/sentry';
 
 export const GET: RequestHandler = async ({ request, params }) => {
 	const cookieHeader = request.headers.get('cookie');

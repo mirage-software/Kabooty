@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-intl-precompile';
 	import { page } from '$app/stores';
-	import SolidButton from '../../../../components/generic/design/solid_button.svelte';
+	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
 	import { goto } from '$app/navigation';
 
 	const id = $page.params.id;

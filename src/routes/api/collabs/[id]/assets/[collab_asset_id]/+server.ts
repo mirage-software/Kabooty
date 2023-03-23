@@ -8,7 +8,7 @@ import { SentryClient } from '../../../../../../bot/sentry';
 import { Jwt } from '../../../../../../jwt';
 import { ServerPaths } from '../../../../../../utils/paths/server';
 import { Prisma } from '../../../../../../database/prisma';
-import { deleteExample } from './example';
+import { deleteExample } from './example/+server';
 import { DiscordUser } from '../../../../../../utils/discord/user';
 
 export const PUT: RequestHandler = async ({ request, params }) => {

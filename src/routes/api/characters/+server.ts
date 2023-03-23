@@ -7,7 +7,7 @@ import { Jwt } from '../../../jwt';
 
 import cookie from 'cookie';
 import { CollabStatus } from '@prisma/client';
-import { deletePick } from '../picks/[id]';
+import { deletePick } from '../picks/[id]/+server';
 import { DiscordUser } from '../../../utils/discord/user';
 
 export const GET: RequestHandler = async ({ request }) => {

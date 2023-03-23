@@ -8,18 +8,18 @@
 		discord,
 		getDiscordProfilePicture,
 		getFormattedDate
-	} from '../../../../../../stores/discord';
+	} from '../../../../../../../stores/discord';
 	import type { AnimeCharacter, Asset, CollabAsset, User, Pick, Collab } from '@prisma/client';
-	import { ClientPaths } from '../../../../../../utils/paths/client';
+	import { ClientPaths } from '../../../../../../../utils/paths/client';
 	import { _ } from 'svelte-intl-precompile';
 	import { page } from '$app/stores';
-	import Extra from '../../../../../../components/collabs/register/extra.svelte';
-	import AssetComponent from '../../../../../../components/collabs/pick/asset.svelte';
-	import Character from '../../../../../../components/collabs/register/character.svelte';
-	import { selected } from '../../../../../../components/collabs/register/character/selected_store';
+	import Extra from '../../../../../../../components/collabs/register/extra.svelte';
+	import AssetComponent from '../../../../../../../components/collabs/pick/asset.svelte';
+	import Character from '../../../../../../../components/collabs/register/character.svelte';
+	import { selected } from '../../../../../../../components/collabs/register/character/selected_store';
 	import type { Unsubscriber } from 'svelte/store';
-	import type { IDiscordRole } from '../../../../../../utils/discord/interfaces/role';
-	import type { IDiscordUser } from '../../../../../../utils/discord/interfaces/user';
+	import type { IDiscordRole } from '../../../../../../../utils/discord/interfaces/role';
+	import type { IDiscordUser } from '../../../../../../../utils/discord/interfaces/user';
 
 	let pick: Pick & {
 		user: User;

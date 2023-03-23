@@ -1,11 +1,11 @@
 import { json as json$1 } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { Env } from '../../../../env';
+import { Env } from '../../../../../env';
 import cookie from 'cookie';
 import axios from 'axios';
-import { Prisma } from '../../../../database/prisma';
-import { Jwt } from '../../../../jwt';
-import { SentryClient } from '../../../../bot/sentry';
+import { Prisma } from '../../../../../database/prisma';
+import { Jwt } from '../../../../../jwt';
+import { SentryClient } from '../../../../../bot/sentry';
 
 export interface IOsuAccessToken extends Record<string, string | number> {
 	access_token: string;
@@ -219,10 +219,13 @@ export const GET: RequestHandler = async ({ request }) => {
 	} catch (error) {
 		SentryClient.log(error);
 
-		return json$1({
-			error: 'authentication_failed'
-		}, {
-			status: 500
-		});
+		return json$1(
+			{
+				error: 'authentication_failed'
+			},
+			{
+				status: 500
+			}
+		);
 	}
 };

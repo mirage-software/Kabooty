@@ -3,10 +3,10 @@
 
 	import { onDestroy, onMount } from 'svelte';
 
-	import { discord } from '../../../stores/discord';
+	import { discord } from '../../../../stores/discord';
 
 	import axios from 'axios';
-	import Manage from '../../../components/collabs/manage.svelte';
+	import Manage from '../../../../components/collabs/manage.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 
 	let subscription: Unsubscriber | null = null;

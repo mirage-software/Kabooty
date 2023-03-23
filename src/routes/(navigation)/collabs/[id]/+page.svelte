@@ -6,18 +6,18 @@
 
 	import { onMount } from 'svelte';
 
-	import { discord } from '../../../stores/discord';
+	import { discord } from '../../../../stores/discord';
 
 	import axios from 'axios';
 	import type { AnimeCharacter, Asset, Collab, CollabAsset, Pick, User } from '@prisma/client';
-	import LoadingSpinner from '../../../components/generic/design/loading_spinner.svelte';
-	import PageTitle from '../../../components/generic/design/page_title.svelte';
-	import SolidButton from '../../../components/generic/design/solid_button.svelte';
-	import PickComponent from '../../../components/collabs/pick.svelte';
+	import PageTitle from '../../../../components/generic/design/page_title.svelte';
+	import SolidButton from '../../../../components/generic/design/solid_button.svelte';
+	import PickComponent from '../../../../components/collabs/pick.svelte';
 	import InfiniteScroll from 'svelte-infinite-scroll';
-	import InputText from '../../../components/generic/design/input_text.svelte';
-	import Dropdown from '../../../components/collabs/register/extra/dropdown.svelte';
-	import IconButton from '../../../components/collabs/icon_button.svelte';
+	import InputText from '../../../../components/generic/design/input_text.svelte';
+	import Dropdown from '../../../../components/collabs/register/extra/dropdown.svelte';
+	import IconButton from '../../../../components/collabs/icon_button.svelte';
+	import LoadingSpinner from '../../../components/loading_spinner.svelte';
 
 	let pageIndex = 1;
 	let data: (Pick & {
@@ -40,7 +40,7 @@
 
 	let loading = true;
 
-	let cooldown: string | number | undefined;
+	let cooldown: ReturnType<typeof setTimeout> | undefined;
 
 	async function getPicks() {
 		newBatch = (
@@ -71,7 +71,7 @@
 			clearTimeout(cooldown);
 		}
 
-		const timeOut = setTimeout(() => {
+		const timeOut: ReturnType<typeof setTimeout> = setTimeout(() => {
 			getPicks();
 			clearTimeout(cooldown);
 		}, 1000);

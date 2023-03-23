@@ -3,22 +3,22 @@
 
 	import { onMount } from 'svelte';
 
-	import { discord } from '../../../../stores/discord';
-	import { osu } from '../../../../stores/osu';
+	import { discord } from '../../../../../stores/discord';
+	import { osu } from '../../../../../stores/osu';
 
 	import axios, { AxiosError } from 'axios';
 	import type { AnimeCharacter, Collab, CollabAsset, Pick, Asset } from '@prisma/client';
-	import LoadingSpinner from '../../../../components/generic/design/loading_spinner.svelte';
-	import Info from '../../../../components/collabs/register/info.svelte';
-	import Discord from '../../../../components/collabs/register/discord.svelte';
-	import Osu from '../../../../components/collabs/register/osu.svelte';
-	import Rules from '../../../../components/collabs/register/rules.svelte';
-	import Character from '../../../../components/collabs/register/character.svelte';
-	import { selected } from '../../../../components/collabs/register/character/selected_store';
-	import Image from '../../../../components/collabs/register/image.svelte';
-	import Extra from '../../../../components/collabs/register/extra.svelte';
+	import Info from '../../../../../components/collabs/register/info.svelte';
+	import Discord from '../../../../../components/collabs/register/discord.svelte';
+	import Osu from '../../../../../components/collabs/register/osu.svelte';
+	import Rules from '../../../../../components/collabs/register/rules.svelte';
+	import Character from '../../../../../components/collabs/register/character.svelte';
+	import { selected } from '../../../../../components/collabs/register/character/selected_store';
+	import Image from '../../../../../components/collabs/register/image.svelte';
+	import Extra from '../../../../../components/collabs/register/extra.svelte';
 	import { goto } from '$app/navigation';
-	import { ClientPaths } from '../../../../utils/paths/client';
+	import { ClientPaths } from '../../../../../utils/paths/client';
+	import LoadingSpinner from '../../../../components/loading_spinner.svelte';
 
 	let collab: (Collab & { collabAssets: CollabAsset[] }) | null = null;
 	let assets: {
