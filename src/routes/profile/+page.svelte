@@ -15,12 +15,6 @@
 	let bumps: Bump[] = [];
 
 	onMount(async () => {
-		const result = await axios.get('/api/auth/discord/authenticated');
-
-		if (!result.data.authenticated) {
-			goto('/');
-		}
-
 		getBumps();
 	});
 

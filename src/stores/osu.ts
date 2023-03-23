@@ -9,7 +9,7 @@ function createOsuUserStore() {
 
 	return {
 		subscribe: userStore.subscribe,
-		update: (user: IOsuUser | null) => {
+		update: (user: IOsuUser | null | undefined) => {
 			userStore.set(user);
 		},
 		fetch: async () => {

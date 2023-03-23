@@ -12,7 +12,9 @@ datasource db {
 }
 
 model User {
-  discordId             String        @id
+  // TODO: manually populate the database with cuid's, then switch the index to `id` instead of `discordId`
+  id                    String?       @default(cuid())
+  discordId             String        @id @unique
   username              String
   discriminator         String
   avatar                String?

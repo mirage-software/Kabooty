@@ -17,6 +17,7 @@ export const load: LayoutLoad = async ({ fetch, depends, data }) => {
 				url: (<IAuthOsuUrlResponse>await requests[1].json()).url
 			}
 		},
-		cookies_accepted: data?.cookies_accepted
+		cookiesAccepted: data?.cookiesAccepted,
+		signedIn: data?.signedIn
 	};
 };

@@ -34,7 +34,7 @@ function createDiscordUserStore() {
 
 	return {
 		subscribe: userStore.subscribe,
-		update: (user: IDiscordUser) => {
+		update: (user: IDiscordUser | undefined) => {
 			userStore.set(user);
 		},
 		setRedirectUrl: (url: string) => {

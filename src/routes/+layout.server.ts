@@ -1,13 +1,11 @@
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ depends, cookies }) => {
+export const load: LayoutServerLoad = async ({ depends, cookies, locals }) => {
 	depends('app:cookies:notice');
-
-	if (!cookies.get('accepted')) {
-		return;
-	}
+	depends('app:auth:signedin');
 
 	return {
-		cookies_accepted: cookies.get('accepted') === 'true'
+		cookiesAccepted: cookies.get('accepted') === 'true',
+		signedIn: locals.signedIn
 	};
 };

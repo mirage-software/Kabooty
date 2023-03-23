@@ -24,20 +24,15 @@
 	export let data: LayoutData;
 
 	onMount(async () => {
-		// TODO: handle authentication check gracefully using server loads
 		if (browser) {
-			axios.get('/api/auth/discord/authenticated').then(async (response) => {
-				const authenticated = response.data.authenticated;
+			if (data.signedIn) {
+				// Returns an encrypted session cookie to identify the user
+				const user = await axios.get('/api/auth/discord/user');
 
-				if (authenticated) {
-					// Returns an encrypted session cookie to identify the user
-					const user = await axios.get('/api/auth/discord/user');
+				discord.update(user.data);
 
-					discord.update(user.data);
-
-					osu.fetch();
-				}
-			});
+				osu.fetch();
+			}
 		}
 	});
 
@@ -70,7 +65,7 @@
 
 <slot />
 
-{#if data.cookies_accepted === undefined}
+{#if data.cookiesAccepted === undefined}
 	<Cookies />
 {/if}
 

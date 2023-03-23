@@ -58,7 +58,7 @@ export const GET: RequestHandler = async ({ request }) => {
 				httpOnly: true,
 				sameSite: 'lax',
 				secure: !dev,
-				path: '/api/'
+				path: '/'
 			}
 		);
 
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ request }) => {
 			httpOnly: true,
 			sameSite: 'lax', // !! same-site 'lax' has poor standards, and varies per browser
 			secure: !dev,
-			path: '/api/'
+			path: '/'
 		});
 
 		const headers = new Headers();

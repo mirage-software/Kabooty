@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { afterNavigate, goto } from '$app/navigation';
+	import { afterNavigate, goto, invalidate } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { t } from 'svelte-intl-precompile';
-	import type { Unsubscriber } from 'svelte/store';
 	import { discord } from '../../stores/discord';
+	import { osu } from '../../stores/osu';
 	import PrimaryButton from '../components/buttons/primary_button.svelte';
 	import Checkbox from '../components/checkbox.svelte';
 	import type { PageData } from './$types';
@@ -14,23 +14,16 @@
 	$: agreed = false;
 
 	let previousPage: string | undefined;
-	let discordUnsubscribe: Unsubscriber;
 
 	afterNavigate(({ from }) => {
 		previousPage = from?.url.pathname;
 	});
 
 	onMount(() => {
-		discordUnsubscribe = discord.subscribe((_discord) => {
-			if (_discord) {
-				goto(previousPage ?? base + '/');
-			}
-		});
-	});
-
-	onDestroy(() => {
-		if (discordUnsubscribe) {
-			discordUnsubscribe();
+		if (!data.signedIn) {
+			discord.update(undefined);
+			osu.update(undefined);
+			invalidate('app:auth:signedin');
 		}
 	});
 </script>
