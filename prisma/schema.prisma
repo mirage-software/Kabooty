@@ -13,24 +13,36 @@ datasource db {
 
 model User {
   // TODO: manually populate the database with cuid's, then switch the index to `id` instead of `discordId`
-  id                    String?       @default(cuid())
-  discordId             String        @id @unique
+  id                    String?         @unique @default(cuid())
+  discordId             String          @id @unique
   username              String
   discriminator         String
   avatar                String?
   joinedAt              DateTime?
   lastUpdated           DateTime?
-  acceptedPrivacyPolicy Boolean       @default(false)
+  acceptedPrivacyPolicy Boolean         @default(false)
   roles                 UserRole[]
   osu                   Osu?
   collabs               Collab[]
   picks                 Pick[]
   participated          Participant[]
   creation_date         DateTime?
-  verified              Boolean       @default(false)
+  verified              Boolean         @default(false)
   logs                  Log[]
   assets                Asset[]
   bumps                 Bump[]
+  guildRoles            UserGuildRole[]
+}
+
+model UserGuildRole {
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  guildRole   GuildRole @relation(fields: [guildRoleId], references: [id], onDelete: Cascade)
+  guildRoleId String
+  guild       Guild     @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  guildId     String
+
+  @@unique([userId, guildRoleId])
 }
 
 model UserRole {
@@ -84,23 +96,37 @@ model OsuMode {
 }
 
 model Collab {
-  id           String        @id @default(cuid())
-  createdAt    DateTime      @default(now())
-  title        String
-  topic        String
-  url          String?       @unique
-  logo         String?
-  creator      User          @relation(fields: [creatorId], references: [discordId], onDelete: Cascade)
-  creatorId    String
-  rules        String?
-  type         CollabType
-  status       CollabStatus
-  bumpStatus   BumpStatus    @default(DISABLED)
-  allowEditing Boolean       @default(false)
-  picks        Pick[]
-  participants Participant[]
-  collabAssets CollabAsset[]
-  assets       Asset[]
+  id               String              @id @default(cuid())
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @default(now())
+  title            String
+  topic            String
+  url              String?             @unique
+  logo             String?
+  creator          User                @relation(fields: [creatorId], references: [discordId], onDelete: Cascade)
+  creatorId        String
+  guild            Guild?              @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  guildId          String?
+  rules            String?
+  type             CollabType
+  status           CollabStatus
+  bumpStatus       BumpStatus          @default(DISABLED)
+  allowEditing     Boolean             @default(false)
+  picks            Pick[]
+  participants     Participant[]
+  collabAssets     CollabAsset[]
+  assets           Asset[]
+  earlyAccessRoles CollabEarlyAccess[]
+}
+
+model CollabEarlyAccess {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  openAt      DateTime
+  collab      Collab    @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  collabId    String
+  guildRole   GuildRole @relation(fields: [guildRoleId], references: [id], onDelete: Cascade)
+  guildRoleId String
 }
 
 model CollabAsset {
@@ -131,6 +157,7 @@ enum CollabStatus {
   OPEN
   RELEASE
   CLOSED
+  NEW
 }
 
 enum BumpStatus {
@@ -222,4 +249,23 @@ model Bump {
   userId    String
 
   @@index([createdAt])
+}
+
+model Guild {
+  id             String          @id @default(cuid())
+  discordGuildId String          @unique
+  name           String
+  logo           String
+  banned         Boolean         @default(false)
+  collabs        Collab[]
+  userRoles      UserGuildRole[]
+}
+
+model GuildRole {
+  id                 String              @id @default(cuid())
+  discordGuildRoleId String              @unique
+  name               String
+  visible            Boolean             @default(false)
+  earlyAccessCollabs CollabEarlyAccess[]
+  userRoles          UserGuildRole[]
 }

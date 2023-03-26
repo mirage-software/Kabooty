@@ -3,17 +3,135 @@ import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
 import { Jwt } from '../../../jwt';
 import { Prisma } from '../../../database/prisma';
+import { CollabStatus, type Prisma as prisma } from '@prisma/client';
 import { CollabType, type Collab } from '@prisma/client';
 import { SentryClient } from '../../../bot/sentry';
 import { DiscordUser } from '../../../utils/discord/user';
 import { Formatting } from '../../../utils/text/formatting';
 
-export const GET: RequestHandler = async () => {
-	// !! TODO: this call needs to be paginated in the future
-	const collabs = await Prisma.client.collab.findMany({
-		include: {
-			collabAssets: true
+export const GET: RequestHandler = async ({ url, locals }) => {
+	const page = parseInt(url.searchParams.get('page') ?? '1');
+	const query = url.searchParams.get('query')?.trim() ?? undefined;
+	const sort = url.searchParams.get('sort') ?? undefined;
+	const status: CollabStatus | undefined =
+		(url.searchParams.get('status') as CollabStatus | undefined) ?? undefined;
+	const order = url.searchParams.get('order') ?? 'asc';
+
+	if (order !== 'asc' && order !== 'desc') {
+		return json({}, { status: 400 });
+	}
+
+	if (status && !Object.keys(CollabStatus).includes(status)) {
+		return json({}, { status: 400 });
+	}
+
+	const search = query?.split(' ');
+
+	let orderBy: Array<prisma.CollabOrderByWithRelationAndSearchRelevanceInput> = [
+		{
+			status: order
+		},
+		{
+			participants: {
+				_count: order
+			}
 		}
+		// {
+		// 	character: {
+		// 		anime_name: order === 'desc' ? 'asc' : 'desc'
+		// 	}
+		// },
+		// {
+		// 	name: order
+		// },
+		// {
+		// 	createdAt: order
+		// }
+	];
+
+	switch (sort) {
+		case 'size': {
+			orderBy = [
+				{
+					participants: {
+						_count: order
+					}
+				}
+			];
+			break;
+		}
+		case 'status': {
+			orderBy = [
+				{
+					status: order
+				}
+			];
+			break;
+		}
+	}
+
+	let OR: prisma.Enumerable<prisma.CollabWhereInput> | undefined;
+
+	if (search) {
+		OR = [
+			{ AND: search.map((s) => ({ title: { contains: s, mode: 'insensitive' } })) },
+			{
+				AND: search.map((s) => ({
+					guild: { discordGuildId: { contains: s, mode: 'insensitive' } }
+				}))
+			},
+			{ AND: search.map((s) => ({ guild: { name: { contains: s, mode: 'insensitive' } } })) }
+			// {
+			// 	AND: search.map((s) => ({
+			// 		character: { anime_name: { contains: s, mode: 'insensitive' } }
+			// 	}))
+			// },
+			// {
+			// 	AND: search.map((s) => ({
+			// 		user: { username: { contains: s, mode: 'insensitive' } }
+			// 	}))
+			// },
+			// {
+			// 	AND: search.map((s) => ({
+			// 		user: { discordId: { contains: s, mode: 'insensitive' } }
+			// 	}))
+			// }
+		];
+	}
+
+	const collabs = await Prisma.client.collab.findMany({
+		where: {
+			AND: {
+				OR: OR,
+				status: status
+			}
+		},
+		include: {
+			collabAssets: true,
+			earlyAccessRoles: {
+				include: {
+					guildRole: true
+				}
+			},
+			guild: {
+				include: {
+					userRoles: {
+						where: {
+							userId: locals.user?.id ?? undefined
+						}
+					}
+				}
+			},
+			_count: {
+				select: {
+					participants: true
+				}
+			}
+		},
+
+		orderBy: orderBy,
+		take: 50,
+		skip: 50 * (page - 1)
 	});
 
 	return json(collabs);

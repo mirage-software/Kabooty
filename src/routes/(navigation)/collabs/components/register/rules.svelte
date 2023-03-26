@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-intl-precompile';
-	import SolidButton from '../../generic/design/solid_button.svelte';
-	import Card from '../../generic/design/card.svelte';
+	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
+	import Card from '../../../../../components/generic/design/card.svelte';
 	import type { Collab } from '@prisma/client';
 
 	export let collab: Collab;

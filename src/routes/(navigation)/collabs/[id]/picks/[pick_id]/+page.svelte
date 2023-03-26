@@ -15,7 +15,7 @@
 	import type { IDiscordRole } from '../../../../../../utils/discord/interfaces/role';
 	import type { IDiscordUser } from '../../../../../../utils/discord/interfaces/user';
 	import Extra from '../../../../../../components/collabs/register/extra.svelte';
-	import AssetComponent from '../../../../../../components/collabs/pick/asset.svelte';
+	import AssetComponent from '../../../components/pick/asset.svelte';
 	import type { Writable } from 'svelte/store';
 
 	let pick:

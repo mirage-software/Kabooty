@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { t } from 'svelte-intl-precompile';
-	import SolidButton from '../../generic/design/solid_button.svelte';
-	import Card from '../../generic/design/card.svelte';
+	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
+	import Card from '../../../../../components/generic/design/card.svelte';
 	import type { AnimeCharacter, Collab, CollabAsset, Pick } from '@prisma/client';
 	import axios from 'axios';
-	import InputText from '../../generic/design/input_text.svelte';
+	import InputText from '../../../../../components/generic/design/input_text.svelte';
 	import Character from './character/character.svelte';
 	import { selected } from './character/selected_store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import Paginator from '../../../components/generic/design/paginator.svelte';
+	import Paginator from '../../../../../components/generic/design/paginator.svelte';
 	import Asset from '../asset.svelte';
 
 	export let collab: Collab & { collabAssets: CollabAsset[] };
@@ -63,7 +63,7 @@
 		results = response.data.characters as (AnimeCharacter & { picks: Pick[] })[];
 	}
 
-	let cooldown: string | number | undefined;
+	let cooldown: ReturnType<typeof setTimeout> | undefined;
 
 	function setSearchTimer() {
 		if (cooldown) {

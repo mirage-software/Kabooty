@@ -22,57 +22,25 @@
 		"decline": "Decline",
 		"accept": "Accept"
 	},
-	"errors": {
-		"title": "Oopsie woopsie!",
-		"unknown": "An unknown error has occurred.",
-		"construction": {
-			"title": "This page is still under construction.",
-			"body": "Please check back soon."
+	"filtering": {
+		"search": "Search",
+		"sort": {
+			"placeholder": "Sort"
 		},
-		"discord": {
-			"access_denied": "While signing in you denied access to your Discord account.<br>In order to sign in, you need to allow access to your Discord account.<br>In case you denied access out of concern for your account, we do not do anything to your account without giving us your explicit permission.",
-			"invalid_code": "Something went wrong while signing in. The code provided by Discord is invalid.<br>Please try again. If the problem persists, try again in a few minutes, and clearing your cookies.<br>In case this still doesn't solve the issue, please contact us."
-		},
-		"osu": {
-			"invalid_code": "Something went wrong while signing in. The code provided by osu! is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us.",
-			"no_state": "Something went wrong while signing in. The code provided by osu! can't be verified.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us.",
-			"no_code": "Something went wrong while signing in. The code provided by osu! is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us.",
-			"authentication_failed": "Failed to authenticate with osu!<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us."
-		},
-		"404": "This page does not exist, uwu.",
-		"text_too_long": "The entered text is too long, >~<"
-	},
-	"server": {
-		"verify": "Verify your account",
-		"rules": "Please read the server rules",
-		"start": "Start verification",
-		"verified": "You have been verified"
-	},
-	"discord": {
-		"signin": "Sign In",
-		"permissions": "In order to use the website, you need to allow access to your Discord account. The following permissions are required.<br>- Access to your account details, in order for the registration to the website to function, and create an account.<br>- Know what servers you're in, to connect your Discord account with the Endless Mirage Discord server.<br>- Get the total amount of servers you are in, as a check for the server verification process.<br>- Join servers for you, to add a functional \"Join the Discord\" button on your profile page.",
-		"join": "Join the Discord"
-	},
-	"osu": {
-		"connect": "Connect osu!",
-		"update": "Update",
-		"unranked": "Unranked",
-		"no_time": "No time set",
-		"note": "Note, there's a {days} day delay after updating you osu! data before you can update again."
-	},
-	"file": {
-		"upload": "Upload file"
-	},
-	"account": {
-		"delete": "Delete account",
-		"connections": "Connections",
-		"picks": {
-			"title": "Your current picks",
-			"none": "You are currently not participating in any collabs"
-		}
+		"unset": "None"
 	},
 	"collabs": {
 		"title": "Collabs",
+		"create_your_own": "Create your own collab!",
+		"card": {
+			"participants": "participants",
+			"participant": "participant",
+			"register": "Register",
+			"view": "View"
+		},
+		"filters": {
+			"status": "Status"
+		},
 		"create": "Create collab",
 		"update": "Update collab",
 		"export": "Export",
@@ -81,7 +49,6 @@
 		"upload_logo": "Upload logo",
 		"retry": "Retry",
 		"registered": "You have successfully registered for the collab",
-		"register": "Register",
 		"registration": {
 			"title": "Collab registration >~<",
 			"connect": {
@@ -160,14 +127,20 @@
 		},
 		"status": {
 			"EARLY_ACCESS": "Early Access",
-			"DESIGN": "Design in Progress",
+			"DESIGN": "Making Designs",
 			"OPEN": "Registration Open",
 			"RELEASE": "Released",
-			"CLOSED": "Closed"
+			"CLOSED": "Closed",
+			"NEW": "New"
 		},
 		"bump_status": {
 			"ENABLED": "Bumps Running",
 			"DISABLED": "Bumps Disabled"
+		},
+		"sorts": {
+			"default": "Default",
+			"size": "Participants",
+			"status": "Status"
 		},
 		"filter": {
 			"default": "Default",
@@ -185,6 +158,55 @@
 		},
 		"delete_pick_confirm": "Are you sure you want to delete this pick?",
 		"delete_image_confirm": "Are you sure you want to remove this Image?"
+	},
+	"errors": {
+		"title": "Oopsie woopsie!",
+		"unknown": "An unknown error has occurred.",
+		"construction": {
+			"title": "This page is still under construction.",
+			"body": "Please check back soon."
+		},
+		"discord": {
+			"access_denied": "While signing in you denied access to your Discord account.<br>In order to sign in, you need to allow access to your Discord account.<br>In case you denied access out of concern for your account, we do not do anything to your account without giving us your explicit permission.",
+			"invalid_code": "Something went wrong while signing in. The code provided by Discord is invalid.<br>Please try again. If the problem persists, try again in a few minutes, and clearing your cookies.<br>In case this still doesn't solve the issue, please contact us."
+		},
+		"osu": {
+			"invalid_code": "Something went wrong while signing in. The code provided by osu! is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us.",
+			"no_state": "Something went wrong while signing in. The code provided by osu! can't be verified.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us.",
+			"no_code": "Something went wrong while signing in. The code provided by osu! is invalid.<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us.",
+			"authentication_failed": "Failed to authenticate with osu!<br>Please try again. If the problem persists, try again in a few minutes.<br>In case this still doesn't solve the issue, please contact us."
+		},
+		"404": "This page does not exist, uwu.",
+		"text_too_long": "The entered text is too long, >~<"
+	},
+	"server": {
+		"verify": "Verify your account",
+		"rules": "Please read the server rules",
+		"start": "Start verification",
+		"verified": "You have been verified"
+	},
+	"discord": {
+		"signin": "Sign In",
+		"permissions": "In order to use the website, you need to allow access to your Discord account. The following permissions are required.<br>- Access to your account details, in order for the registration to the website to function, and create an account.<br>- Know what servers you're in, to connect your Discord account with the Endless Mirage Discord server.<br>- Get the total amount of servers you are in, as a check for the server verification process.<br>- Join servers for you, to add a functional \"Join the Discord\" button on your profile page.",
+		"join": "Join the Discord"
+	},
+	"osu": {
+		"connect": "Connect osu!",
+		"update": "Update",
+		"unranked": "Unranked",
+		"no_time": "No time set",
+		"note": "Note, there's a {days} day delay after updating you osu! data before you can update again."
+	},
+	"file": {
+		"upload": "Upload file"
+	},
+	"account": {
+		"delete": "Delete account",
+		"connections": "Connections",
+		"picks": {
+			"title": "Your current picks",
+			"none": "You are currently not participating in any collabs"
+		}
 	},
 	"admin": {
 		"title": "Admin settings",

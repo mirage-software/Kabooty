@@ -84,3 +84,24 @@ button {
 	font-weight: 700;
 	font-size: 16px;
 }
+
+#masonry-grid-sizer,
+#masonry-grid-item {
+	width: 100%;
+	margin-bottom: $margin-xs;
+
+	@media (min-width: $breakpoint-xs) {
+		$columns: 2;
+		width: calc(100% / $columns - $margin-xs + $margin-xs / $columns);
+	}
+
+	@media (min-width: $breakpoint-m) {
+		$columns: 3;
+		width: calc(100% / $columns - $margin-xs + $margin-xs / $columns);
+	}
+
+	@media (min-width: $breakpoint-l) {
+		$columns: 4;
+		width: calc(100% / $columns - $margin-xs + $margin-xs / $columns);
+	}
+}

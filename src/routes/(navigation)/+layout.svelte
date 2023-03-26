@@ -16,6 +16,7 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
+		justify-content: stretch;
 		min-height: 100vh;
 
 		#content {
@@ -23,8 +24,6 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-
-			width: 100%;
 		}
 	}
 </style>

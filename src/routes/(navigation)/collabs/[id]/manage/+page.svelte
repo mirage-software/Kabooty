@@ -7,7 +7,7 @@
 	import { discord } from '../../../../../stores/discord';
 
 	import axios from 'axios';
-	import Manage from '../../../../../components/collabs/manage.svelte';
+	import Manage from '../../components/manage.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 	import type { Collab, CollabAsset } from '@prisma/client';
 	import LoadingSpinner from '../../../../components/loading_spinner.svelte';

@@ -12,7 +12,7 @@
 	import type { AnimeCharacter, Asset, Collab, CollabAsset, Pick, User } from '@prisma/client';
 	import PageTitle from '../../../../components/generic/design/page_title.svelte';
 	import SolidButton from '../../../../components/generic/design/solid_button.svelte';
-	import PickComponent from '../../../../components/collabs/pick.svelte';
+	import PickComponent from '../components/pick.svelte';
 	import InfiniteScroll from 'svelte-infinite-scroll';
 	import InputText from '../../../../components/generic/design/input_text.svelte';
 	import Dropdown from '../../../../components/collabs/register/extra/dropdown.svelte';

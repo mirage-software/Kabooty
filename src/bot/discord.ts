@@ -9,12 +9,17 @@ export abstract class DiscordBot {
 		if (!DiscordBot._client) {
 			const env = Env.load();
 			DiscordBot._client = new Client({
-				intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS],
+				intents: [
+					Intents.FLAGS.GUILDS,
+					Intents.FLAGS.GUILD_MEMBERS,
+					Intents.FLAGS.GUILD_BANS,
+					Intents.FLAGS.GUILD_INVITES
+				],
 				presence: {
 					activities: [
 						{
-							type: 'WATCHING',
-							name: 'you sleep'
+							type: 'PLAYING',
+							name: 'with Kabooty 2.0'
 						}
 					]
 				}

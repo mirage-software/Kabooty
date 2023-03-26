@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Card from '../generic/design/card.svelte';
+	import Card from '../../../../components/generic/design/card.svelte';
 	import { t } from 'svelte-intl-precompile';
-	import SolidButton from '../generic/design/solid_button.svelte';
+	import SolidButton from '../../../../components/generic/design/solid_button.svelte';
 	import type { Collab, CollabAsset } from '@prisma/client';
 	import axios from 'axios';
-	import InputText from '../generic/design/input_text.svelte';
-	import FileUpload from '../generic/design/file_upload.svelte';
-	import ImageContainer from '../generic/design/image_container.svelte';
+	import InputText from '../../../../components/generic/design/input_text.svelte';
+	import FileUpload from '../../../../components/generic/design/file_upload.svelte';
+	import ImageContainer from '../../../../components/generic/design/image_container.svelte';
 	import { goto } from '$app/navigation';
 	import CollabCard from './collab.svelte';
 	import Dropdown from './register/extra/dropdown.svelte';
 	import Asset from './asset.svelte';
 	import { onMount } from 'svelte';
-	import { Formatting } from '../../utils/text/formatting';
+	import { Formatting } from '../../../../utils/text/formatting';
 
 	export let collab: Partial<Collab & { collabAssets: CollabAsset[] }> = {
 		title: undefined,

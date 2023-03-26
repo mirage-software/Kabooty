@@ -1,15 +1,15 @@
 <script lang="ts">
 	import type { Collab, User, Pick, AnimeCharacter, Asset, CollabAsset } from '@prisma/client';
-	import Card from '../generic/design/card.svelte';
+	import Card from '../../../../components/generic/design/card.svelte';
 	import { t } from 'svelte-intl-precompile';
 
-	import ImageContainer from '../generic/design/image_container.svelte';
+	import ImageContainer from '../../../../components/generic/design/image_container.svelte';
 	import IconButton from './icon_button.svelte';
-	import { discord, getFormattedDate } from '../../stores/discord';
+	import { discord, getFormattedDate } from '../../../../stores/discord';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
-	import SolidButton from '../generic/design/solid_button.svelte';
-	import { ClientPaths } from '../../utils/paths/client';
+	import SolidButton from '../../../../components/generic/design/solid_button.svelte';
+	import { ClientPaths } from '../../../../utils/paths/client';
 	import { goto } from '$app/navigation';
 
 	export let pick: Pick & {

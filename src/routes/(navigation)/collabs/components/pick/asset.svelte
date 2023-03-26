@@ -1,15 +1,15 @@
 <script lang="ts">
-	import FileUpload from '../../generic/design/file_upload.svelte';
+	import FileUpload from '../../../../../components/generic/design/file_upload.svelte';
 
-	import ImageContainer from '../../generic/design/image_container.svelte';
+	import ImageContainer from '../../../../../components/generic/design/image_container.svelte';
 
 	import { t } from 'svelte-intl-precompile';
-	import Card from '../../generic/design/card.svelte';
+	import Card from '../../../../../components/generic/design/card.svelte';
 	import type { Asset, CollabAsset } from '@prisma/client';
-	import { ClientPaths } from '../../../utils/paths/client';
-	import Crop from '../../generic/design/crop.svelte';
-	import { modal } from '../../../stores/modal';
-	import { discord } from '../../../stores/discord';
+	import { ClientPaths } from '../../../../../utils/paths/client';
+	import Crop from '../../../../../components/generic/design/crop.svelte';
+	import { modal } from '../../../../../stores/modal';
+	import { discord } from '../../../../../stores/discord';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 	import IconButton from '../icon_button.svelte';

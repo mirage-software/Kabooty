@@ -1,15 +1,15 @@
 <script lang="ts">
-	import FileUpload from '../../generic/design/file_upload.svelte';
+	import FileUpload from '../../../../../components/generic/design/file_upload.svelte';
 
-	import ImageContainer from '../../generic/design/image_container.svelte';
+	import ImageContainer from '../../../../../components/generic/design/image_container.svelte';
 
 	import { t } from 'svelte-intl-precompile';
-	import Card from '../../generic/design/card.svelte';
-	import SolidButton from '../../generic/design/solid_button.svelte';
+	import Card from '../../../../../components/generic/design/card.svelte';
+	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
 	import type { Asset, CollabAsset } from '@prisma/client';
-	import { ClientPaths } from '../../../utils/paths/client';
-	import Crop from '../../generic/design/crop.svelte';
-	import { modal } from '../../../stores/modal';
+	import { ClientPaths } from '../../../../../utils/paths/client';
+	import Crop from '../../../../../components/generic/design/crop.svelte';
+	import { modal } from '../../../../../stores/modal';
 
 	export let collabAsset: CollabAsset;
 	export let asset: Asset | null = null;

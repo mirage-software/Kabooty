@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let disabled = false;
 	export let loading = false;
-	export let content: string;
+	export let content: string | undefined;
 </script>
 
 <button on:click class:disabled class:loading>

@@ -1,9 +1,10 @@
 <script>
 	import { base } from '$app/paths';
 	import { t } from 'svelte-intl-precompile';
+	import { clientHeight } from './footer';
 </script>
 
-<footer>
+<footer bind:clientHeight={$clientHeight}>
 	<div id="decoration">
 		<!-- svelte-ignore a11y-missing-attribute -->
 		<div id="image" />

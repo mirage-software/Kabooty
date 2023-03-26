@@ -3,29 +3,37 @@
 	import { t } from 'svelte-intl-precompile';
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
-	import SolidButton from '../../generic/design/solid_button.svelte';
-	import Card from '../../generic/design/card.svelte';
-	import { osu } from '../../../stores/osu';
+	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
+	import Card from '../../../../../components/generic/design/card.svelte';
+	import { discord } from '../../../../../stores/discord';
 
 	function getCurrentRoute() {
 		return $page.url.pathname;
 	}
 </script>
 
-<h3>{$t('collabs.registration.connect.osu')}</h3>
-<div id="osu">
+<h3>{$t('collabs.registration.connect.discord')}</h3>
+<div id="discord">
 	<Card>
 		<div id="content">
-			<h4>{$t('collabs.registration.connect.osu_description')}</h4>
+			<div id="permissions">
+				{#each $t('discord.permissions').split('<br>') as line}
+					{#if !line.startsWith('- ')}
+						<h4>{line}</h4>
+					{:else}
+						<p>{line}</p>
+					{/if}
+				{/each}
+			</div>
 			<SolidButton
 				click={async () => {
 					// TODO: abstract into data layer
-					const state = await axios.get('/api/auth/osu/url');
-					osu.setRedirectUrl(getCurrentRoute());
+					const state = await axios.get('/api/auth/discord/url');
+					discord.setRedirectUrl(getCurrentRoute());
 					goto(state.data.url);
 				}}
 				color="green"
-				string="osu.connect"
+				string="discord.signin"
 			/>
 		</div>
 	</Card>
@@ -37,11 +45,16 @@
 		margin-top: $margin-s;
 	}
 
-	h4 {
+	p {
 		margin: 0;
 	}
 
-	#osu {
+	h4 {
+		margin: 0;
+		margin-bottom: $margin-s;
+	}
+
+	#discord {
 		margin: $margin-m;
 		margin-top: 0;
 		margin-bottom: $margin-m;

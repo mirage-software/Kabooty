@@ -14,7 +14,7 @@
 	import { _ } from 'svelte-intl-precompile';
 	import { page } from '$app/stores';
 	import Extra from '../../../../../../../components/collabs/register/extra.svelte';
-	import AssetComponent from '../../../../../../../components/collabs/pick/asset.svelte';
+	import AssetComponent from '../../../../components/pick/asset.svelte';
 	import Character from '../../../../../../../components/collabs/register/character.svelte';
 	import { selected } from '../../../../../../../components/collabs/register/character/selected_store';
 	import type { Unsubscriber } from 'svelte/store';

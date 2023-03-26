@@ -1,3 +1,5 @@
+<!-- TODO: DEPRECATE THIS COMPONENT -->
+
 <div id="card">
 	<slot />
 </div>

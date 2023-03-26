@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { t } from 'svelte-intl-precompile';
-	import SolidButton from '../../generic/design/solid_button.svelte';
-	import Card from '../../generic/design/card.svelte';
+	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
+	import Card from '../../../../../components/generic/design/card.svelte';
 	import type { Pick } from '@prisma/client';
-	import InputText from '../../generic/design/input_text.svelte';
+	import InputText from '../../../../../components/generic/design/input_text.svelte';
 	import Dropdown from './extra/dropdown.svelte';
-	import { osu } from '../../../stores/osu';
+	import { osu } from '../../../../../stores/osu';
 	import { onDestroy, onMount } from 'svelte';
 	import type { Unsubscriber } from 'svelte/store';
 

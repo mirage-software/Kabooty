@@ -90,7 +90,7 @@
 		}
 	});
 
-	let cooldown: string | number | undefined;
+	let cooldown: ReturnType<typeof setTimeout> | undefined;
 
 	function setSearchTimer() {
 		newPage = 1;

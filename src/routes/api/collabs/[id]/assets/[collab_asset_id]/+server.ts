@@ -92,7 +92,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 	}
 };
 
-export async function deleteImages(collabAssetId: string): Promise<void> {
+export async function _deleteImages(collabAssetId: string): Promise<void> {
 	let page = 0;
 
 	let assets: Asset[] | null = null;
@@ -150,7 +150,7 @@ export const DELETE: RequestHandler = async ({ request, params }) => {
 			}
 		});
 
-		if (!asset) {
+		if (!asset || !collabAssetId) {
 			return new Response(undefined, { status: 404 });
 		}
 
@@ -162,7 +162,7 @@ export const DELETE: RequestHandler = async ({ request, params }) => {
 			}
 		});
 
-		await deleteImages(collabAssetId);
+		await _deleteImages(collabAssetId);
 		await deleteExample(asset);
 
 		await Prisma.client.collabAsset.delete({
