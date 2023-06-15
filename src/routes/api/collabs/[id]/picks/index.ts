@@ -3,21 +3,6 @@ import { Prisma } from '../../../../../database/prisma';
 import type { Prisma as prisma } from '@prisma/client';
 
 export const get: RequestHandler = async ({ params, request }) => {
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			id: params.id
-		}
-	});
-
-	if (!collab) {
-		return {
-			status: 404,
-			body: {
-				message: 'Collab not found'
-			}
-		};
-	}
-
 	const url = new URL(request.url);
 	const page = parseInt(url.searchParams.get('page') ?? '1');
 	const query = url.searchParams.get('query')?.trim() ?? undefined;
@@ -94,18 +79,33 @@ export const get: RequestHandler = async ({ params, request }) => {
 				AND: search.map((s) => ({
 					character: { anime_name: { contains: s, mode: 'insensitive' } }
 				}))
+			},
+			{
+				AND: search.map((s) => ({
+					user: { username: { contains: s, mode: 'insensitive' } }
+				}))
+			},
+			{
+				AND: search.map((s) => ({
+					user: { discordId: { contains: s, mode: 'insensitive' } }
+				}))
 			}
 		];
 	}
 
 	const picks = await Prisma.client.pick.findMany({
 		where: {
-			collabId: collab.id,
+			collabId: params.id,
 			OR: OR
 		},
 		include: {
-			User: true,
-			character: true
+			user: true,
+			character: true,
+			assets: {
+				include: {
+					collabAsset: true
+				}
+			}
 		},
 		orderBy: orderBy,
 		take: 25,

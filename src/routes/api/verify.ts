@@ -6,12 +6,11 @@ import cookie from 'cookie';
 import { Jwt } from '../../jwt';
 import OAuth from 'discord-oauth2';
 import { Prisma } from '../../database/prisma';
-import axios from 'axios';
-import { getUpdatedDiscordUser } from './discord/user';
 import { getUpdatedOsuUser } from './osu/access';
 import type { Osu, OsuMode } from '@prisma/client';
-import type { IDiscordUser } from '../../database/discord_user';
 import { MessageEmbed } from 'discord.js';
+import type { IDiscordUser } from '../../utils/discord/interfaces/user';
+import { DiscordUser } from '../../utils/discord/user';
 
 function getPlayTime(time: number): string {
 	const total = time / 60 / 60;
@@ -119,7 +118,7 @@ async function sendEmbedToDiscord(data: {
 			},
 			{
 				name: 'VPN Factor',
-				value: vpnMessage,
+				value: data.vpnFactor === -1 ? 'VPN detection disabled' : vpnMessage,
 				inline: true
 			}
 		]
@@ -167,30 +166,23 @@ export const get: RequestHandler = async ({ request }) => {
 		// !! verification data
 
 		const guildCount = guilds.length;
-		const user = await getUpdatedDiscordUser(userId);
 
-		if (!user) {
+		try {
+			await DiscordUser.updateGuildUser(userId, serverId);
+		} catch (error) {
+			// !! Do nothing, since the user may not be in the guild
+		}
+
+		const user = await DiscordUser.getUser(userId, token);
+
+		if (!user?.joinedAt) {
 			return {
 				status: 400,
 				body: {
-					message: 'User not found'
+					message: 'User not in discord'
 				}
 			};
 		}
-
-		await Prisma.client.user.update({
-			where: {
-				discordId: userId
-			},
-			data: {
-				discordId: user.id,
-				username: user.username,
-				discriminator: user.discriminator,
-				avatar: user.avatar,
-				joinedAt: user.joinedAt,
-				creation_date: user?.creation_date
-			}
-		});
 
 		await getUpdatedOsuUser(userId);
 
@@ -216,16 +208,17 @@ export const get: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		const ip = request.headers.get('CF-Connecting-IP');
-		let vpnFactor = 0;
+		// TODO: implement alternative verification
+		// const ip = request.headers.get('CF-Connecting-IP');
+		const vpnFactor = -1;
 
-		if (ip) {
-			vpnFactor = (
-				await axios.get(
-					`http://check.getipintel.net/check.php?ip=${ip}&flags=m&contact=${env['IP_INTEL_CONTACT']}`
-				)
-			).data;
-		}
+		// if (ip) {
+		// 	vpnFactor = (
+		// 		await axios.get(
+		// 			`http://check.getipintel.net/check.php?ip=${ip}&flags=m&contact=${env['IP_INTEL_CONTACT']}`
+		// 		)
+		// 	).data;
+		// }
 
 		// !! honestly this is probably the shittiest code I have written in years
 
@@ -289,8 +282,10 @@ export const get: RequestHandler = async ({ request }) => {
 		const unverifiedRole = env['DISCORD_UNVERIFIED_ROLE_ID'];
 
 		const guildMember = await guild.members.fetch(user.id);
+
 		guildMember.roles.add(roleId);
 		guildMember.roles.remove(unverifiedRole);
+
 		// because xeg is too lazy to have another bot do it
 		// TODO: implement dynamic way of setting roles
 		const roles = guildMember.roles.valueOf();
@@ -312,6 +307,7 @@ export const get: RequestHandler = async ({ request }) => {
 			status: 200
 		};
 	} catch (error) {
+		console.log(error);
 		SentryClient.log(error);
 
 		return {

@@ -2,30 +2,44 @@
 	import { t } from 'svelte-intl-precompile';
 	import SolidButton from '../../generic/design/solid_button.svelte';
 	import Card from '../../generic/design/card.svelte';
-	import type { AnimeCharacter, Collab, Pick } from '@prisma/client';
+	import type { AnimeCharacter, Collab, CollabAsset, Pick } from '@prisma/client';
 	import axios from 'axios';
 	import InputText from '../../generic/design/input_text.svelte';
 	import Character from './character/character.svelte';
 	import { selected } from './character/selected_store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import Paginator from '../../../components/generic/design/paginator.svelte';
+	import Asset from '../asset.svelte';
 
-	export let collab: Collab;
+	export let collab: Collab & { collabAssets: CollabAsset[] };
+	export let pick: Pick | undefined = undefined;
 
 	export let submit: (
 		data: AnimeCharacter | null | undefined,
 		name: string | null | undefined
 	) => Promise<void>;
 
-	let results: (AnimeCharacter & { Pick: Pick[] })[] | null = null;
+	let results: (AnimeCharacter & { picks: Pick[] })[] | null = null;
+
+	let newPage: number | null = null;
 
 	let query = '';
 	let customName = '';
 
+	let total = 0;
+	let page = 1;
+
 	onMount(async () => {
-		try {
-			await axios.get('/api/collabs/' + collab.id + '/open');
-		} catch (_) {
+		if (!pick) {
+			try {
+				await axios.get('/api/collabs/' + collab.id + '/open');
+			} catch (_) {
+				goto('/collabs/' + collab.id + '/error?error=errors.collab_closed');
+			}
+		}
+
+		if (!collab.allowEditing) {
 			goto('/collabs/' + collab.id + '/error?error=errors.collab_closed');
 		}
 	});
@@ -36,7 +50,17 @@
 			return;
 		}
 
-		results = (await axios.get(`/api/collabs/${collab.id}/characters?search=${query}`)).data;
+		if (newPage) {
+			page = newPage;
+			newPage = null;
+		}
+
+		const response = await axios.get(
+			`/api/collabs/${collab.id}/characters?search=${query}&page=${page}`
+		);
+
+		total = response.data.count;
+		results = response.data.characters as (AnimeCharacter & { picks: Pick[] })[];
 	}
 
 	let cooldown: string | number | undefined;
@@ -61,6 +85,21 @@
 <div id="character">
 	<Card>
 		<div id="content">
+			{#if !pick}
+				<div id="title">
+					<h4>{$t('collabs.registration.required_assets')}</h4>
+				</div>
+				<div id="assets">
+					{#each collab.collabAssets as collabAsset}
+						<Asset {collabAsset} />
+					{/each}
+				</div>
+			{:else}
+				<div id="title">
+					<h4>{$t('picks.current.name')}</h4>
+					<h3 style="margin: 0;">{pick.name}</h3>
+				</div>
+			{/if}
 			<div id="title">
 				<h4>{$t('collabs.registration.character.search_title')}</h4>
 				<h5>{$t('collabs.registration.character.search_subtitle')}</h5>
@@ -72,6 +111,13 @@
 				onChanged={setSearchTimer}
 			/>
 			{#if results}
+				<Paginator
+					pageCount={Math.ceil(total / 50)}
+					updatePage={(_) => {
+						page = _;
+						searchCharacters();
+					}}
+				/>
 				<div id="results">
 					{#each results as result}
 						<Character
@@ -90,7 +136,7 @@
 							name: $t('collabs.registration.character.custom'),
 							anime_name: $t('collabs.registration.character.original'),
 							id: -1,
-							Pick: []
+							picks: []
 						}}
 						onClick={(_) => {
 							selected.update({
@@ -111,7 +157,11 @@
 			{/if}
 			{#if $selected && ($selected.id !== -1 || ($selected.id === -1 && customName.length > 2))}
 				<SolidButton
-					click={async () => submit($selected, customName)}
+					click={async () => {
+						query = '';
+						results = null;
+						submit($selected, customName);
+					}}
 					color="green"
 					string="collabs.registration.submit"
 				/>
@@ -156,6 +206,14 @@
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
+			}
+
+			#assets {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				width: 100%;
+				gap: $margin-xs;
 			}
 
 			#results {

@@ -4,9 +4,9 @@
 	export let title: string | null = null;
 	export let placeholder = 'placeholder';
 
-	export let value: string | null | undefined = '';
+	export let value: unknown | null | undefined = '';
 
-	export let data: string[] = [];
+	export let data: unknown[] = [];
 	export let strings: string[] = [];
 
 	export let onChanged: (() => void) | null = null;

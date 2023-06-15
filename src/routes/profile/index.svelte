@@ -8,8 +8,11 @@
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import axios from 'axios';
 	import Connections from '../../components/profile/connections.svelte';
-	import type { IDiscordRole } from '../../database/discord_user';
 	import Picks from '../../components/profile/picks.svelte';
+	import type { IDiscordRole } from '../../utils/discord/interfaces/role';
+	import type { Bump } from '@prisma/client';
+
+	let bumps: Bump[] = [];
 
 	onMount(async () => {
 		const result = await axios.get('/api/discord/authenticated');
@@ -17,7 +20,18 @@
 		if (!result.data.authenticated) {
 			goto('/');
 		}
+
+		getBumps();
 	});
+
+	async function getBumps() {
+		bumps = (await axios.get('/api/profile/bumps')).data;
+	}
+
+	async function bump() {
+		await axios.patch('/api/bumps/bump');
+		getBumps();
+	}
 
 	function getDisplayRoles(roles: IDiscordRole[]) {
 		return roles.filter((role) => {
@@ -57,21 +71,22 @@
 						{/if}
 					</div>
 
-					{#if $discord.admin || !$discord.joinedAt}
-						<div id="buttons">
-							{#if !$discord.joinedAt}
-								<SolidButton
-									string="discord.join"
-									click={async () => {
-										await axios.get('/api/discord/join');
-									}}
-								/>
-							{/if}
-							{#if $discord.admin}
-								<SolidButton string="admin.title" click={() => goto('/admin')} />
-							{/if}
-						</div>
-					{/if}
+					<div id="buttons">
+						{#if !$discord.joinedAt}
+							<SolidButton
+								string="discord.join"
+								click={async () => {
+									await axios.get('/api/discord/join');
+								}}
+							/>
+						{/if}
+						{#if bumps.length > 0}
+							<SolidButton string="bump" click={bump} />
+						{/if}
+						{#if $discord.admin}
+							<SolidButton string="admin.title" click={() => goto('/admin')} />
+						{/if}
+					</div>
 				</div>
 			</div>
 		</div>

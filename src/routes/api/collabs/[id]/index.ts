@@ -1,15 +1,26 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
-import { getUser } from '../../discord/user';
 import { Jwt } from '../../../../jwt';
 import { Prisma } from '../../../../database/prisma';
 import type { Collab } from '@prisma/client';
 import { SentryClient } from '../../../../bot/sentry';
+import { DiscordUser } from '../../../../utils/discord/user';
+import { Formatting } from '../../../../utils/text/formatting';
 
 export const get: RequestHandler = async ({ params }) => {
-	const collab = await Prisma.client.collab.findUnique({
+	const collab = await Prisma.client.collab.findFirst({
 		where: {
-			id: params.id
+			OR: [
+				{
+					id: params.id
+				},
+				{
+					url: params.id
+				}
+			]
+		},
+		include: {
+			collabAssets: true
 		}
 	});
 
@@ -43,26 +54,11 @@ export const put: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const user = await getUser(token, userId);
+	const user = await DiscordUser.getUser(userId, token);
 
 	if (!user || !user.admin) {
 		return {
 			status: 403
-		};
-	}
-
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			id: params.id
-		}
-	});
-
-	if (!collab) {
-		return {
-			status: 404,
-			body: {
-				message: 'Collab not found'
-			}
 		};
 	}
 
@@ -75,9 +71,15 @@ export const put: RequestHandler = async ({ request, params }) => {
 			},
 			data: {
 				status: body.status,
+				url: Formatting.toKebabCase(body.url),
 				topic: body.topic,
 				title: body.title,
-				rules: body.rules === '' ? null : body.rules
+				rules: body.rules === '' ? null : body.rules,
+				bumpStatus: body.bumpStatus,
+				allowEditing: body.allowEditing
+			},
+			include: {
+				collabAssets: true
 			}
 		});
 
@@ -111,26 +113,11 @@ export const del: RequestHandler = async ({ request, params }) => {
 		};
 	}
 
-	const user = await getUser(token, userId);
+	const user = await DiscordUser.getUser(userId, token);
 
 	if (!user || !user.admin) {
 		return {
 			status: 403
-		};
-	}
-
-	const collab = await Prisma.client.collab.findUnique({
-		where: {
-			id: params.id
-		}
-	});
-
-	if (!collab) {
-		return {
-			status: 404,
-			body: {
-				message: 'Collab not found'
-			}
 		};
 	}
 

@@ -3,6 +3,7 @@
 
 	import axios from 'axios';
 	import { onMount } from 'svelte';
+	import { t } from 'svelte-intl-precompile';
 	import { canUpdateOsu } from '../../routes/api/osu/update/can_update';
 	import { osu } from '../../stores/osu';
 	import LoadingSpinner from '../generic/design/loading_spinner.svelte';
@@ -91,6 +92,13 @@
 					</div>
 				{/if}
 			</div>
+			<p id="note">
+				{$t('osu.note', {
+					values: {
+						days: 2
+					}
+				})}
+			</p>
 		{/if}
 	</div>
 </div>
@@ -207,6 +215,15 @@
 
 				flex-wrap: wrap;
 			}
+		}
+
+		#note {
+			margin: $margin-s;
+			margin-top: 0;
+
+			font-size: $font-size-caption;
+			font-weight: 400;
+			color: rgba($color: white, $alpha: 0.5);
 		}
 	}
 </style>

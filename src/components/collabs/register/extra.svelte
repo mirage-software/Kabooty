@@ -2,16 +2,32 @@
 	import { t } from 'svelte-intl-precompile';
 	import SolidButton from '../../generic/design/solid_button.svelte';
 	import Card from '../../generic/design/card.svelte';
-	import type { AnimeCharacter, Collab, Pick } from '@prisma/client';
-	import axios, { AxiosError } from 'axios';
+	import type { Pick } from '@prisma/client';
 	import InputText from '../../generic/design/input_text.svelte';
-	import { goto } from '$app/navigation';
 	import Dropdown from './extra/dropdown.svelte';
+	import { osu } from '../../../stores/osu';
+	import { onDestroy, onMount } from 'svelte';
+	import type { Unsubscriber } from 'svelte/store';
 
-	export let collab: Collab;
-	export let imageBuffer: ArrayBuffer;
-	export let filename: string;
-	export let character: AnimeCharacter;
+	export let pick: Pick | undefined = undefined;
+
+	export let onSubmit:
+		| ((data: {
+				skills: {
+					stamina: string;
+					tenacity: string;
+					accuracy: string;
+					precision: string;
+					reaction: string;
+					agility: string;
+				};
+				specialty: string;
+				avatar: string;
+				card: { name: string; quote: string };
+				mod: string;
+				banner: { name: string; quote: string };
+		  }) => Promise<void>)
+		| undefined = undefined;
 
 	let specialties = [
 		'Aim',
@@ -29,13 +45,7 @@
 		'Low AR'
 	];
 
-	const requestData: Partial<Pick> = {
-		characterId: character.id !== -1 ? character.id : undefined,
-		name: character.name,
-		extra: {}
-	};
-
-	let skills = {
+	let skills = (pick?.extra as any)?.skills ?? {
 		stamina: '',
 		tenacity: '',
 		accuracy: '',
@@ -43,47 +53,96 @@
 		reaction: '',
 		agility: ''
 	};
-	let gameSpecialty = '';
-	let avatarText = '';
+	let gameSpecialty = (pick?.extra as any)?.specialty ?? '';
 
-	async function register() {
-		try {
-			requestData.extra = {
+	let avatarText = onSubmit
+		? (pick?.extra as any)?.avatar ?? $osu?.username ?? 'Unknown'
+		: (pick?.extra as any)?.avatar;
+	let avatarValid: boolean;
+
+	let bannerName = onSubmit
+		? (pick?.extra as any)?.banner?.name ?? $osu?.username ?? 'Unknown'
+		: (pick?.extra as any)?.banner?.name;
+	let bannerNameValid: boolean;
+
+	let bannerQuote = (pick?.extra as any)?.banner?.quote ?? '';
+	let bannerQuoteValid: boolean;
+
+	let cardName = onSubmit
+		? (pick?.extra as any)?.card?.name ?? $osu?.username ?? 'Unknown'
+		: (pick?.extra as any)?.card?.name;
+	let cardNameValid: boolean;
+
+	let cardQuote = (pick?.extra as any)?.card?.quote ?? '';
+	let cardQuoteValid: boolean;
+
+	let favMod = (pick?.extra as any)?.mod ?? '';
+
+	let subscription: Unsubscriber;
+
+	onMount(() => {
+		subscription = osu.subscribe((osuUser) => {
+			if (avatarText === 'Unknown' && osuUser?.username) {
+				avatarText = osuUser?.username;
+			}
+
+			if (bannerName === 'Unknown' && osuUser?.username) {
+				bannerName = osuUser?.username;
+			}
+
+			if (cardName === 'Unknown' && osuUser?.username) {
+				cardName = osuUser?.username;
+			}
+		});
+	});
+
+	onDestroy(() => {
+		subscription();
+	});
+
+	async function submit() {
+		if (onSubmit) {
+			await onSubmit({
 				skills: skills,
 				specialty: gameSpecialty,
-				avatar: avatarText
-			};
-
-			try {
-				await axios.get('/api/verify');
-			} catch (error) {
-				// !! may fail if the user isn't in the discord
-			}
-
-			const pick: Pick = (await axios.post(`/api/collabs/${collab.id}/register`, requestData)).data;
-
-			await axios.post(
-				`/api/images/upload/collabs/${collab.id}/picks/${pick.id}/${filename}`,
-				imageBuffer,
-				{
-					headers: {
-						'Content-Type': 'application/octet-stream'
-					}
+				avatar: avatarText,
+				card: {
+					name: cardName,
+					quote: cardQuote
+				},
+				mod: favMod,
+				banner: {
+					name: bannerName,
+					quote: bannerQuote
 				}
-			);
-
-			goto(`/collabs/${collab.id}/registered`);
-		} catch (error) {
-			if (error instanceof AxiosError) {
-				goto(
-					`/collabs/${collab.id}/error?error=${encodeURIComponent(
-						error.response?.data['message'] ?? 'errors.unknown'
-					)}`
-				);
-			} else {
-				goto(`/collabs/${collab.id}/error?error=${encodeURIComponent('errors.unknown')}`);
-			}
+			});
 		}
+	}
+
+	import { writable } from 'svelte/store';
+
+	export const isValidStore = writable(false);
+
+	$: valid =
+		skills.stamina.length > 0 &&
+		skills.tenacity.length > 0 &&
+		skills.accuracy.length > 0 &&
+		skills.precision.length > 0 &&
+		skills.reaction.length > 0 &&
+		skills.agility.length > 0 &&
+		gameSpecialty.length > 0 &&
+		favMod.length === 2 &&
+		avatarValid !== false &&
+		avatarText.length > 0 &&
+		bannerNameValid !== false &&
+		bannerName.length > 0 &&
+		bannerQuoteValid !== false &&
+		cardNameValid !== false &&
+		cardName.length > 0 &&
+		cardQuoteValid !== false;
+
+	$: {
+		isValidStore.set(valid);
 	}
 </script>
 
@@ -91,6 +150,11 @@
 <div id="character">
 	<Card>
 		<div id="content">
+			{#if pick && !pick.valid}
+				<h4 style="margin: 0;">
+					{$t('collabs.registration.invalid')}
+				</h4>
+			{/if}
 			<div id="title">
 				<h4>{$t('collabs.registration.extra.card_title')}</h4>
 				<h5>{$t('collabs.registration.extra.card_subtitle')}</h5>
@@ -149,9 +213,42 @@
 
 			<InputText
 				bind:value={avatarText}
+				bind:valid={avatarValid}
 				title={'collabs.registration.extra.avatar'}
-				hint={'Wowzers'}
-				max={11}
+				hint={'Tayo'}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 36, width: 250 }}
+			/>
+			<InputText
+				bind:value={bannerName}
+				bind:valid={bannerNameValid}
+				title={'collabs.registration.extra.banner.name'}
+				hint={'Tayo'}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 54, width: 415 }}
+			/>
+			<InputText
+				bind:value={bannerQuote}
+				bind:valid={bannerQuoteValid}
+				title={'collabs.registration.extra.banner.quote'}
+				hint={"If you follow the herd, you'll be stepping in poop all day."}
+				multiline={true}
+				height="54px"
+				calculation={{ font: 'Montserrat', weight: 300, italic: true, size: 12, width: 550 }}
+			/>
+			<InputText
+				bind:value={cardName}
+				bind:valid={cardNameValid}
+				title={'collabs.registration.extra.card.name'}
+				hint={'Tayou-kun Queso'}
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 36, width: 300 }}
+			/>
+			<InputText
+				bind:value={cardQuote}
+				bind:valid={cardQuoteValid}
+				title={'collabs.registration.extra.card.quote'}
+				hint={"I don't really know any quotes honestly."}
+				multiline={true}
+				height="54px"
+				calculation={{ font: 'Montserrat', weight: 200, italic: true, size: 8, width: 320 }}
 			/>
 			<Dropdown
 				bind:value={gameSpecialty}
@@ -159,21 +256,58 @@
 				placeholder="collabs.registration.extra.osu.specialty"
 				data={specialties}
 			/>
-
-			<SolidButton
-				click={register}
-				color="green"
-				string="collabs.registration.register"
-				disabled={!(
-					skills.stamina.length > 0 &&
-					skills.tenacity.length > 0 &&
-					skills.accuracy.length > 0 &&
-					skills.precision.length > 0 &&
-					skills.reaction.length > 0 &&
-					skills.agility.length > 0 &&
-					gameSpecialty.length > 0
-				)}
+			<Dropdown
+				bind:value={favMod}
+				title="collabs.registration.extra.osu.mod"
+				placeholder="collabs.registration.extra.osu.mod"
+				data={[
+					'NM',
+					'EZ',
+					'NF',
+					'HT',
+					'DC',
+					'HR',
+					'SD',
+					'PF',
+					'DT',
+					'NC',
+					'HD',
+					'FI',
+					'FL',
+					'RL',
+					'AP',
+					'SO',
+					'DA'
+				]}
+				strings={[
+					'No Mod (NM)',
+					'Easy (EZ)',
+					'No Fail (NF)',
+					'Half Time (HT)',
+					'Daycore (DC)',
+					'Hard Rock (HR)',
+					'Sudden Death (SD)',
+					'Perfect (PF)',
+					'Double Time (DT)',
+					'Nightcore (NC)',
+					'Hidden (HD)',
+					'Fade In (FI)',
+					'Flashlight (FL)',
+					'Relax (RL)',
+					'Autopilot (AP)',
+					'Spun Out (SO)',
+					'Difficulty Adjust (DA)'
+				]}
 			/>
+
+			{#if onSubmit}
+				<SolidButton
+					click={submit}
+					color="green"
+					string={pick ? 'collabs.registration.submit' : 'collabs.registration.register'}
+					disabled={!valid}
+				/>
+			{/if}
 		</div>
 	</Card>
 </div>
@@ -200,7 +334,6 @@
 		flex-direction: column;
 		gap: calc($margin-xs / 4);
 
-		// max-width: 500px;
 		width: calc(100% - $margin-s * 2);
 
 		background-color: $dark-overlay;

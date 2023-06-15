@@ -5,9 +5,9 @@ import type { Prisma as prisma } from '@prisma/client';
 import { Jwt } from '../../jwt';
 
 import cookie from 'cookie';
-import { getUser } from './discord/user';
 import { CollabStatus } from '@prisma/client';
-import { deletePick } from './collabs/[id]/picks/[pick_id]';
+import { deletePick } from './picks/[id]';
+import { DiscordUser } from '../../utils/discord/user';
 
 export const get: RequestHandler = async ({ request }) => {
 	const url = new URL(request.url);
@@ -56,7 +56,7 @@ export const get: RequestHandler = async ({ request }) => {
 			OR: OR
 		},
 		include: {
-			Pick: true
+			picks: true
 		},
 		orderBy: orderBy,
 		take: 50,
@@ -94,7 +94,7 @@ export const post: RequestHandler = async ({ request }) => {
 	const userId = decodedUser['user_id'] as string;
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {
@@ -159,7 +159,7 @@ export const del: RequestHandler = async ({ request }) => {
 	const userId = decodedUser['user_id'] as string;
 
 	try {
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {
@@ -181,11 +181,14 @@ export const del: RequestHandler = async ({ request }) => {
 				id: parseInt(id)
 			},
 			include: {
-				Pick: {
+				picks: {
 					where: {
 						collab: {
 							OR: [{ status: CollabStatus.OPEN }, { status: CollabStatus.EARLY_ACCESS }]
 						}
+					},
+					include: {
+						assets: true
 					}
 				}
 			}
@@ -197,9 +200,9 @@ export const del: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		if (character.Pick.length > 0) {
-			for (let i = 0; i < character.Pick.length; i++) {
-				await deletePick(character.Pick[i]);
+		if (character.picks.length > 0) {
+			for (let i = 0; i < character.picks.length; i++) {
+				await deletePick(character.picks[i]);
 			}
 		}
 

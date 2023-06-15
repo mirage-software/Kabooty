@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Collab, User, Pick, AnimeCharacter } from '@prisma/client';
+	import type { Collab, User, Pick, AnimeCharacter, Asset, CollabAsset } from '@prisma/client';
 	import Card from '../generic/design/card.svelte';
 	import { t } from 'svelte-intl-precompile';
 
@@ -9,15 +9,24 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 	import SolidButton from '../generic/design/solid_button.svelte';
+	import { ClientPaths } from '../../utils/paths/client';
+	import { goto } from '$app/navigation';
 
-	export let pick: Pick & { User: User; character: AnimeCharacter };
+	export let pick: Pick & {
+		user: User;
+		character: AnimeCharacter;
+		assets: (Asset & { collabAsset: CollabAsset })[];
+		collab?: Collab;
+	};
 	export let collab: Collab;
 	export let profile = false;
 
 	let _window: Window | undefined;
+	let asset: Asset | undefined;
 
 	onMount(() => {
 		_window = window;
+		asset = pick.assets.find((asset) => asset.collabAsset.mainAsset);
 	});
 
 	export let onChange: () => void;
@@ -42,7 +51,7 @@
 		}
 
 		if (confirmed) {
-			await axios.delete('/api/collabs/' + collab.id + '/picks/' + pick.id, {
+			await axios.delete('/api/picks/' + pick.id, {
 				data: {
 					reason: reason
 				}
@@ -52,42 +61,12 @@
 		}
 	}
 
-	async function linkPick() {
-		if (!_window) {
-			return;
+	function isReleased(collab: Collab | undefined) {
+		if (collab !== undefined && collab.status == 'RELEASE') {
+			return true;
 		}
 
-		const response = _window.prompt('Link the pick to anime character ID:', '123456');
-
-		if (response) {
-			try {
-				await axios.patch('/api/collabs/' + collab.id + '/picks/' + pick.id, {
-					characterId: response
-				});
-				onChange();
-			} catch (error) {
-				_window.alert('Failed to assign character');
-			}
-		}
-	}
-
-	async function reportPick() {
-		if (!_window) {
-			return;
-		}
-
-		const response = _window.prompt(
-			'What would you like to report the pick for? There\'s no need to report for a missing image, or when the pick is not a duplicate, or not in the character database. Valid reasons are for example, "inappropriate image", "duplicate pick", or something along those lines.',
-			'Duplicate pick'
-		);
-
-		if (response) {
-			await axios.post('/api/collabs/' + collab.id + '/picks/' + pick.id + '/report', {
-				report: response
-			});
-
-			_window.alert('Pick reported');
-		}
+		return false;
 	}
 </script>
 
@@ -95,16 +74,18 @@
 	<Card>
 		<div id="container">
 			<div>
-				{#if pick.image}
+				{#if asset}
 					<div id="image">
 						<ImageContainer>
 							<!-- svelte-ignore a11y-missing-attribute -->
 							<img
-								src={'/api/images/collabs/' +
-									collab.id +
-									'/picks/' +
-									pick.image +
-									'?width=200&height=200'}
+								src={ClientPaths.storedAsset(
+									collab.id,
+									pick.id,
+									asset.collabAssetId,
+									asset.image,
+									asset.createdAt
+								) + '&width=200&height=200'}
 							/>
 						</ImageContainer>
 					</div>
@@ -123,15 +104,40 @@
 					{/if}
 					<h4>{pick.name}</h4>
 					<h6 style="margin: 0;">Picked by</h6>
-					<h5>{pick.User.username + '#' + pick.User.discriminator}</h5>
-					<h6 id="discord-id">{pick.User.discordId}</h6>
+					<h5>{pick.user.username + '#' + pick.user.discriminator}</h5>
+					<h6 id="discord-id">{pick.user.discordId}</h6>
 					<h6 style="margin: 0;">Picked at</h6>
 					<h5>{getFormattedDate(pick.createdAt.toString(), true)}</h5>
 				</div>
 
 				<div id="buttons">
 					<div id="report">
-						<SolidButton click={reportPick} string={'picks.report'} color="red" />
+						{#if profile && collab.allowEditing}
+							<SolidButton
+								click={async () => {
+									goto('/collabs/' + pick.collabId + '/picks/' + pick.id + '/edit');
+								}}
+								string={'picks.edit'}
+								color="green"
+							/>
+						{:else}
+							<SolidButton
+								click={async () => {
+									goto('/collabs/' + pick.collabId + '/picks/' + pick.id);
+								}}
+								string={'picks.view'}
+								color="green"
+							/>
+						{/if}
+						{#if profile && isReleased(pick.collab)}
+							<SolidButton
+								click={async () => {
+									goto('/api/picks/' + pick.id + '/delivery');
+								}}
+								string={'picks.delivery'}
+								color="blue"
+							/>
+						{/if}
 					</div>
 
 					{#if $discord?.admin || profile}
@@ -139,11 +145,6 @@
 							{#if $discord?.admin || profile}
 								<div id="admin">
 									<IconButton icon="la la-trash" click={deletePick} />
-								</div>
-							{/if}
-							{#if $discord?.admin}
-								<div id="admin">
-									<IconButton icon="la la-link" click={linkPick} />
 								</div>
 							{/if}
 						</div>
@@ -166,7 +167,6 @@
 	#container {
 		display: flex;
 		flex-direction: column;
-
 		height: 100%;
 
 		#image {
@@ -229,7 +229,6 @@
 			#buttons {
 				display: flex;
 				flex-direction: row;
-
 				justify-content: space-between;
 
 				flex-wrap: wrap;
@@ -250,6 +249,7 @@
 				#report {
 					align-self: stretch;
 					display: flex;
+					gap: 5px;
 					justify-content: stretch;
 				}
 

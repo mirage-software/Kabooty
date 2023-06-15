@@ -2,9 +2,9 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { Prisma } from '../../../../database/prisma';
 import cookie from 'cookie';
 import { Jwt } from '../../../../jwt';
-import { getUser } from '../../discord/user';
 import { CollabStatus, type Collab } from '@prisma/client';
-import type { IDiscordUser } from '../../../../database/discord_user';
+import type { IDiscordUser } from '../../../../utils/discord/interfaces/user';
+import { DiscordUser } from '../../../../utils/discord/user';
 
 function dateIsInPast(date: Date): boolean {
 	const now = new Date();
@@ -67,7 +67,7 @@ export const get: RequestHandler = async ({ params, request }) => {
 		const decodedUser = Jwt.decode(cookies['user_id']);
 		const userId = decodedUser['user_id'] as string;
 
-		user = await getUser(token, userId);
+		user = await DiscordUser.getUser(userId, token);
 	} catch (error) {
 		// Don't need the user
 	}

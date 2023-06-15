@@ -20,12 +20,14 @@ model User {
   lastUpdated   DateTime?
   roles         UserRole[]
   osu           Osu?
-  collab        Collab[]
-  pick          Pick[]
-  participant   Participant[]
+  collabs       Collab[]
+  picks         Pick[]
+  participated  Participant[]
   creation_date DateTime?
   verified      Boolean       @default(false)
-  Log           Log[]
+  logs          Log[]
+  assets        Asset[]
+  bumps         Bump[]
 }
 
 model UserRole {
@@ -38,10 +40,10 @@ model UserRole {
 }
 
 model DiscordRole {
-  id       String     @id
-  name     String
-  display  Boolean    @default(false)
-  UserRole UserRole[]
+  id      String     @id
+  name    String
+  display Boolean    @default(false)
+  roles   UserRole[]
 }
 
 model Osu {
@@ -61,7 +63,7 @@ model Osu {
 
 model OsuMode {
   id            String    @id @default(cuid())
-  user          Osu       @relation(fields: [osuId], references: [id], onDelete: Cascade)
+  osu           Osu       @relation(fields: [osuId], references: [id], onDelete: Cascade)
   osuId         String
   gamemode      String
   rank          Int?
@@ -79,18 +81,39 @@ model OsuMode {
 }
 
 model Collab {
-  id          String        @id @default(cuid())
-  createdAt   DateTime      @default(now())
-  title       String
-  topic       String
-  logo        String?
-  creator     User          @relation(fields: [creatorId], references: [discordId], onDelete: Cascade)
-  creatorId   String
-  rules       String?
-  type        CollabType
-  status      CollabStatus
-  Pick        Pick[]
-  Participant Participant[]
+  id           String        @id @default(cuid())
+  createdAt    DateTime      @default(now())
+  title        String
+  topic        String
+  url          String?       @unique
+  logo         String?
+  creator      User          @relation(fields: [creatorId], references: [discordId], onDelete: Cascade)
+  creatorId    String
+  rules        String?
+  type         CollabType
+  status       CollabStatus
+  bumpStatus   BumpStatus    @default(DISABLED)
+  allowEditing Boolean       @default(false)
+  picks        Pick[]
+  participants Participant[]
+  collabAssets CollabAsset[]
+  assets       Asset[]
+}
+
+model CollabAsset {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  collab      Collab   @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  collabId    String
+  assetType   String
+  assetName   String
+  assetWidth  Int
+  assetHeight Int
+  mainAsset   Boolean  @default(false)
+  example     Boolean  @default(false)
+  exampleX    Int?
+  exampleY    Int?
+  assets      Asset[]
 }
 
 enum CollabType {
@@ -103,27 +126,51 @@ enum CollabStatus {
   DESIGN
   EARLY_ACCESS
   OPEN
-  BUMP
   RELEASE
   CLOSED
 }
 
+enum BumpStatus {
+  ENABLED
+  DISABLED
+}
+
 model Pick {
-  id          String          @id @default(cuid())
-  createdAt   DateTime        @default(now())
-  name        String
-  image       String?
-  extra       Json?
-  characterId Int?
-  character   AnimeCharacter? @relation(fields: [characterId], references: [id], onDelete: SetNull)
-  collab      Collab          @relation(fields: [collabId], references: [id], onDelete: Cascade)
-  collabId    String
-  original    Boolean         @default(false)
-  User        User?           @relation(fields: [userId], references: [discordId])
-  userId      String
-  Participant Participant[]
+  id           String          @id @default(cuid())
+  createdAt    DateTime        @default(now())
+  name         String
+  image        String?
+  extra        Json?
+  characterId  Int?
+  character    AnimeCharacter? @relation(fields: [characterId], references: [id], onDelete: SetNull)
+  collab       Collab          @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  collabId     String
+  original     Boolean         @default(false)
+  user         User?           @relation(fields: [userId], references: [discordId])
+  userId       String
+  participants Participant[]
+  assets       Asset[]
+  valid        Boolean         @default(false)
+  bumps        Bump[]
 
   @@unique([collabId, characterId])
+}
+
+model Asset {
+  id            String      @id @default(cuid())
+  createdAt     DateTime    @default(now())
+  image         String
+  collab        Collab      @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  collabId      String
+  user          User?       @relation(fields: [userId], references: [discordId])
+  userId        String
+  pick          Pick        @relation(fields: [pickId], references: [id], onDelete: Cascade)
+  pickId        String
+  collabAsset   CollabAsset @relation(fields: [collabAssetId], references: [id], onDelete: Cascade)
+  collabAssetId String
+  valid         Boolean     @default(false)
+
+  @@unique([pickId, collabAssetId])
 }
 
 model Participant {
@@ -142,7 +189,7 @@ model AnimeCharacter {
   name       String
   anime_name String
 
-  Pick Pick[]
+  picks Pick[]
 
   @@index([name])
 }
@@ -154,4 +201,22 @@ model Log {
   user      User?    @relation(fields: [userId], references: [discordId])
   userId    String
   data      Json?
+}
+
+enum BumpState {
+  OPEN
+  MISSED
+  CLOSED
+}
+
+model Bump {
+  id        String    @id @default(cuid())
+  createdAt DateTime
+  state     BumpState @default(OPEN)
+  pick      Pick      @relation(fields: [pickId], references: [id], onDelete: Cascade)
+  pickId    String
+  user      User      @relation(fields: [userId], references: [discordId], onDelete: Cascade)
+  userId    String
+
+  @@index([createdAt])
 }

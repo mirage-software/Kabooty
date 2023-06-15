@@ -49,7 +49,7 @@
 </script>
 
 {#if discordError}
-	<Error status={400} type={'discord.' + discordError} />
+	<Error type={'discord.' + discordError} />
 {:else}
 	<Loading />
 {/if}

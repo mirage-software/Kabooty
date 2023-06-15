@@ -1,14 +1,19 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import cookie from 'cookie';
 import { Jwt } from '../../../jwt';
-import { getUser } from '../discord/user';
 import { Prisma } from '../../../database/prisma';
 import { CollabType, type Collab } from '@prisma/client';
 import { SentryClient } from '../../../bot/sentry';
+import { DiscordUser } from '../../../utils/discord/user';
+import { Formatting } from '../../../utils/text/formatting';
 
 export const get: RequestHandler = async () => {
 	// !! TODO: this call needs to be paginated in the future
-	const collabs = await Prisma.client.collab.findMany();
+	const collabs = await Prisma.client.collab.findMany({
+		include: {
+			collabAssets: true
+		}
+	});
 
 	return {
 		status: 200,
@@ -32,7 +37,7 @@ export const post: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		const user = await getUser(token, userId);
+		const user = await DiscordUser.getUser(userId, token);
 
 		if (!user || !user.admin) {
 			return {
@@ -41,11 +46,17 @@ export const post: RequestHandler = async ({ request }) => {
 		}
 
 		const body: Collab = await request.json();
+		let url = null;
+
+		if (body.url !== undefined) {
+			url = Formatting.toKebabCase(body.url);
+		}
 
 		const collab = await Prisma.client.collab.create({
 			data: {
 				// TODO: these are hardcoded for now, must be an option later
 				type: CollabType.OPEN,
+				url: url,
 				status: body.status,
 				creatorId: userId,
 				title: body.title,

@@ -6,45 +6,112 @@
 	import { t } from 'svelte-intl-precompile';
 	import Card from '../../generic/design/card.svelte';
 	import SolidButton from '../../generic/design/solid_button.svelte';
+	import type { Asset, CollabAsset } from '@prisma/client';
+	import { ClientPaths } from '../../../utils/paths/client';
+	import Crop from '../../generic/design/crop.svelte';
+	import { modal } from '../../../stores/modal';
+
+	export let collabAsset: CollabAsset;
+	export let asset: Asset | null = null;
 
 	let image: string | null = null;
 	let imageBuffer: ArrayBuffer;
 	let filename: string;
 
-	export let submit: (image: ArrayBuffer, filename: string) => Promise<void>;
+	export let submit: (
+		image: ArrayBuffer,
+		filename: string,
+		pixels:
+			| {
+					width: number;
+					height: number;
+					x: number;
+					y: number;
+			  }
+			| undefined
+	) => Promise<void>;
+
+	export let next: () => void;
+
+	export let editing = false;
+
+	function cropImage(_image: string) {
+		const params: any = {
+			image: _image,
+			width: collabAsset.assetWidth,
+			height: collabAsset.assetHeight,
+			upload: (_pixels: { width: number; height: number; x: number; y: number }) => {
+				submit(imageBuffer, filename, _pixels);
+			}
+		};
+
+		if (collabAsset.example) {
+			params['exampleUrl'] = ClientPaths.collabAsset(collabAsset.collabId, collabAsset.id);
+		}
+
+		modal.open(Crop, params);
+	}
 </script>
 
-<h3>{$t('collabs.registration.image.title')}</h3>
+<h3>
+	{$t('collabs.registration.asset.title', {
+		values: { asset: collabAsset.assetName.toLowerCase() }
+	})}
+</h3>
 <div id="character">
 	<Card>
 		<div id="content">
-			{#if image}
+			{#if image || asset}
 				<div id="image">
 					<ImageContainer>
-						<!-- svelte-ignore a11y-missing-attribute -->
-						<img src={image} />
+						{#if image}
+							<!-- svelte-ignore a11y-missing-attribute -->
+							<img src={image} />
+						{/if}
+						{#if asset && !image}
+							<!-- svelte-ignore a11y-missing-attribute -->
+							<img
+								src={ClientPaths.storedAsset(
+									collabAsset.collabId,
+									asset.pickId,
+									collabAsset.id,
+									asset.image,
+									asset.createdAt
+								)}
+							/>
+						{/if}
 					</ImageContainer>
 				</div>
 			{/if}
 			<FileUpload
-				string="collabs.registration.image.title"
+				string={$t('collabs.registration.asset.title', {
+					values: { asset: collabAsset.assetName.toLowerCase() }
+				})}
 				maxBytes={5120 * 1024}
-				width={900}
-				height={900}
-				onDataUrl={(data) => (image = data)}
+				width={collabAsset.assetWidth}
+				height={collabAsset.assetHeight}
+				onDataUrl={(data) => {
+					if (data) {
+						cropImage(data);
+					}
+				}}
 				onBuffer={(buffer, _) => {
 					imageBuffer = buffer;
 					filename = _;
 				}}
 			/>
 			<div id="reqs">
-				<h4>{$t('collabs.registration.character.duplicate')}</h4>
-				<p id="filereqs">{$t('collabs.registration.image.filereqs')}</p>
+				<h4 class={editing ? 'editing' : ''}>{$t('collabs.registration.character.duplicate')}</h4>
+				<p class={editing ? 'editing' : ''} id="filereqs">
+					{$t('collabs.registration.asset.filereqs', {
+						values: { width: collabAsset.assetWidth, height: collabAsset.assetHeight }
+					})}
+				</p>
 			</div>
-			{#if image}
+			{#if asset || image}
 				<SolidButton
 					click={async () => {
-						submit(imageBuffer, filename);
+						next();
 					}}
 					color="green"
 					string="collabs.registration.submit"

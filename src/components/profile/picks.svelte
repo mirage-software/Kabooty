@@ -3,27 +3,22 @@
 	import { t } from 'svelte-intl-precompile';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
-	import type { AnimeCharacter, Collab, Pick, User } from '@prisma/client';
+	import type { AnimeCharacter, Asset, Collab, CollabAsset, Pick, User } from '@prisma/client';
 	import PickCard from '../collabs/pick.svelte';
 
-	let picks: (Pick & { User: User; character: AnimeCharacter; collab: Collab })[] = [];
+	let picks: (Pick & {
+		user: User;
+		character: AnimeCharacter;
+		collab: Collab;
+		assets: (Asset & { collabAsset: CollabAsset })[];
+	})[] = [];
 
 	onMount(async () => {
 		getPicks();
 	});
 
 	async function getPicks() {
-		picks = (await axios.get('/api/picks')).data;
-	}
-
-	function getTypedPick(
-		pick: Pick & { User: User; character: AnimeCharacter; collab: Collab }
-	): Pick & { User: User; character: AnimeCharacter } {
-		return {
-			...pick,
-			User: pick.User,
-			character: pick.character
-		};
+		picks = (await axios.get('/api/profile/picks')).data;
 	}
 </script>
 
@@ -40,12 +35,7 @@
 		</div>
 	{/if}
 	{#each picks as pick}
-		<PickCard
-			pick={getTypedPick(pick)}
-			collab={pick['collab']}
-			profile={true}
-			onChange={getPicks}
-		/>
+		<PickCard {pick} collab={pick['collab']} profile={true} onChange={getPicks} />
 	{/each}
 </div>
 

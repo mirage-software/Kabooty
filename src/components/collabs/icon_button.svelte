@@ -1,12 +1,16 @@
 <script lang="ts">
-	export let click: () => void;
+	export let click: () => void = () => {};
+
+	export let href: string | undefined = undefined;
 
 	export let icon = 'la la-automobile';
 </script>
 
-<button on:click={click}>
-	<div class={icon} />
-</button>
+<a {href}>
+	<button on:click={click}>
+		<div class={icon} />
+	</button>
+</a>
 
 <style lang="scss">
 	button {

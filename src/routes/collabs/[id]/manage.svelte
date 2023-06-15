@@ -9,12 +9,12 @@
 	import axios from 'axios';
 	import Manage from '../../../components/collabs/manage.svelte';
 	import type { Unsubscriber } from 'svelte/store';
-	import type { Collab } from '@prisma/client';
+	import type { Collab, CollabAsset } from '@prisma/client';
 	import LoadingSpinner from '../../../components/generic/design/loading_spinner.svelte';
 
 	let subscription: Unsubscriber | null = null;
 
-	let collab: Collab | null = null;
+	let collab: (Collab & { collabAssets: CollabAsset[] }) | null = null;
 
 	onMount(async () => {
 		const result = await axios.get('/api/discord/authenticated');

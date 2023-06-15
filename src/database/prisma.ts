@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { SentryClient } from '../bot/sentry';
+import { Cron } from '../cron/cron';
 import characters from './characters.json';
 
 export abstract class Prisma {
@@ -26,6 +27,7 @@ export abstract class Prisma {
 		if (!Prisma._client) {
 			Prisma._client = new PrismaClient();
 			Prisma.importCharacters();
+			Cron.start();
 		}
 
 		return Prisma._client;

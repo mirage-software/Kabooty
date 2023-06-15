@@ -5,16 +5,16 @@
 
 	import { t } from 'svelte-intl-precompile';
 
-	export let character: AnimeCharacter & { Pick: Pick[] };
+	export let character: AnimeCharacter & { picks: Pick[] };
 
 	export let onClick: ((character: AnimeCharacter) => void) | null = null;
 </script>
 
 <button
 	class:selected={character?.id === $selected?.id}
-	class:unavailable={character?.id === -1 ? false : character.Pick.length > 0}
+	class:unavailable={character?.id === -1 ? false : character.picks.length > 0}
 	on:click={() => {
-		if (character.Pick.length === 0) {
+		if (character.picks.length === 0) {
 			if (onClick) {
 				onClick(character);
 			}
@@ -23,7 +23,7 @@
 >
 	{#if character?.id !== -1}
 		<p id="status">
-			{character.Pick.length > 0
+			{character.picks.length > 0
 				? $t('collabs.registration.character.picked')
 				: $t('collabs.registration.character.available')}
 		</p>
