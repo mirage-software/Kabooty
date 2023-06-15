@@ -5,7 +5,7 @@
 
 	import ImageContainer from '../generic/design/image_container.svelte';
 	import IconButton from './icon_button.svelte';
-	import { discord, getFormattedDate } from '../../stores/discord';
+	import { discord, getFormattedDate, getUserName } from '../../stores/discord';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 	import SolidButton from '../generic/design/solid_button.svelte';
@@ -104,7 +104,7 @@
 					{/if}
 					<h4>{pick.name}</h4>
 					<h6 style="margin: 0;">Picked by</h6>
-					<h5>{pick.user.username + '#' + pick.user.discriminator}</h5>
+					<h5>{getUserName(pick.user)}</h5>
 					<h6 id="discord-id">{pick.user.discordId}</h6>
 					<h6 style="margin: 0;">Picked at</h6>
 					<h5>{getFormattedDate(pick.createdAt.toString(), true)}</h5>

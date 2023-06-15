@@ -7,7 +7,8 @@
 	import {
 		discord,
 		getDiscordProfilePicture,
-		getFormattedDate
+		getFormattedDate,
+		getUserName
 	} from '../../../../../stores/discord';
 	import type { AnimeCharacter, Asset, CollabAsset, User, Pick, Collab } from '@prisma/client';
 	import { ClientPaths } from '../../../../../utils/paths/client';
@@ -110,7 +111,7 @@
 					<div id="stats">
 						<div class="stat">
 							<i class="las la-user" />
-							<p>{discordUser.username + '#' + discordUser.discriminator}</p>
+							<p>{getUserName(discordUser)}</p>
 						</div>
 						{#if discordUser.joinedAt}
 							<div class="stat">
