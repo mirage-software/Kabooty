@@ -34,7 +34,7 @@
 
 <button on:click={click}>
 	<p>
-		{$discord ? $discord.username + '#' + $discord.discriminator : $t('header.signin')}
+		{$discord ? $discord.username : $t('header.signin')}
 	</p>
 	<div id="user">
 		{#if !$discord}
