@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import type { IDiscordUser } from '../utils/discord/interfaces/user';
+import type { User } from '@prisma/client';
 
 export function getDiscordProfilePicture(user: IDiscordUser) {
 	if (user.avatar) {
@@ -29,8 +30,10 @@ export function getFormattedDate(date: string, withTime = false) {
 	return new Date(date).toLocaleDateString(navigator.language, options);
 }
 
-export function getUserName(user: IDiscordUser) {
-	return user.discriminator === "0" ? `@${user.username}` : `@${user.username}#${user.discriminator}`;
+export function getUserName(user: IDiscordUser | User) {
+	return user.discriminator === '0'
+		? `@${user.username}`
+		: `@${user.username}#${user.discriminator}`;
 }
 
 function createDiscordUserStore() {
