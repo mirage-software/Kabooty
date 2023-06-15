@@ -255,13 +255,13 @@ function buildcsv(pick: any, count: number) {
 			}
 		}
 
-		if(pick.original == true) {
+		if (pick.original == true) {
 			charname = pick.name;
-			series = "custom";
+			series = 'custom';
 		}
 	}
 
-	let export_object: any = {
+	const export_object: any = {
 		osu_id: osu_id,
 		osu_name: osu_name,
 		hex_ranks: hex_ranks,
