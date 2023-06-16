@@ -14,7 +14,7 @@ datasource db {
 model User {
   discordId     String        @id
   username      String
-  discriminator String
+  discriminator String?
   avatar        String?
   joinedAt      DateTime?
   lastUpdated   DateTime?
