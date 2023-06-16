@@ -33,7 +33,7 @@ export function getFormattedDate(date: string, withTime = false) {
 export function getUserName(user: IDiscordUser | User) {
 	return user.discriminator === '0'
 		? `@${user.username}`
-		: `@${user.username}#${user.discriminator}`;
+		: `${user.username}#${user.discriminator}`;
 }
 
 function createDiscordUserStore() {
