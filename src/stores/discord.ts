@@ -6,8 +6,12 @@ export function getDiscordProfilePicture(user: IDiscordUser) {
 	if (user.avatar) {
 		return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
 	} else {
-		const lastDigit = user.discriminator.slice(-1);
-		const image = parseInt(lastDigit, 10) % 5;
+		const hasDiscriminator = user.discriminator !== '0' && user.discriminator;
+
+		// This logic is taken from discord.js
+		const image = hasDiscriminator
+			? Number(BigInt(user.id) >> 22n) % 6
+			: Number(user.discriminator) % 5;
 
 		return `https://cdn.discordapp.com/embed/avatars/${image}.png`;
 	}
