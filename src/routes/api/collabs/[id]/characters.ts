@@ -17,7 +17,7 @@ export const get: RequestHandler = async ({ params, request }) => {
 			{ AND: search.map((s) => ({ anime_name: { contains: s, mode: 'insensitive' } })) }
 		];
 	}
-	
+
 	let orderBy: Array<object> = [
 		{
 			anime_name: 'desc'
