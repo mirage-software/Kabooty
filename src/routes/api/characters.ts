@@ -16,15 +16,16 @@ export const get: RequestHandler = async ({ request }) => {
 	const sort = url.searchParams.get('sort') ?? 'anime';
 	const order = url.searchParams.get('order') ?? 'desc';
 
-	const search = query?.split(' ');
+	const splitQuery = query?.split(' ');
+	let fullTextSearch: prisma.Enumerable<prisma.AnimeCharacterWhereInput> | undefined;
 
-	let OR: prisma.Enumerable<prisma.AnimeCharacterWhereInput> | undefined;
-
-	if (search) {
-		OR = [
-			{ AND: search.map((s) => ({ name: { contains: s, mode: 'insensitive' } })) },
-			{ AND: search.map((s) => ({ anime_name: { contains: s, mode: 'insensitive' } })) }
-		];
+	if (splitQuery) {
+		fullTextSearch = splitQuery.map(query => ({
+			OR: [
+				{ name: { search: query.trim() } },
+				{ anime_name: { search: query.trim() } },
+			]
+		}));
 	}
 
 	let orderBy: Array<object> = [{ id: order }];
@@ -54,7 +55,7 @@ export const get: RequestHandler = async ({ request }) => {
 
 	const characters = await Prisma.client.animeCharacter.findMany({
 		where: {
-			OR: OR
+			AND: fullTextSearch
 		},
 		include: {
 			picks: true
@@ -66,7 +67,7 @@ export const get: RequestHandler = async ({ request }) => {
 
 	const count = await Prisma.client.animeCharacter.count({
 		where: {
-			OR: OR
+			AND: fullTextSearch
 		}
 	});
 

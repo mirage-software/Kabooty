@@ -4,18 +4,19 @@ import type { Prisma as prisma } from '@prisma/client';
 
 export const get: RequestHandler = async ({ params, request }) => {
 	const url = new URL(request.url);
-	const query = url.searchParams.get('search')?.trim() ?? undefined;
+	const query = url.searchParams.get('search')?.trim() ?? "undefined";
 	const page = parseInt(url.searchParams.get('page') ?? '1');
 
-	const search = query?.split(' ');
+	const splitQuery = query?.split(' ');
+	let fullTextSearch: prisma.Enumerable<prisma.AnimeCharacterWhereInput> | undefined;
 
-	let OR: prisma.Enumerable<prisma.AnimeCharacterWhereInput> | undefined;
-
-	if (search) {
-		OR = [
-			{ AND: search.map((s) => ({ name: { contains: s, mode: 'insensitive' } })) },
-			{ AND: search.map((s) => ({ anime_name: { contains: s, mode: 'insensitive' } })) }
-		];
+	if (splitQuery) {
+		fullTextSearch = splitQuery.map(query => ({
+			OR: [
+				{ name: { search: query.trim() } },
+				{ anime_name: { search: query.trim() } },
+			]
+		}));
 	}
 
 	let orderBy: Array<object> = [
@@ -29,13 +30,13 @@ export const get: RequestHandler = async ({ params, request }) => {
 
 	const count = await Prisma.client.animeCharacter.count({
 		where: {
-			OR: OR
+			AND: fullTextSearch
 		}
 	});
 
 	const characters = await Prisma.client.animeCharacter.findMany({
 		where: {
-			OR: OR
+			AND: fullTextSearch
 		},
 		include: {
 			picks: {
