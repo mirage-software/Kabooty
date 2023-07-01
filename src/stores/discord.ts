@@ -1,12 +1,17 @@
 import { writable } from 'svelte/store';
 import type { IDiscordUser } from '../utils/discord/interfaces/user';
+import type { User } from '@prisma/client';
 
 export function getDiscordProfilePicture(user: IDiscordUser) {
 	if (user.avatar) {
 		return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
 	} else {
-		const lastDigit = user.discriminator.slice(-1);
-		const image = parseInt(lastDigit, 10) % 5;
+		const hasDiscriminator = user.discriminator !== '0' && user.discriminator;
+
+		// This logic is taken from discord.js
+		const image = hasDiscriminator
+			? Number(BigInt(user.id) >> 22n) % 6
+			: Number(user.discriminator) % 5;
 
 		return `https://cdn.discordapp.com/embed/avatars/${image}.png`;
 	}
@@ -27,6 +32,11 @@ export function getFormattedDate(date: string, withTime = false) {
 	}
 
 	return new Date(date).toLocaleDateString(navigator.language, options);
+}
+
+export function getUserName(user: IDiscordUser | User) {
+	const isNewUser = user.discriminator === '0' || !user.discriminator;
+	return isNewUser ? `@${user.username}` : `${user.username}#${user.discriminator}`;
 }
 
 function createDiscordUserStore() {

@@ -72,7 +72,7 @@
 	}
 
 	async function getCanvasFont() {
-		return new Promise<string>(async (resolve, _) => {
+		return new Promise<string>((resolve, _) => {
 			WebFonts.load(calculation, () => {
 				const fontWeight = calculation.weight?.toString() ?? '400';
 				const fontSize = calculation.size ? calculation.size.toString() + 'px' : '16px';

@@ -9,6 +9,7 @@ import { Env } from '../../../../env';
 import { SentryClient } from '../../../../bot/sentry';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { DiscordUser } from '../../../../utils/discord/user';
+import { getUserName } from '../../../../stores/discord';
 
 async function sendEmbedToDiscord(
 	pick: Pick & { user: User | null; collab: Collab },
@@ -28,7 +29,7 @@ async function sendEmbedToDiscord(
 	const reporterMention = `<@${reporter.discordId}>`;
 
 	const embed: MessageEmbed = new MessageEmbed({
-		title: `Pick report from ${reporter.username}#${reporter.discriminator}`,
+		title: `Pick report from ${getUserName(reporter)}`,
 		description: `Message: **${report}**`,
 		color: 0xff0000,
 		fields: [

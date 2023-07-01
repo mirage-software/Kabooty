@@ -1,4 +1,5 @@
 <script lang="ts">
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	export let click: () => void = () => {};
 
 	export let href: string | undefined = undefined;

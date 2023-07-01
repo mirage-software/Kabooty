@@ -3,7 +3,12 @@
 
 	import { onMount } from 'svelte';
 
-	import { discord, getDiscordProfilePicture, getFormattedDate } from '../../stores/discord';
+	import {
+		discord,
+		getDiscordProfilePicture,
+		getFormattedDate,
+		getUserName
+	} from '../../stores/discord';
 
 	import SolidButton from '../../components/generic/design/solid_button.svelte';
 	import axios from 'axios';
@@ -49,7 +54,7 @@
 					<div id="stats">
 						<div class="stat">
 							<i class="las la-user" />
-							<p>{$discord.username + '#' + $discord.discriminator}</p>
+							<p>{getUserName($discord)}</p>
 						</div>
 						{#if $discord.joinedAt}
 							<div class="stat">

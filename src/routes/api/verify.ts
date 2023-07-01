@@ -11,6 +11,7 @@ import type { Osu, OsuMode } from '@prisma/client';
 import { MessageEmbed } from 'discord.js';
 import type { IDiscordUser } from '../../utils/discord/interfaces/user';
 import { DiscordUser } from '../../utils/discord/user';
+import { getUserName } from '../../stores/discord';
 
 function getPlayTime(time: number): string {
 	const total = time / 60 / 60;
@@ -52,7 +53,7 @@ async function sendEmbedToDiscord(data: {
 	const mention = `<@${data.user.id}>`;
 
 	const embed: MessageEmbed = new MessageEmbed({
-		title: `Sussy verification from **${data.user.username}#${data.user.discriminator}**`,
+		title: `Sussy verification from **${getUserName(data.user)}**`,
 		description: `osu! name: **${data.osu.username}**`,
 		color: 0x00ff00,
 		fields: [

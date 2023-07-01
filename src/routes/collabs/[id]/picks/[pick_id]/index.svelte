@@ -5,7 +5,8 @@
 	import {
 		discord,
 		getDiscordProfilePicture,
-		getFormattedDate
+		getFormattedDate,
+		getUserName
 	} from '../../../../../stores/discord';
 	import SolidButton from '../../../../../components/generic/design/solid_button.svelte';
 	import type { AnimeCharacter, Asset, CollabAsset, User, Pick, Collab } from '@prisma/client';
@@ -194,7 +195,7 @@
 					<div id="stats">
 						<div class="stat">
 							<i class="las la-user" />
-							<p>{discordUser.username + '#' + discordUser.discriminator}</p>
+							<p>{getUserName(discordUser)}</p>
 						</div>
 						{#if discordUser.joinedAt}
 							<div class="stat">
