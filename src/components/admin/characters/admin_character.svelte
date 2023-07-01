@@ -40,8 +40,6 @@
 			character.anime_name ?? ''
 		);
 
-		console.log(anime_name);
-
 		if (anime_name) {
 			character.anime_name = anime_name;
 		} else {

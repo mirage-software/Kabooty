@@ -29,8 +29,6 @@ export const post: RequestHandler = async ({ request }) => {
 
 	const character = await request.json();
 
-	console.log(character);
-
 	if (
 		character.anime_name === undefined ||
 		character.anime_name.trim() === '' ||
