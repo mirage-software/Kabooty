@@ -4,10 +4,17 @@
 
 	import { t } from 'svelte-intl-precompile';
 	import IconButton from '../../collabs/icon_button.svelte';
+	import { onMount } from 'svelte';
 
 	export let character: AnimeCharacter & {
 		picks: Pick[];
 	};
+
+	let _window: Window | null = null;
+
+	onMount(async () => {
+		_window = window;
+	});
 
 	export let onDelete: () => void;
 
@@ -15,6 +22,33 @@
 		await axios.delete('/api/characters?id=' + character.id);
 		onDelete();
 	}
+
+	async function editCharacter() {
+
+		const name = _window?.prompt(
+			'Character Name',
+			character.name ?? ''
+		);
+		if (name) {
+			character.name = name;
+		} else {
+			return;
+		}
+
+		const anime_name = _window?.prompt(
+			'Series name',
+			character.anime_name ?? ''
+		);
+
+		if (anime_name) {
+			character.anime_name = anime_name;
+		} else {
+			return;
+		}
+
+		await axios.post(`/api/characters/${character.id}/edit`, character);
+	}
+
 </script>
 
 <div id="character">
@@ -28,6 +62,7 @@
 	<p id="anime">{character?.anime_name}</p>
 	<div id="buttons">
 		<IconButton icon="la la-trash" click={deleteCharacter} />
+		<IconButton icon="las la-pencil-alt" click={editCharacter} />
 	</div>
 </div>
 
@@ -81,6 +116,7 @@
 		#buttons {
 			display: flex;
 			flex-direction: row;
+			gap: 5px;
 
 			margin-top: $margin-s;
 		}
