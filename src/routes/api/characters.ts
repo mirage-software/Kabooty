@@ -13,7 +13,7 @@ export const get: RequestHandler = async ({ request }) => {
 	const url = new URL(request.url);
 	const query = url.searchParams.get('search')?.trim() ?? undefined;
 	const page = parseInt(url.searchParams.get('page') ?? '1');
-	const sort = url.searchParams.get('sort') ?? undefined;
+	const sort = url.searchParams.get('sort') ?? 'anime';
 	const order = url.searchParams.get('order') ?? 'desc';
 
 	const search = query?.split(' ');
@@ -38,7 +38,8 @@ export const get: RequestHandler = async ({ request }) => {
 			];
 			break;
 		}
-		case 'anime': {
+		case 'anime':
+		default: {
 			orderBy = [
 				{
 					anime_name: order === 'desc' ? 'asc' : 'desc'

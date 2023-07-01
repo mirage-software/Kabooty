@@ -18,6 +18,15 @@ export const get: RequestHandler = async ({ params, request }) => {
 		];
 	}
 
+	let orderBy: Array<object> = [
+		{
+			anime_name: 'desc'
+		},
+		{
+			name: 'desc'
+		}
+	];
+
 	const count = await Prisma.client.animeCharacter.count({
 		where: {
 			OR: OR
@@ -35,6 +44,7 @@ export const get: RequestHandler = async ({ params, request }) => {
 				}
 			}
 		},
+		orderBy: orderBy,
 		take: 50,
 		skip: 50 * (page - 1)
 	});
