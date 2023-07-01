@@ -12,7 +12,10 @@ export const get: RequestHandler = async ({ params, request }) => {
 
 	if (splitQuery) {
 		fullTextSearch = splitQuery.map((query) => ({
-			OR: [{ name: { search: query.trim() } }, { anime_name: { search: query.trim() } }]
+			OR: [
+				{ name: { contains: query.trim() } },
+				{ anime_name: { contains: query.trim() } }
+			]
 		}));
 	}
 
