@@ -20,11 +20,8 @@ export const get: RequestHandler = async ({ request }) => {
 	let fullTextSearch: prisma.Enumerable<prisma.AnimeCharacterWhereInput> | undefined;
 
 	if (splitQuery) {
-		fullTextSearch = splitQuery.map(query => ({
-			OR: [
-				{ name: { search: query.trim() } },
-				{ anime_name: { search: query.trim() } },
-			]
+		fullTextSearch = splitQuery.map((query) => ({
+			OR: [{ name: { search: query.trim() } }, { anime_name: { search: query.trim() } }]
 		}));
 	}
 
